@@ -1,13 +1,16 @@
 package hermanos.Centro.Clinico.model;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Clinic {
 
     @Column(nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ClinicAdministrator> admins = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
