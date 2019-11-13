@@ -1,10 +1,15 @@
 package hermanos.Centro.Clinico.model;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
+
+@Entity
 public class Clinic {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "clinic_id", nullable = false, unique = true)
+    private long id;
 
     @Column(nullable = false)
     private String name;
@@ -14,6 +19,14 @@ public class Clinic {
     private Address address;
 
     public Clinic() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Address getAddress() {
