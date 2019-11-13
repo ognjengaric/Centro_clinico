@@ -1,6 +1,5 @@
 package hermanos.Centro.Clinico.controllers;
 
-import hermanos.Centro.Clinico.dto.PatientDTO;
 import hermanos.Centro.Clinico.model.Patient;
 import hermanos.Centro.Clinico.repository.PatientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ public class PatientController {
         //dodaj proveru vrednosti polja
 
         patientRepository.save(patient);
+
 
         return ResponseEntity.ok().build();
     }

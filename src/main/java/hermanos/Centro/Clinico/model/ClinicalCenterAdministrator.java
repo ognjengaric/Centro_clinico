@@ -14,8 +14,8 @@ public class ClinicalCenterAdministrator extends Person{
     @Column(name = "clinical_center_administrator_id", nullable = false, unique = true)
     private long id;
 
-    @OneToMany(mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Person> person = new ArrayList<>();
+    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Person> persons = new ArrayList<>();
 
     public ClinicalCenterAdministrator() {
     }
@@ -29,10 +29,10 @@ public class ClinicalCenterAdministrator extends Person{
     }
 
     public List<Person> getPerson() {
-        return person;
+        return persons;
     }
 
-    public void setPerson(List<Person> person) {
-        this.person = person;
+    public void setPerson(List<Person> persons) {
+        this.persons = persons;
     }
 }

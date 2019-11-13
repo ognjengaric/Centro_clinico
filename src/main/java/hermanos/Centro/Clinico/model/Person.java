@@ -25,7 +25,7 @@ public abstract class Person implements Serializable {
     @Column(nullable = false)
     private String surname;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
     private Address address;
 
