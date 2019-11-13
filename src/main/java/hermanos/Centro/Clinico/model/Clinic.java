@@ -6,6 +6,9 @@ import java.util.List;
 
 public class Clinic {
 
+    @Column(name = "clinic_id", nullable=false, unique = true)
+    private long id;
+
     @Column(nullable = false)
     private String name;
 

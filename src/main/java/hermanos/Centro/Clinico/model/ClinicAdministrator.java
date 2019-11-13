@@ -1,13 +1,13 @@
 package hermanos.Centro.Clinico.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClinicAdministrator extends Person{
 
+    @ManyToOne
+    @JoinColumn(name = "admins", referencedColumnName = "clinic_id", nullable = false)
     private Clinic clinic;
 
     public ClinicAdministrator() {
