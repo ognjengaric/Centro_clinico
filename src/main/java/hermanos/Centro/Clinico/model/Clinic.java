@@ -4,9 +4,14 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+@Entity
 public class Clinic {
 
-    @Column(name = "clinic_id", nullable=false, unique = true)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "clinic_id", nullable = false, unique = true)
     private long id;
 
     @Column(nullable = false)
@@ -20,6 +25,14 @@ public class Clinic {
     private Address address;
 
     public Clinic() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Address getAddress() {

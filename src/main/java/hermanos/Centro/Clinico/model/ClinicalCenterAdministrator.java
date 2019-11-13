@@ -2,25 +2,37 @@ package hermanos.Centro.Clinico.model;
 
 import org.springframework.context.annotation.Lazy;
 
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class ClinicalCenterAdministrator extends Person{
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "clinical_center_administrator_id", nullable = false, unique = true)
+    private long id;
+
     @OneToMany(mappedBy = "person", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<RegistrationRequest> registrationRequests = new ArrayList<>();
+    private List<Person> person = new ArrayList<>();
 
     public ClinicalCenterAdministrator() {
     }
 
-    public List<RegistrationRequest> getRegistrationRequests() {
-        return registrationRequests;
+    public Long getId() {
+        return id;
     }
 
-    public void setRegistrationRequests(List<RegistrationRequest> registrationRequests) {
-        this.registrationRequests = registrationRequests;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Person> getPerson() {
+        return person;
+    }
+
+    public void setPerson(List<Person> person) {
+        this.person = person;
     }
 }
