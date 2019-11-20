@@ -15,6 +15,9 @@ public class Clinic {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
+    private String description;
+
     @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ClinicAdministrator> admins = new ArrayList<>();
 
@@ -47,5 +50,13 @@ public class Clinic {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String name) {
+        this.description = description;
     }
 }
