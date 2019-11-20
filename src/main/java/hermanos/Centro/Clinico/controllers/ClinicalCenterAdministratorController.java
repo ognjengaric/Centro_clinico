@@ -5,6 +5,8 @@ import hermanos.Centro.Clinico.model.Clinic;
 import hermanos.Centro.Clinico.model.Person;
 import hermanos.Centro.Clinico.repository.ClinicRepository;
 import hermanos.Centro.Clinico.repository.PersonRepository;
+import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
+import hermanos.Centro.Clinico.service.interfaces.PersonServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,18 +15,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "clinicalCenterAdministrator")
+@RequestMapping(value = "/clinicalCenterAdministrator")
 public class ClinicalCenterAdministratorController {
 
     @Autowired
-    PersonRepository personRepository;
+    PersonServiceInterface personService;
     @Autowired
-    ClinicRepository clinicRepository;
+    ClinicServiceInterface clinicService;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/accept")
     public ResponseEntity requestAccepted(@RequestBody Person person){
 
-        personRepository.save(person);
+        personService.save(person);
         //Polsati generisn mail
 
         return ResponseEntity.ok().build();
@@ -41,7 +43,7 @@ public class ClinicalCenterAdministratorController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/registerClinic")
     public ResponseEntity requestAccepted(@RequestBody Clinic clinic){
 
-        clinicRepository.save(clinic);
+        clinicService.save(clinic);
 
         return ResponseEntity.ok().build();
     }
