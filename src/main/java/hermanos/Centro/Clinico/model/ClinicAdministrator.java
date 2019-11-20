@@ -8,7 +8,7 @@ import java.util.List;
 public class ClinicAdministrator extends Person{
 
     @ManyToOne
-    @JoinColumn(name = "clinic", referencedColumnName = "clinic_id", nullable = false)
+    @JoinColumn(name = "clinic", referencedColumnName = "clinic_id", nullable = true)
     private Clinic clinic;
 
     public ClinicAdministrator() {
