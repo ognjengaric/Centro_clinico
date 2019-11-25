@@ -21,7 +21,7 @@ public class Clinic {
     @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ClinicAdministrator> admins = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
     private Address address;
 
