@@ -6,5 +6,6 @@ public interface PatientRequestServiceInterface {
 
     public PatientRequest findById(long id);
     public PatientRequest findByEmail(String email);
+    public PatientRequest findBySocialSecurityNumber(String socialSecurityNumber);
     public PatientRequest save(PatientRequest patientRequest);
 }

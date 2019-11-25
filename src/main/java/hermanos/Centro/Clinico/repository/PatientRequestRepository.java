@@ -7,4 +7,5 @@ public interface PatientRequestRepository extends JpaRepository<PatientRequest, 
 
         PatientRequest findByEmail(String email);
         PatientRequest findById(long id);
+        PatientRequest findBySocialSecurityNumber(String socialSecurityNumber);
 }
