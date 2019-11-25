@@ -4,8 +4,6 @@ package hermanos.Centro.Clinico.controllers;
 import hermanos.Centro.Clinico.model.Clinic;
 import hermanos.Centro.Clinico.model.PatientRequest;
 import hermanos.Centro.Clinico.model.Person;
-import hermanos.Centro.Clinico.repository.ClinicRepository;
-import hermanos.Centro.Clinico.repository.PersonRepository;
 import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
 import hermanos.Centro.Clinico.service.interfaces.PatientRequestServiceInterface;
 import hermanos.Centro.Clinico.service.interfaces.PersonServiceInterface;
@@ -33,7 +31,7 @@ public class ClinicalCenterAdministratorController {
     public ResponseEntity requestAccepted(@RequestBody Person person){
 
         personService.save(person);
-        //Polsati generisn mail
+        //Polsati generisan mail
 
         return ResponseEntity.ok().build();
     }
@@ -41,13 +39,14 @@ public class ClinicalCenterAdministratorController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/decline")
     public ResponseEntity requestDeclined(@RequestBody Person person){
 
-        //Polsati generisn mail
+        //Polsati generisan mail
 
         return ResponseEntity.ok().build();
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/registerClinic")
     public ResponseEntity requestAccepted(@RequestBody Clinic clinic){
+
 
         clinicService.save(clinic);
 

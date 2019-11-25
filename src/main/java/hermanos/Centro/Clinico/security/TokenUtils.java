@@ -45,7 +45,6 @@ public class TokenUtils {
                 .setAudience(generateAudience())
                 .setIssuedAt(timeProvider.now())
                 .setExpiration(generateExpirationDate())
-                // .claim("role", role) //postavljanje proizvoljnih podataka u telo JWT tokena
                 .signWith(SIGNATURE_ALGORITHM, SECRET).compact();
     }
 
