@@ -22,6 +22,8 @@ public class ClinicAdministrator extends Person{
         return clinic.getName();
     }
 
+    public long getClinicId() { return clinic.getId();}
+
     public void setClinicAddress(Address adr){
         clinic.setAddress(adr);
     }
