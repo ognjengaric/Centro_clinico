@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping(value = "/editClinicProfile")
+@RequestMapping(value = "/clinic")
 public class ClinicController {
     @Autowired
     ClinicAdministratorServiceInterface clinicAdminService;
@@ -28,13 +28,13 @@ public class ClinicController {
         return clinic;
 
     }
-/*
-    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupType")
-    public ResponseEntity<?> newCheckupType(@RequestBody String ct){
-        ClinicAdministrator admin = clinicAdminService.findByiD(person.getId());
 
-        clinicService.findById(admin.getClinicId()).addCheckupType(ct);
+    @RequestMapping(method = RequestMethod.POST, path = "/{id}/addCheckupType")
+    public ResponseEntity<?> newCheckupType(@PathVariable("id") long id, @RequestBody String ct) {
 
+        clinicService.findById(id).addCheckupType(ct);
 
-    }*/
+        return ResponseEntity.ok().build();
+    }
+
 }
