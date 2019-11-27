@@ -8,10 +8,7 @@ import hermanos.Centro.Clinico.service.interfaces.ClinicAdministratorServiceInte
 import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
@@ -24,12 +21,9 @@ public class ClinicController {
     @Autowired
     ClinicServiceInterface clinicService;
 
-    @RequestMapping(method = RequestMethod.GET,path = "")
-    public Clinic clinicInfo(@RequestBody Person person){
-
-        ClinicAdministrator admin = clinicAdminService.findByiD(person.getId());
-
-        Clinic clinic = clinicService.findById(admin.getClinicId());
+    @RequestMapping(method = RequestMethod.GET,path = "/{id}")
+    public Clinic clinicInfo(@PathVariable("id") long id){
+        Clinic clinic = clinicService.findById(id);
 
         return clinic;
 
