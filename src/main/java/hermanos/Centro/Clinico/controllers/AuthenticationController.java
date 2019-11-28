@@ -1,12 +1,13 @@
 package hermanos.Centro.Clinico.controllers;
 
-import hermanos.Centro.Clinico.model.*;
+import hermanos.Centro.Clinico.exception.ResourceConflictException;
+import hermanos.Centro.Clinico.model.PatientRequest;
+import hermanos.Centro.Clinico.model.PersonTokenState;
 import hermanos.Centro.Clinico.security.TokenUtils;
 import hermanos.Centro.Clinico.security.auth.JwtAuthenticationRequest;
 import hermanos.Centro.Clinico.service.CustomUserDetailsService;
 import hermanos.Centro.Clinico.service.PatientService;
 import hermanos.Centro.Clinico.service.interfaces.PatientRequestServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.PatientServiceInterface;
 import hermanos.Centro.Clinico.service.interfaces.PersonServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -59,13 +59,13 @@ public class AuthenticationController {
         if(personService.findByEmail(patientRequest.getEmail()) != null ||
             patientRequestService.findByEmail(patientRequest.getEmail()) != null){
 
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("This email is already in use.");
+            throw new ResourceConflictException("This email is already in use.");
         }
 
         if(patientService.findBySocialSecurityNumber(patientRequest.getSocialSecurityNumber()) != null ||
             patientRequestService.findBySocialSecurityNumber(patientRequest.getSocialSecurityNumber()) != null){
 
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("This social security number is already in use.");
+            throw new ResourceConflictException("This social security number is already is already in use.");
         }
 
         patientRequestService.save(patientRequest);
@@ -73,6 +73,10 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
+    /** Function that checks credentials and creates token
+     * @param authenticationRequest
+     * @return
+     */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest){
 
