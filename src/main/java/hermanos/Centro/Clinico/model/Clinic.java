@@ -23,7 +23,7 @@ public class Clinic {
 
     private List<String> checkupTypes = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
     private Address address;
 

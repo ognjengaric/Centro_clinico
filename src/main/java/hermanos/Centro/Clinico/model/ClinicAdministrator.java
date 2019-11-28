@@ -14,26 +14,11 @@ public class ClinicAdministrator extends Person{
     public ClinicAdministrator() {
     }
 
-    public Address getClinicAddress(){
-        return clinic.getAddress();
-    }
-
-    public String getClinicName(){
-        return clinic.getName();
-    }
-
-    public long getClinicId() { return clinic.getId();}
-
-    public void setClinicAddress(Address adr){
-        clinic.setAddress(adr);
-    }
-
-    public void setClinicName(String nam){
-        clinic.setName(nam);
-    }
-
     public void setClinic(Clinic c){
         clinic = c;
     }
 
+    public Clinic getClinic() {
+        return clinic;
+    }
 }

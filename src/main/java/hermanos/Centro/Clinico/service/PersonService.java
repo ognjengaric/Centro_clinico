@@ -15,14 +15,12 @@ public class PersonService implements PersonServiceInterface {
 
     @Override
     public Person findById(long id) {
-        Person person = personRepository.findById(id);
-        return person;
+        return personRepository.findById(id);
     }
 
     @Override
     public Person findByEmail(String email) {
-        Person person = personRepository.findByEmail(email);
-        return person;
+        return personRepository.findByEmail(email);
     }
 
     public List<Person> findAll() {
