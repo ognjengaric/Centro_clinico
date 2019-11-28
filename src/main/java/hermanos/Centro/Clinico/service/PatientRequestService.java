@@ -40,6 +40,7 @@ public class PatientRequestService implements PatientRequestServiceInterface {
         return patientRequestRepository.save(patientRequest);
     }
 
+    @Override
     public List<PatientRequest> findAll(){
         List<PatientRequest> result = patientRequestRepository.findAll();
         return result;
