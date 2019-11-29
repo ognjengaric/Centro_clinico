@@ -1,14 +1,8 @@
 package hermanos.Centro.Clinico.controllers;
 
 
-import hermanos.Centro.Clinico.model.Clinic;
-import hermanos.Centro.Clinico.model.ClinicalCenterAdministrator;
-import hermanos.Centro.Clinico.model.PatientRequest;
-import hermanos.Centro.Clinico.model.Person;
-import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.ClinicalCenterAdministratorServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.PatientRequestServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.PersonServiceInterface;
+import hermanos.Centro.Clinico.model.*;
+import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,6 +25,10 @@ public class ClinicalCenterAdministratorController {
     PatientRequestServiceInterface patientRequestService;
     @Autowired
     ClinicalCenterAdministratorServiceInterface clinicalCenterAdministratorService;
+    @Autowired
+    DiagnosisServiceInterface diagnosisService;
+    @Autowired
+    MedicineServiceInterface medicineService;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/accept")
     public ResponseEntity requestAccepted(@RequestBody Person person){
@@ -71,6 +69,24 @@ public class ClinicalCenterAdministratorController {
 
 
         clinicalCenterAdministratorService.save(clinicalCenterAdministrator);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/addDiagnosis")
+    public ResponseEntity addDiagnosis(@RequestBody Diagnosis diagnosis){
+
+
+        diagnosisService.save(diagnosis);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/addMedicine")
+    public ResponseEntity addMedicine(@RequestBody Medicine medicine){
+
+
+        medicineService.save(medicine);
 
         return ResponseEntity.ok().build();
     }

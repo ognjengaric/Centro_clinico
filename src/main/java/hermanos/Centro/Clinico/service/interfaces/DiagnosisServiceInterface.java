@@ -5,5 +5,5 @@ import hermanos.Centro.Clinico.model.Diagnosis;
 public interface DiagnosisServiceInterface {
 
     public Diagnosis findById(long id);
-    public Diagnosis save(Diagnosis medicine);
+    public Diagnosis save(Diagnosis diagnosis);
 }

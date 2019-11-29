@@ -4,9 +4,10 @@ import hermanos.Centro.Clinico.model.Medicine;
 import hermanos.Centro.Clinico.repository.MedicineRepository;
 import hermanos.Centro.Clinico.service.interfaces.MedicineServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+@Service
 public class MedicineService implements MedicineServiceInterface {
 
     @Autowired
