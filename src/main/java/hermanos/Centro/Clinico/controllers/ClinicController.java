@@ -32,7 +32,7 @@ public class ClinicController {
     @RequestMapping(method = RequestMethod.POST, path = "/{id}/addCheckupType")
     public ResponseEntity<?> newCheckupType(@PathVariable("id") long id, @RequestBody String ct) {
 
-        clinicService.findById(id).addCheckupType(ct);
+   //     clinicService.findById(id).addCheckupType(ct);
 
         return ResponseEntity.ok().build();
     }
