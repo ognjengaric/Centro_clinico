@@ -31,7 +31,7 @@ public class BusinessReportController {
 
         ClinicAdministrator admin = clinicAdminService.findByiD(person.getId());
 
-        Clinic clinic = clinicService.findById(admin.getClinicId());
+        Clinic clinic = clinicService.findById(admin.getClinic().getId());
 
         ArrayList<String> data = new ArrayList<>();
 
