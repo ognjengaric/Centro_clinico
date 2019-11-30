@@ -23,7 +23,7 @@ public class BusinessReportController {
     @Autowired
     DoctorServiceInterface doctorService;
 
-    @Component
+
     public class DocRating implements Serializable {
         private long id;
         private String name;
