@@ -16,8 +16,8 @@ public class DoctorService implements DoctorServiceInterface {
     private DoctorRepository doctorRepository;
 
     @Override
-    public Doctor findBySocialSecurityNumber(String socialSecurityNumber){
-        return  doctorRepository.findBySocialSecurityNumber(socialSecurityNumber);
+    public Doctor findById(long id){
+        return  doctorRepository.findById(id);
     }
 
     @Override

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
 
-        Doctor findBySocialSecurityNumber(String socialSecurityNumber);
+        Doctor findById(long id);
 }
