@@ -1,24 +1,18 @@
 package hermanos.Centro.Clinico.model;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
 @DiscriminatorValue(value = "DOCTOR")
 public class Doctor extends Person implements Serializable {
+
+    @ManyToOne
+    @JoinColumn(name = "clinic", referencedColumnName = "clinic_id", nullable = true)
+    private Clinic clinic;
+
+
     @Column(nullable = false, unique = true)
-    private String clinic;
-
-    public String getClinic() {
-        return clinic;
-    }
-
-    public void setClinic(String clinic) {
-        this.clinic = clinic;
-    }
-
     private String socialSecurityNumber;
     private String name;
     private String surname;
@@ -26,6 +20,14 @@ public class Doctor extends Person implements Serializable {
 
     public Doctor(){
         super();
+    }
+
+    public Clinic getClinic() {
+        return clinic;
+    }
+
+    public void setClinic(Clinic clinic) {
+        this.clinic = clinic;
     }
 
     @Override
