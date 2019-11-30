@@ -27,7 +27,9 @@ public class Clinic {
     @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CheckupType> checkupTypes = new ArrayList<>();
 
-//    private List<String> checkupTypes = new ArrayList<>();
+    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Room> rooms = new ArrayList<>();
+
 
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)

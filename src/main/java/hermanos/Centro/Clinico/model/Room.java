@@ -1,11 +1,10 @@
 package hermanos.Centro.Clinico.model;
 
-
 import javax.persistence.*;
 
 @Entity
-@DiscriminatorValue(value = "CHECKUP_TYPE")
-public class CheckupType {
+@DiscriminatorValue(value = "ROOM")
+public class Room {
 
     @ManyToOne
     @JoinColumn(name = "clinic", referencedColumnName = "clinic_id", nullable = true)
@@ -13,10 +12,10 @@ public class CheckupType {
 
     @Id
     @Column(nullable = false, unique = true)
-    private String name;
+    private long roomId;
 
 
-    public CheckupType(){
+    public Room(){
         super();
     }
 
@@ -28,12 +27,18 @@ public class CheckupType {
         this.clinic = clinic;
     }
 
-    public String getName() {
-        return name;
+    public long getRoomId() {
+        return roomId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setRoomId(long roomId) {
+        this.roomId = roomId;
     }
+
+
+
+
+
+
 
 }
