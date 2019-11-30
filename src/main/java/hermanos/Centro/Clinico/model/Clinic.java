@@ -70,7 +70,11 @@ public class Clinic {
         this.description = description;
     }
 
-   // public void addCheckupType(String ct) {this.checkupTypes.add(ct);}
-  //  public void removeCheckupType(String ct) {this.checkupTypes.remove(ct);}
-  //  public List<String> getCheckupType(String ct) {return this.checkupTypes;}
+    public List<Doctor> getDoctors() {
+        return doctors;
+    }
+
+    public void setDoctors(List<Doctor> doctors) {
+        this.doctors = doctors;
+    }
 }
