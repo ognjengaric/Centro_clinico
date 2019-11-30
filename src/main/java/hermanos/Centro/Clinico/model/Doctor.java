@@ -9,6 +9,16 @@ import java.io.Serializable;
 @DiscriminatorValue(value = "DOCTOR")
 public class Doctor extends Person implements Serializable {
     @Column(nullable = false, unique = true)
+    private String clinic;
+
+    public String getClinic() {
+        return clinic;
+    }
+
+    public void setClinic(String clinic) {
+        this.clinic = clinic;
+    }
+
     private String socialSecurityNumber;
     private String name;
     private String surname;
