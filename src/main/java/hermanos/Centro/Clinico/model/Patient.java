@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Entity
 @DiscriminatorValue(value = "PATIENT")
 public class Patient extends Person implements Serializable {
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String socialSecurityNumber;
     /* TODO: 11/9/2019 medical record */
 
