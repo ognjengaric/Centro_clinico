@@ -2,10 +2,7 @@ package hermanos.Centro.Clinico.controllers;
 
 
 import hermanos.Centro.Clinico.model.*;
-import hermanos.Centro.Clinico.service.interfaces.ClinicAdministratorServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.CheckupDateServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.DoctorServiceInterface;
+import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +20,16 @@ public class ClinicController {
     ClinicServiceInterface clinicService;
 
     @Autowired
+    RoomServiceInterface roomService;
+
+    @Autowired
     DoctorServiceInterface doctorService;
 
     @Autowired
     CheckupDateServiceInterface checkupDateService;
+
+    @Autowired
+    CheckupTypeServiceInterface checkupTypeService;
 
     @RequestMapping(method = RequestMethod.GET,path = "/{id}")
     public Clinic clinicInfo(@PathVariable("id") long id){
@@ -36,13 +39,6 @@ public class ClinicController {
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupType/{id}")
-    public ResponseEntity<?> newCheckupType(@PathVariable("id") long id, @RequestBody String ct) {
-
-   //     clinicService.findById(id).addCheckupType(ct);
-
-        return ResponseEntity.ok().build();
-    }
 
     @RequestMapping(method = RequestMethod.POST, path = "/addCheckupDate/{id}")
     public ResponseEntity newCheckupDate(@PathVariable("id") long id, @RequestBody String date){
@@ -53,6 +49,32 @@ public class ClinicController {
         cd.setDate(datatemp);
 
         checkupDateService.save(cd);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupType/{id}")
+    public ResponseEntity newCheckupType(@PathVariable("id") long id, @RequestBody String name){
+        String[] temp = name.split(":");
+        String datatemp = temp[1].substring(1, temp[1].length()-2);
+        CheckupType ct = new CheckupType();
+        ct.setClinic(clinicService.findById(id));
+        ct.setName(datatemp);
+
+        checkupTypeService.save(ct);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/addRoom/{id}")
+    public ResponseEntity newRoom(@PathVariable("id") long id, @RequestBody String name){
+        String[] temp = name.split(":");
+        String datatemp = temp[1].substring(1, temp[1].length()-2);
+        Room room = new Room();
+        room.setClinic(clinicService.findById(id));
+        room.setRoomId(datatemp);
+
+        roomService.save(room);
 
         return ResponseEntity.ok().build();
     }

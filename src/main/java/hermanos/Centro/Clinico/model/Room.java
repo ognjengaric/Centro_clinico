@@ -12,7 +12,7 @@ public class Room {
 
     @Id
     @Column(nullable = false, unique = true)
-    private long roomId;
+    private String roomId;
 
 
     public Room(){
@@ -27,11 +27,11 @@ public class Room {
         this.clinic = clinic;
     }
 
-    public long getRoomId() {
+    public String getRoomId() {
         return roomId;
     }
 
-    public void setRoomId(long roomId) {
+    public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
 
