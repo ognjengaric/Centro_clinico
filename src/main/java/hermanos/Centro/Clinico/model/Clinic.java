@@ -79,4 +79,40 @@ public class Clinic {
     public void setDoctors(List<Doctor> doctors) {
         this.doctors = doctors;
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public List<ClinicAdministrator> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(List<ClinicAdministrator> admins) {
+        this.admins = admins;
+    }
+
+    public List<CheckupType> getCheckupTypes() {
+        return checkupTypes;
+    }
+
+    public void setCheckupTypes(List<CheckupType> checkupTypes) {
+        this.checkupTypes = checkupTypes;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    public List<CheckupDate> getCheckupDates() {
+        return checkupDates;
+    }
+
+    public void setCheckupDates(List<CheckupDate> checkupDates) {
+        this.checkupDates = checkupDates;
+    }
 }

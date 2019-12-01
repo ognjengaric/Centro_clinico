@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/clinic")
@@ -51,6 +52,9 @@ public class ClinicController {
 
         return ResponseEntity.ok().build();
     }
-
+    @RequestMapping(method = RequestMethod.GET, path = "/getCheckupDates/{id}")
+    public  @ResponseBody List<CheckupDate> getCheckupDates(@PathVariable("id") long id){
+        return clinicService.findById(id).getCheckupDates();
+    }
 
 }
