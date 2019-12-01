@@ -11,6 +11,7 @@ public class Doctor extends Person implements Serializable {
     @JoinColumn(name = "clinic", referencedColumnName = "clinic_id", nullable = true)
     private Clinic clinic;
 
+    @Column(nullable = false)
     private String avgrating;
 
     public Doctor(){
@@ -32,5 +33,5 @@ public class Doctor extends Person implements Serializable {
     public void setAvgrating(String avgrating) {
         this.avgrating = avgrating;
     }
-    
+
 }

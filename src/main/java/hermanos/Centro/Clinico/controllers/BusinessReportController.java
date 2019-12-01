@@ -23,18 +23,15 @@ public class BusinessReportController {
     @Autowired
     DoctorServiceInterface doctorService;
 
-
+    @Component
     public class DocRating implements Serializable {
         private long id;
         private String name;
         private String surname;
         private String avgrating;
 
-        public DocRating(long id, String name, String surname, String avgrating) {
-            this.id = id;
-            this.name = name;
-            this.surname = surname;
-            this.avgrating = avgrating;
+        public DocRating() {
+            super();
         }
     }
 
@@ -46,8 +43,12 @@ public class BusinessReportController {
         drlist = clinic.getDoctors();
         drlist.add(doca);
         List<DocRating> docratlist = new ArrayList<>();
+        DocRating docrat = new DocRating();
         for (Doctor dr : drlist){
-            DocRating docrat = new DocRating(dr.getId(), dr.getName(), dr.getSurname(), dr.getAvgrating());
+            docrat.id = dr.getId();
+            docrat.name = dr.getName();
+            docrat.surname = dr.getSurname();
+            docrat.avgrating = dr.getAvgrating();
             docratlist.add(docrat);
         }
 

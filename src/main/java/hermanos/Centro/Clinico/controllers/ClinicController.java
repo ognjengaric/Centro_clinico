@@ -1,11 +1,10 @@
 package hermanos.Centro.Clinico.controllers;
 
 
-import hermanos.Centro.Clinico.model.Clinic;
-import hermanos.Centro.Clinico.model.ClinicAdministrator;
-import hermanos.Centro.Clinico.model.Person;
+import hermanos.Centro.Clinico.model.*;
 import hermanos.Centro.Clinico.service.interfaces.ClinicAdministratorServiceInterface;
 import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
+import hermanos.Centro.Clinico.service.interfaces.CheckupDateServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +20,9 @@ public class ClinicController {
     @Autowired
     ClinicServiceInterface clinicService;
 
+    @Autowired
+    CheckupDateServiceInterface checkupDateService;
+
     @RequestMapping(method = RequestMethod.GET,path = "/{id}")
     public Clinic clinicInfo(@PathVariable("id") long id){
         Clinic clinic = clinicService.findById(id);
@@ -29,12 +31,26 @@ public class ClinicController {
 
     }
 
-    @RequestMapping(method = RequestMethod.POST, path = "/{id}/addCheckupType")
+    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupType/{id}")
     public ResponseEntity<?> newCheckupType(@PathVariable("id") long id, @RequestBody String ct) {
 
    //     clinicService.findById(id).addCheckupType(ct);
 
         return ResponseEntity.ok().build();
     }
+
+    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupDate/{id}")
+    public ResponseEntity newCheckupDate(@PathVariable("id") long id, @RequestBody String date){
+        String[] temp = date.split(":");
+        String datatemp = temp[1].substring(1, temp[1].length()-2);
+        CheckupDate cd = new CheckupDate();
+        cd.setClinic(clinicService.findById(id));
+        cd.setDate(datatemp);
+
+        checkupDateService.save(cd);
+
+        return ResponseEntity.ok().build();
+    }
+
 
 }
