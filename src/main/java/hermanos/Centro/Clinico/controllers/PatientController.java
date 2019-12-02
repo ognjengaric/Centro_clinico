@@ -2,13 +2,16 @@ package hermanos.Centro.Clinico.controllers;
 
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
 import hermanos.Centro.Clinico.model.Patient;
+import hermanos.Centro.Clinico.security.TokenUtils;
 import hermanos.Centro.Clinico.service.PatientService;
+import hermanos.Centro.Clinico.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 
 
 @RestController
@@ -16,18 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class PatientController {
 
     @Autowired
-    PatientService patientService;
+    PersonService personService;
 
-    @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/{socialSecurityNumber}")
-    public ResponseEntity<?> createRegisterRequest(@PathVariable("socialSecurityNumber") String ssNumber) {
+    @Autowired
+    TokenUtils tokenUtils;
 
-        Patient p = patientService.findBySocialSecurityNumber(ssNumber);
+    @RequestMapping(method = RequestMethod.GET, consumes = "application/json")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<?> getPatientData(Principal p) {
 
-        if (p == null) {
-            throw new ResourceConflictException("Patient with this social security number does not exist.");
+        Patient patient = (Patient) personService.findByEmail(p.getName());
+
+        if(p == null){
+            throw new ResourceConflictException("Patient not found.");
         }
 
-        return ResponseEntity.ok(p);
+        return ResponseEntity.ok(patient);
     }
-    
+
 }
