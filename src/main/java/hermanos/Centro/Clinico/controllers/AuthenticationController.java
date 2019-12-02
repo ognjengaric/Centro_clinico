@@ -2,6 +2,7 @@ package hermanos.Centro.Clinico.controllers;
 
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
 import hermanos.Centro.Clinico.model.PatientRequest;
+import hermanos.Centro.Clinico.model.Person;
 import hermanos.Centro.Clinico.model.PersonTokenState;
 import hermanos.Centro.Clinico.security.TokenUtils;
 import hermanos.Centro.Clinico.security.auth.JwtAuthenticationRequest;
@@ -53,9 +54,6 @@ public class AuthenticationController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/register")
     public ResponseEntity<?> createRegisterRequest(@RequestBody PatientRequest patientRequest){
 
-        //check for all active users in system
-        //check for all requests
-
         if(personService.findByEmail(patientRequest.getEmail()) != null ||
             patientRequestService.findByEmail(patientRequest.getEmail()) != null){
 
@@ -86,10 +84,9 @@ public class AuthenticationController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        UserDetails details = userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
+        Person person = (Person)userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
 
-        //username = email in this case
-        String jwt = tokenUtils.generateToken(details.getUsername());
+        String jwt = tokenUtils.generateToken(person.getEmail());
         int expiresIn = tokenUtils.getExpiredIn();
 
         return ResponseEntity.ok(new PersonTokenState(jwt, expiresIn));
