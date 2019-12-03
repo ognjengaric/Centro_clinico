@@ -4,6 +4,6 @@ import hermanos.Centro.Clinico.model.Room;
 
 public interface RoomServiceInterface {
 
-    public Room findByRoomId(String roomId);
+    public Room findById(long id);
     public Room save(Room room);
 }

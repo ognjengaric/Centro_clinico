@@ -16,8 +16,8 @@ public class RoomService implements RoomServiceInterface {
     private RoomRepository roomRepository;
 
     @Override
-    public Room findByRoomId(String roomId){
-        return  roomRepository.findByRoomId(roomId);
+    public Room findById(long id){
+        return  roomRepository.findById(id);
     }
 
     @Override

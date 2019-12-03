@@ -18,19 +18,19 @@ public class Clinic {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "admin_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ClinicAdministrator> admins = new ArrayList<>();
 
-    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "doctor_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Doctor> doctors = new ArrayList<>();
 
-    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "checkuptypes_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CheckupType> checkupTypes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "rooms_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Room> rooms = new ArrayList<>();
 
-    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "checkupdates_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CheckupDate> checkupDates = new ArrayList<>();
 
     @ManyToOne(cascade=CascadeType.ALL)

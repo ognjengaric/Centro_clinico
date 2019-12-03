@@ -6,12 +6,15 @@ import javax.persistence.*;
 @Entity
 @DiscriminatorValue(value = "CHECKUP_TYPE")
 public class CheckupType {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "checkuptype_id", nullable = false, unique = true)
+    private long id;
 
     @ManyToOne
-    @JoinColumn(name = "clinic", referencedColumnName = "clinic_id", nullable = true)
-    private Clinic clinic;
+    @JoinColumn(name = "checkuptypes_clinic", referencedColumnName = "clinic_id", nullable = true)
+    private Clinic checkuptypes_clinic;
 
-    @Id
     @Column(nullable = false, unique = true)
     private String name;
 
@@ -21,11 +24,11 @@ public class CheckupType {
     }
 
     public Clinic getClinic() {
-        return clinic;
+        return checkuptypes_clinic;
     }
 
     public void setClinic(Clinic clinic) {
-        this.clinic = clinic;
+        this.checkuptypes_clinic = clinic;
     }
 
     public String getName() {
@@ -36,4 +39,11 @@ public class CheckupType {
         this.name = name;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 }

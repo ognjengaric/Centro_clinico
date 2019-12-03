@@ -8,10 +8,10 @@ import java.io.Serializable;
 public class Doctor extends Person implements Serializable {
 
     @ManyToOne
-    @JoinColumn(name = "clinic", referencedColumnName = "clinic_id", nullable = true)
-    private Clinic clinic;
+    @JoinColumn(name = "doctor_clinic", referencedColumnName = "clinic_id", nullable = true)
+    private Clinic doctor_clinic;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String avgrating;
 
     public Doctor(){
@@ -19,11 +19,11 @@ public class Doctor extends Person implements Serializable {
     }
 
     public Clinic getClinic() {
-        return clinic;
+        return doctor_clinic;
     }
 
     public void setClinic(Clinic clinic) {
-        this.clinic = clinic;
+        this.doctor_clinic = clinic;
     }
 
     public String getAvgrating() {

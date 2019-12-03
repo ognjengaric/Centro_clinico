@@ -1,10 +1,13 @@
 package hermanos.Centro.Clinico.controllers;
 
 
+import hermanos.Centro.Clinico.dto.*;
 import hermanos.Centro.Clinico.model.*;
 import hermanos.Centro.Clinico.service.interfaces.*;
+import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -39,51 +42,92 @@ public class ClinicController {
 
     }
 
-
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/addCheckupDate/{id}")
-    public ResponseEntity newCheckupDate(@PathVariable("id") long id, @RequestBody String date){
-        String[] temp = date.split(":");
-        String datatemp = temp[1].substring(1, temp[1].length()-2);
-        CheckupDate cd = new CheckupDate();
+    public ResponseEntity newCheckupDate(@PathVariable("id") long id, @RequestBody CheckupDate cd){
         cd.setClinic(clinicService.findById(id));
-        cd.setDate(datatemp);
-
         checkupDateService.save(cd);
 
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/addCheckupType/{id}")
-    public ResponseEntity newCheckupType(@PathVariable("id") long id, @RequestBody String name){
-        String[] temp = name.split(":");
-        String datatemp = temp[1].substring(1, temp[1].length()-2);
-        CheckupType ct = new CheckupType();
+    public ResponseEntity newCheckupType(@PathVariable("id") long id, @RequestBody CheckupType ct){
         ct.setClinic(clinicService.findById(id));
-        ct.setName(datatemp);
-
         checkupTypeService.save(ct);
 
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/addRoom/{id}")
-    public ResponseEntity newRoom(@PathVariable("id") long id, @RequestBody String name){
-        String[] temp = name.split(":");
-        String datatemp = temp[1].substring(1, temp[1].length()-2);
-        Room room = new Room();
+    public ResponseEntity newRoom(@PathVariable("id") long id, @RequestBody Room room){
         room.setClinic(clinicService.findById(id));
-        room.setRoomId(datatemp);
-
         roomService.save(room);
 
         return ResponseEntity.ok().build();
     }
 
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, path = "/getCheckupDates/{id}")
-    public @ResponseBody List<CheckupDate> getCheckupDates(@PathVariable("id") long id){
-        return clinicService.findById(id).getCheckupDates();
+    public @ResponseBody List<CheckupDateDTO> getCheckupDates(@PathVariable("id") long id){
+        List<CheckupDate> cdlist = clinicService.findById(id).getCheckupDates();
+        List<CheckupDateDTO> cddtolist = new ArrayList<>();
+        for(CheckupDate cd : cdlist){
+            CheckupDateDTO cddto = new CheckupDateDTO();
+            cddto.setId(cd.getId());
+            cddto.setDate(cd.getDate());
+            cddtolist.add(cddto);
+        }
+        return cddtolist;
     }
 
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getCheckupTypes/{id}")
+    public @ResponseBody List<CheckupTypeDTO> getCheckupTypes(@PathVariable("id") long id){
+        List<CheckupType> ctlist = clinicService.findById(id).getCheckupTypes();
+        List<CheckupTypeDTO> ctdtolist = new ArrayList<>();
+        for(CheckupType ct : ctlist){
+            CheckupTypeDTO ctdto = new CheckupTypeDTO();
+            ctdto.setId(ct.getId());
+            ctdto.setName(ct.getName());
+            ctdtolist.add(ctdto);
+        }
+        return ctdtolist;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getRooms/{id}")
+    public @ResponseBody List<RoomDTO> getRooms(@PathVariable("id") long id){
+        List<Room> rlist = clinicService.findById(id).getRooms();
+        List<RoomDTO> rdtolist = new ArrayList<>();
+        for(Room r : rlist){
+            RoomDTO rdto = new RoomDTO();
+            rdto.setId(r.getId());
+            rdto.setName(r.getName());
+            rdtolist.add(rdto);
+        }
+        return rdtolist;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getDoctors/{id}")
+    public @ResponseBody List<DocNameSurnameDTO> getDoctors(@PathVariable("id") long id){
+        List<Doctor> doctors = clinicService.findById(id).getDoctors();
+        List<DocNameSurnameDTO> docns = new ArrayList<>();
+        for(Doctor dr: doctors){
+            DocNameSurnameDTO d = new DocNameSurnameDTO();
+            d.setId(dr.getId());
+            d.setName(dr.getName());
+            d.setSurname(dr.getSurname());
+            docns.add(d);
+        }
+
+        return docns;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/addDoctor/{id}")
     public ResponseEntity newDoctor(@PathVariable("id") long id, @RequestBody PatientRequest pr){
         Address adr = new Address();

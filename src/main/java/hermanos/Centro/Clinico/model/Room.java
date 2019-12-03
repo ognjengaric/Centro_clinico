@@ -6,13 +6,17 @@ import javax.persistence.*;
 @DiscriminatorValue(value = "ROOM")
 public class Room {
 
-    @ManyToOne
-    @JoinColumn(name = "clinic", referencedColumnName = "clinic_id", nullable = true)
-    private Clinic clinic;
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "room_id", nullable = false, unique = true)
+    private long id;
+
+    @ManyToOne
+    @JoinColumn(name = "rooms_clinic", referencedColumnName = "clinic_id", nullable = true)
+    private Clinic rooms_clinic;
+
     @Column(nullable = false, unique = true)
-    private String roomId;
+    private String name;
 
 
     public Room(){
@@ -20,25 +24,26 @@ public class Room {
     }
 
     public Clinic getClinic() {
-        return clinic;
+        return rooms_clinic;
     }
 
     public void setClinic(Clinic clinic) {
-        this.clinic = clinic;
+        this.rooms_clinic = clinic;
     }
 
-    public String getRoomId() {
-        return roomId;
+    public long getId() {
+        return id;
     }
 
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
+    public void setId(long id) {
+        this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
 
-
-
-
-
-
+    public void setName(String name) {
+        this.name = name;
+    }
 }

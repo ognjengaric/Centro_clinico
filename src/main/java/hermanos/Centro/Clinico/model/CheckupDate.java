@@ -13,8 +13,8 @@ public class CheckupDate {
 
 
     @ManyToOne
-    @JoinColumn(name = "clinic", referencedColumnName = "clinic_id", nullable = true)
-    private Clinic clinic;
+    @JoinColumn(name = "checkupdates_clinic", referencedColumnName = "clinic_id", nullable = true)
+    private Clinic checkupdates_clinic;
 
     @Column(nullable = false, unique = true)
     private String date;
@@ -32,11 +32,11 @@ public class CheckupDate {
     }
 
     public Clinic getClinic() {
-        return clinic;
+        return checkupdates_clinic;
     }
 
     public void setClinic(Clinic clinic) {
-        this.clinic = clinic;
+        this.checkupdates_clinic = clinic;
     }
 
     public String getDate() {
