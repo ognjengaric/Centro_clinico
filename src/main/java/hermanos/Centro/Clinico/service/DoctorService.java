@@ -25,6 +25,9 @@ public class DoctorService implements DoctorServiceInterface {
         return doctorRepository.save(doctor);
     }
 
+    @Override
+    public void deleteById(long id) {doctorRepository.deleteById(id);}
+
     public List<Doctor> findAll() {
         List<Doctor> result = doctorRepository.findAll();
         return result;

@@ -25,6 +25,9 @@ public class CheckupDateService implements CheckupDateServiceInterface {
         return checkupDateRepository.save(checkupDate);
     }
 
+    @Override
+    public void deleteById(long id){checkupDateRepository.deleteById(id);}
+
     public List<CheckupDate> findAll() {
         List<CheckupDate> result = checkupDateRepository.findAll();
         return result;

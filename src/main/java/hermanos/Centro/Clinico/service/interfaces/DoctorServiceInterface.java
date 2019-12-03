@@ -6,4 +6,5 @@ public interface DoctorServiceInterface {
 
     public Doctor findById(long id);
     public Doctor save(Doctor doctor);
+    public void deleteById(long id);
 }

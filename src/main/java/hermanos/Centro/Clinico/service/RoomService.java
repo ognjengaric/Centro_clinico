@@ -25,6 +25,9 @@ public class RoomService implements RoomServiceInterface {
         return roomRepository.save(room);
     }
 
+    @Override
+    public void deleteById(long id){roomRepository.deleteById(id);}
+
     public List<Room> findAll() {
         List<Room> result = roomRepository.findAll();
         return result;

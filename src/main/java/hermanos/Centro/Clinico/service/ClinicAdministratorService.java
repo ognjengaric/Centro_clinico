@@ -23,6 +23,10 @@ public class ClinicAdministratorService implements ClinicAdministratorServiceInt
     public ClinicAdministrator save(ClinicAdministrator clinicAdministrator){
         return clinicAdministratorRepository.save(clinicAdministrator);
     }
+
+    @Override
+    public ClinicAdministrator findByEmail(String email) { return clinicAdministratorRepository.findByEmail(email); }
+
     public List<ClinicAdministrator> findAll() {
         List<ClinicAdministrator> result = clinicAdministratorRepository.findAll();
         return result;

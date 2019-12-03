@@ -6,4 +6,5 @@ public interface RoomServiceInterface {
 
     public Room findById(long id);
     public Room save(Room room);
+    public void deleteById(long id);
 }

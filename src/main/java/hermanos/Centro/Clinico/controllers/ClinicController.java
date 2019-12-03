@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,13 +30,17 @@ public class ClinicController {
     DoctorServiceInterface doctorService;
 
     @Autowired
+    PersonServiceInterface personService;
+
+    @Autowired
     CheckupDateServiceInterface checkupDateService;
 
     @Autowired
     CheckupTypeServiceInterface checkupTypeService;
 
-    @RequestMapping(method = RequestMethod.GET,path = "/{id}")
-    public Clinic clinicInfo(@PathVariable("id") long id){
+    @RequestMapping(method = RequestMethod.GET,path = "/")
+    public Clinic clinicInfo(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         Clinic clinic = clinicService.findById(id);
 
         return clinic;
@@ -43,8 +48,9 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupDate/{id}")
-    public ResponseEntity newCheckupDate(@PathVariable("id") long id, @RequestBody CheckupDate cd){
+    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupDate")
+    public ResponseEntity newCheckupDate(Principal p, @RequestBody CheckupDate cd){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         cd.setClinic(clinicService.findById(id));
         checkupDateService.save(cd);
 
@@ -52,8 +58,9 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupType/{id}")
-    public ResponseEntity newCheckupType(@PathVariable("id") long id, @RequestBody CheckupType ct){
+    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupType")
+    public ResponseEntity newCheckupType(Principal p, @RequestBody CheckupType ct){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         ct.setClinic(clinicService.findById(id));
         checkupTypeService.save(ct);
 
@@ -61,8 +68,41 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.POST, path = "/addRoom/{id}")
-    public ResponseEntity newRoom(@PathVariable("id") long id, @RequestBody Room room){
+    @RequestMapping(method = RequestMethod.POST, path = "/removeCheckupDate")
+    public ResponseEntity removeCheckupDate(@RequestBody CheckupDate cd){
+        checkupDateService.deleteById(cd.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/removeCheckupType")
+    public ResponseEntity removeCheckupType(@RequestBody CheckupType ct){
+        checkupTypeService.deleteById(ct.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/removeRoom")
+    public ResponseEntity removeRoom(@RequestBody Room room){
+        roomService.deleteById(room.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/removeDoctor")
+    public ResponseEntity removeDoctor(@RequestBody Doctor dr){
+        doctorService.deleteById(dr.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/addRoom")
+    public ResponseEntity newRoom(Principal p, @RequestBody Room room){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         room.setClinic(clinicService.findById(id));
         roomService.save(room);
 
@@ -70,8 +110,9 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, path = "/getCheckupDates/{id}")
-    public @ResponseBody List<CheckupDateDTO> getCheckupDates(@PathVariable("id") long id){
+    @RequestMapping(method = RequestMethod.GET, path = "/getCheckupDates")
+    public @ResponseBody List<CheckupDateDTO> getCheckupDates(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         List<CheckupDate> cdlist = clinicService.findById(id).getCheckupDates();
         List<CheckupDateDTO> cddtolist = new ArrayList<>();
         for(CheckupDate cd : cdlist){
@@ -84,8 +125,9 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, path = "/getCheckupTypes/{id}")
-    public @ResponseBody List<CheckupTypeDTO> getCheckupTypes(@PathVariable("id") long id){
+    @RequestMapping(method = RequestMethod.GET, path = "/getCheckupTypes")
+    public @ResponseBody List<CheckupTypeDTO> getCheckupTypes(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         List<CheckupType> ctlist = clinicService.findById(id).getCheckupTypes();
         List<CheckupTypeDTO> ctdtolist = new ArrayList<>();
         for(CheckupType ct : ctlist){
@@ -98,8 +140,9 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, path = "/getRooms/{id}")
-    public @ResponseBody List<RoomDTO> getRooms(@PathVariable("id") long id){
+    @RequestMapping(method = RequestMethod.GET, path = "/getRooms")
+    public @ResponseBody List<RoomDTO> getRooms(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         List<Room> rlist = clinicService.findById(id).getRooms();
         List<RoomDTO> rdtolist = new ArrayList<>();
         for(Room r : rlist){
@@ -112,8 +155,9 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, path = "/getDoctors/{id}")
-    public @ResponseBody List<DocNameSurnameDTO> getDoctors(@PathVariable("id") long id){
+    @RequestMapping(method = RequestMethod.GET, path = "/getDoctors")
+    public @ResponseBody List<DocNameSurnameDTO> getDoctors(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         List<Doctor> doctors = clinicService.findById(id).getDoctors();
         List<DocNameSurnameDTO> docns = new ArrayList<>();
         for(Doctor dr: doctors){
@@ -128,8 +172,8 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.POST, path = "/addDoctor/{id}")
-    public ResponseEntity newDoctor(@PathVariable("id") long id, @RequestBody PatientRequest pr){
+    @RequestMapping(method = RequestMethod.POST, path = "/addDoctor")
+    public ResponseEntity newDoctor(@RequestBody PatientRequest pr, Principal p){
         Address adr = new Address();
         adr.setCity(pr.getCity());
         adr.setCountry(pr.getCountry());
@@ -142,20 +186,62 @@ public class ClinicController {
         doctor.setAddress(adr);
         doctor.setEmail(pr.getEmail());
         doctor.setAvgrating("0");
-        doctor.setClinic(clinicService.findById(id));
+        doctor.setClinic((clinicAdminService.findByEmail(p.getName()).getClinic()));
         doctor.setPassword(pr.getPassword());
         doctor.setName(pr.getName());
         doctor.setSurname(pr.getSurname());
         doctor.setPhoneNumber(pr.getPhoneNumber());
 
-
-        doctor.setClinic(clinicService.findById(id));
-        doctor.setAvgrating("0");
-
-
         doctorService.save(doctor);
 
         return ResponseEntity.ok().build();
     }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getClinic")
+    public @ResponseBody EditClinicDTO getClinic(Principal p){
+        Clinic clinic = clinicAdminService.findByEmail(p.getName()).getClinic();
+        EditClinicDTO ec = new EditClinicDTO();
+        ec.setId(clinic.getId());
+        ec.setName(clinic.getName());
+        ec.setDescription(clinic.getDescription());
+        ec.setStreet(clinic.getAddress().getStreet());
+        ec.setNumber(clinic.getAddress().getNumber());
+        ec.setCity(clinic.getAddress().getCity());
+        ec.setPostcode(clinic.getAddress().getPostcode());
+        ec.setCountry(clinic.getAddress().getCountry());
+
+        return ec;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/editClinic")
+    public ResponseEntity editClinic(Principal p, @RequestBody EditClinicDTO ec){
+        Clinic clinic = clinicAdminService.findByEmail(p.getName()).getClinic();
+
+        clinic.setName(ec.getName());
+        clinic.setDescription(ec.getDescription());
+
+        Address newadr = new Address();
+        boolean na = false;
+
+        if((clinic.getAddress().getStreet() != ec.getStreet()) || (clinic.getAddress().getNumber() != ec.getNumber()) || (clinic.getAddress().getCity() != ec.getCity()) || (clinic.getAddress().getPostcode() != ec.getPostcode()) || (clinic.getAddress().getCountry() != ec.getCountry())){
+            newadr.setStreet(ec.getStreet());
+            newadr.setNumber(ec.getNumber());
+            newadr.setCity(ec.getCity());
+            newadr.setPostcode(ec.getPostcode());
+            newadr.setCountry(ec.getCountry());
+            na = true;
+        }
+
+        if(na){
+            clinic.setAddress(newadr);
+        }
+
+        Clinic c = clinicService.save(clinic);
+
+        return ResponseEntity.ok().build();
+    }
+
 
 }

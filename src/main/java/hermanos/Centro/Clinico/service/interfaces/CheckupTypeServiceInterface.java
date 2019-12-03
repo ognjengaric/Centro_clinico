@@ -6,4 +6,5 @@ public interface CheckupTypeServiceInterface {
 
     public CheckupType findByName(String name);
     public CheckupType save(CheckupType checkupType);
+    public void deleteById(long id);
 }

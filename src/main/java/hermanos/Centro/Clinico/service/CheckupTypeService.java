@@ -25,6 +25,9 @@ public class CheckupTypeService implements CheckupTypeServiceInterface {
         return checkupTypeRepository.save(checkupType);
     }
 
+    @Override
+    public void deleteById(long id) {checkupTypeRepository.deleteById(id);}
+
     public List<CheckupType> findAll() {
         List<CheckupType> result = checkupTypeRepository.findAll();
         return result;
