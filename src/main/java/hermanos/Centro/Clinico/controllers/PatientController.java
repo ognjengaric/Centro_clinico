@@ -1,8 +1,10 @@
 package hermanos.Centro.Clinico.controllers;
 
+import hermanos.Centro.Clinico.dto.PatientDTO;
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
 import hermanos.Centro.Clinico.model.Patient;
 import hermanos.Centro.Clinico.security.TokenUtils;
+import hermanos.Centro.Clinico.service.CustomUserDetailsService;
 import hermanos.Centro.Clinico.service.PatientService;
 import hermanos.Centro.Clinico.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +32,13 @@ public class PatientController {
 
         Patient patient = (Patient) personService.findByEmail(p.getName());
 
-        if(p == null){
+        if(patient == null){
             throw new ResourceConflictException("Patient not found.");
         }
 
-        return ResponseEntity.ok(patient);
+        PatientDTO patientDTO = new PatientDTO(patient);
+
+        return ResponseEntity.ok(patientDTO);
     }
 
 }
