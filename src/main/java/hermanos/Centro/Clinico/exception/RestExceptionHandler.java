@@ -3,6 +3,7 @@ package hermanos.Centro.Clinico.exception;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -17,5 +18,11 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             ResourceConflictException ex) {
         ApiError apiError = new ApiError(HttpStatus.CONFLICT, ex.getMessage());
         return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex){
+        ApiError apiError = new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        return  new ResponseEntity<>(apiError, apiError.getStatus());
     }
 }
