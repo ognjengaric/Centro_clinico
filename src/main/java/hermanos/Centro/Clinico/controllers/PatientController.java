@@ -62,16 +62,16 @@ public class PatientController {
     public ResponseEntity<?> editPatientData(@RequestBody PatientDTO patientDTO, Principal p) {
         Patient patient = (Patient) personService.findByEmail(p.getName());
 
-        if(patient == null){
+        if (patient == null) {
             throw new ResourceConflictException("Patient not found.");
         }
 
         patientService.editPatientFields(patientDTO, patient);
 
         personService.save(patient);
-     
-      return ResponseEntity.ok().build();
 
+        return ResponseEntity.ok().build();
+    }
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", value = "change-password")
     @PreAuthorize("hasAuthority('PATIENT')")
