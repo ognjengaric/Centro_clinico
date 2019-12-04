@@ -21,6 +21,9 @@ public class Clinic {
     @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ClinicAdministrator> admins = new ArrayList<>();
 
+
+//    private List<String> checkupTypes = new ArrayList<>();
+
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
     private Address address;
@@ -59,4 +62,8 @@ public class Clinic {
     public void setDescription(String name) {
         this.description = description;
     }
+
+   // public void addCheckupType(String ct) {this.checkupTypes.add(ct);}
+  //  public void removeCheckupType(String ct) {this.checkupTypes.remove(ct);}
+  //  public List<String> getCheckupType(String ct) {return this.checkupTypes;}
 }

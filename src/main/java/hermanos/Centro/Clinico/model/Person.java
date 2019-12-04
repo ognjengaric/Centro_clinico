@@ -127,7 +127,7 @@ public class Person implements Serializable, UserDetails  {
 
     @Override
     public String getUsername() {
-        return null;
+        return this.email;
     }
 
     @Override

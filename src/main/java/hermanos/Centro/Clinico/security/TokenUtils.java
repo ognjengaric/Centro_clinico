@@ -22,7 +22,7 @@ public class TokenUtils {
     @Value("hermanos-banditos")
     public String SECRET;
 
-    @Value("300000")
+    @Value("30000000")
     private int EXPIRES_IN;
 
     @Value("Authorization")
@@ -82,7 +82,7 @@ public class TokenUtils {
         final String email = getEmailFromToken(token);
         final Date created = getIssuedAtDateFromToken(token);
 
-        return (email != null && email.equals(userDetails.getUsername())
+        return (email != null && email.equals(person.getEmail())
                 && !isCreatedBeforeLastPasswordReset(created, person.getLastPasswordResetDate()));
     }
 
