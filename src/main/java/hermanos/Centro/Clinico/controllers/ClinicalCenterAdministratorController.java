@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,7 +41,7 @@ public class ClinicalCenterAdministratorController {
     @Autowired
     JavaMailSender javaMailSender;
 
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/accept")
     public ResponseEntity requestAccepted(@RequestBody Patient patient){
 
@@ -61,7 +62,7 @@ public class ClinicalCenterAdministratorController {
 
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/decline")
     public ResponseEntity requestDeclined(@RequestBody Patient patient){
 
@@ -71,16 +72,16 @@ public class ClinicalCenterAdministratorController {
         System.out.println("Declination mail successfully sent.");
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/registerClinic")
-    public ResponseEntity requestAccepted(@RequestBody Clinic clinic){
+    public ResponseEntity registerClinic(@RequestBody Clinic clinic){
 
 
         clinicService.save(clinic);
 
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getPendingRequests")
     public ResponseEntity<?> getAllPendingRequests(){
 
@@ -88,7 +89,7 @@ public class ClinicalCenterAdministratorController {
 
         return ResponseEntity.ok(pr);
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/registerClinicCentAdmin")
     public ResponseEntity registerClinicCentAdmin(@RequestBody ClinicalCenterAdministrator clinicalCenterAdministrator){
 
@@ -97,7 +98,7 @@ public class ClinicalCenterAdministratorController {
 
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/addDiagnosis")
     public ResponseEntity addDiagnosis(@RequestBody Diagnosis diagnosis){
 
@@ -106,7 +107,7 @@ public class ClinicalCenterAdministratorController {
 
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/addMedicine")
     public ResponseEntity addMedicine(@RequestBody Medicine medicine){
 
