@@ -1,5 +1,7 @@
 package hermanos.Centro.Clinico.dto;
 
+import hermanos.Centro.Clinico.model.Patient;
+
 public class PatientDTO {
     private String email;
     private String password;
@@ -15,7 +17,20 @@ public class PatientDTO {
 
     public  PatientDTO(){
 
-    public PatientDTO(){}
+    }
+
+    public PatientDTO(Patient p){
+        this.name = p.getName();
+        this.surname = p.getSurname();
+        this.email = p.getEmail();
+        this.phoneNumber = p.getPhoneNumber();
+        this.street = p.getAddress().getStreet();
+        this.streetNumber = p.getAddress().getNumber();
+        this.city = p.getAddress().getCity();
+        this.postcode = p.getAddress().getPostcode();
+        this.country = p.getAddress().getCountry();
+        this.socialSecurityNumber = p.getSocialSecurityNumber();
+    }
 
     public String getEmail() {
         return email;
