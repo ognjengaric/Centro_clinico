@@ -11,6 +11,9 @@ public class PatientDTO {
     private String postcode;
     private String country;
     private String phoneNumber;
+    private String socialSecurityNumber;
+
+    public  PatientDTO(){
 
     public PatientDTO(){}
 
@@ -92,5 +95,13 @@ public class PatientDTO {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getSocialSecurityNumber() {
+        return socialSecurityNumber;
+    }
+
+    public void setSocialSecurityNumber(String socialSecurityNumber) {
+        this.socialSecurityNumber = socialSecurityNumber;
     }
 }
