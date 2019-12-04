@@ -26,6 +26,11 @@ public class PatientController {
     @Autowired
     TokenUtils tokenUtils;
 
+    static class PasswordChanger {
+        public String oldPassword = "";
+        public String newPassword = "";
+    }
+
     @RequestMapping(method = RequestMethod.GET, consumes = "application/json")
     @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<?> getPatientData(Principal p) {
