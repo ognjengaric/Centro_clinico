@@ -45,4 +45,12 @@ public class PatientRequestService implements PatientRequestServiceInterface {
         List<PatientRequest> result = patientRequestRepository.findAll();
         return result;
     }
+
+    @Override
+    public void remove(String socialSecurityNumber){
+        //patientRequestRepository.deleteBySocialSecurityNumber(socialSecurityNumber);
+        //List<PatientRequest> result = patientRequestRepository.findAll();
+        PatientRequest request = patientRequestRepository.findBySocialSecurityNumber(socialSecurityNumber);
+        patientRequestRepository.delete(request);
+    }
 }
