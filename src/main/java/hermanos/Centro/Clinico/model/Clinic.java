@@ -59,7 +59,7 @@ public class Clinic {
         return description;
     }
 
-    public void setDescription(String name) {
+    public void setDescription(String description) {
         this.description = description;
     }
 
