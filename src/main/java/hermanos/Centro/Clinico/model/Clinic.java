@@ -18,11 +18,20 @@ public class Clinic {
     @Column(nullable = false)
     private String description;
 
-    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "admin_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<ClinicAdministrator> admins = new ArrayList<>();
 
+    @OneToMany(mappedBy = "doctor_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Doctor> doctors = new ArrayList<>();
 
-//    private List<String> checkupTypes = new ArrayList<>();
+    @OneToMany(mappedBy = "checkuptypes_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CheckupType> checkupTypes = new ArrayList<>();
+
+    @OneToMany(mappedBy = "rooms_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Room> rooms = new ArrayList<>();
+
+    @OneToMany(mappedBy = "checkupdates_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CheckupDate> checkupDates = new ArrayList<>();
 
     @ManyToOne(cascade=CascadeType.ALL)
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
@@ -63,7 +72,47 @@ public class Clinic {
         this.description = description;
     }
 
-   // public void addCheckupType(String ct) {this.checkupTypes.add(ct);}
-  //  public void removeCheckupType(String ct) {this.checkupTypes.remove(ct);}
-  //  public List<String> getCheckupType(String ct) {return this.checkupTypes;}
+    public List<Doctor> getDoctors() {
+        return doctors;
+    }
+
+    public void setDoctors(List<Doctor> doctors) {
+        this.doctors = doctors;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public List<ClinicAdministrator> getAdmins() {
+        return admins;
+    }
+
+    public void setAdmins(List<ClinicAdministrator> admins) {
+        this.admins = admins;
+    }
+
+    public List<CheckupType> getCheckupTypes() {
+        return checkupTypes;
+    }
+
+    public void setCheckupTypes(List<CheckupType> checkupTypes) {
+        this.checkupTypes = checkupTypes;
+    }
+
+    public List<Room> getRooms() {
+        return rooms;
+    }
+
+    public void setRooms(List<Room> rooms) {
+        this.rooms = rooms;
+    }
+
+    public List<CheckupDate> getCheckupDates() {
+        return checkupDates;
+    }
+
+    public void setCheckupDates(List<CheckupDate> checkupDates) {
+        this.checkupDates = checkupDates;
+    }
 }

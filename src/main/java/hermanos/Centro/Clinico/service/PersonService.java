@@ -30,6 +30,6 @@ public class PersonService implements PersonServiceInterface {
 
     @Override
     public Person save(Person person) {
-        return null;
+        return personRepository.save(person);
     }
 }
