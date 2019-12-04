@@ -37,6 +37,11 @@ public class PatientController {
     @Autowired
     TokenUtils tokenUtils;
 
+    static class PasswordChanger {
+        public String oldPassword = "";
+        public String newPassword = "";
+    }
+
     @RequestMapping(method = RequestMethod.GET, consumes = "application/json")
     @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<?> getPatientData(Principal p) {
@@ -51,8 +56,7 @@ public class PatientController {
 
         return ResponseEntity.ok(patientDTO);
     }
-
-
+  
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
     @PreAuthorize("hasAuthority('PATIENT')")
     public ResponseEntity<?> editPatientData(@RequestBody PatientDTO patientDTO, Principal p) {
@@ -65,6 +69,18 @@ public class PatientController {
         patientService.editPatientFields(patientDTO, patient);
 
         personService.save(patient);
+     
+      return ResponseEntity.ok().build();
+
+
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", value = "change-password")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<?> changePassword(@RequestBody PasswordChanger passwordChanger, HttpServletRequest request)
+            throws ServletException {
+
+        userDetailsService.changePassword(passwordChanger.oldPassword, passwordChanger.newPassword);
+
+        request.logout();
 
         return ResponseEntity.ok().build();
     }
