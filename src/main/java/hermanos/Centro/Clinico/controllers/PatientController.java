@@ -46,4 +46,17 @@ public class PatientController {
         return ResponseEntity.ok(patientDTO);
     }
 
+
+
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", value = "change-password")
+    @PreAuthorize("hasAuthority('PATIENT')")
+    public ResponseEntity<?> changePassword(@RequestBody PasswordChanger passwordChanger, HttpServletRequest request)
+            throws ServletException {
+
+        userDetailsService.changePassword(passwordChanger.oldPassword, passwordChanger.newPassword);
+
+        request.logout();
+
+        return ResponseEntity.ok().build();
+    }
 }
