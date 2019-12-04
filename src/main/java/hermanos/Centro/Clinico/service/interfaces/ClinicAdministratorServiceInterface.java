@@ -6,4 +6,5 @@ public interface ClinicAdministratorServiceInterface {
 
     public ClinicAdministrator findByiD(long id);
     public ClinicAdministrator save(ClinicAdministrator clinicAdministrator);
+    public ClinicAdministrator findByEmail(String email);
 }
