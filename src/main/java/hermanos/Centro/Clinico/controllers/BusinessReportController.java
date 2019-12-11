@@ -3,6 +3,7 @@ package hermanos.Centro.Clinico.controllers;
 
 import hermanos.Centro.Clinico.model.Clinic;
 import hermanos.Centro.Clinico.model.Doctor;
+import hermanos.Centro.Clinico.service.ClinicAdministratorService;
 import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
 import hermanos.Centro.Clinico.service.interfaces.DoctorServiceInterface;
 import hermanos.Centro.Clinico.dto.DocRatingDTO;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.print.Doc;
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +25,17 @@ import java.util.List;
 public class BusinessReportController {
     @Autowired
     ClinicServiceInterface clinicService;
+
+    @Autowired
+    ClinicAdministratorService clinicAdminService;
+
     @Autowired
     DoctorServiceInterface doctorService;
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET,path = "/{id}")
-    public List<DocRatingDTO> businessReport(@PathVariable("id") long id){
+    @RequestMapping(method = RequestMethod.GET,path = "")
+    public List<DocRatingDTO> businessReport(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         Clinic clinic = clinicService.findById(id);
         List<Doctor> drlist = new ArrayList<>();
         drlist = clinic.getDoctors();
