@@ -38,3 +38,4 @@ INSERT INTO authority (id, name) values (5, 'CLINIC_CENTER_ADMIN');
 INSERT INTO user_authority (person_id, authority_id) values  (-3, 5);
 INSERT INTO user_authority (person_id, authority_id) values  (0, 4);
 INSERT INTO user_authority (person_id, authority_id) values  (-2, 1);
+INSERT INTO user_authority (person_id, authority_id) values  (-1, 2);
