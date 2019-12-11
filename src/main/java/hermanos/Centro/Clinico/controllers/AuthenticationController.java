@@ -1,9 +1,7 @@
 package hermanos.Centro.Clinico.controllers;
 
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
-import hermanos.Centro.Clinico.model.PatientRequest;
-import hermanos.Centro.Clinico.model.Person;
-import hermanos.Centro.Clinico.model.PersonTokenState;
+import hermanos.Centro.Clinico.model.*;
 import hermanos.Centro.Clinico.security.TokenUtils;
 import hermanos.Centro.Clinico.security.auth.JwtAuthenticationRequest;
 import hermanos.Centro.Clinico.service.AuthorityService;
@@ -23,6 +21,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.Collection;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -98,6 +100,22 @@ public class AuthenticationController {
         int expiresIn = tokenUtils.getExpiredIn();
 
         return ResponseEntity.ok(new PersonTokenState(jwt, expiresIn));
+    }
+
+    @RequestMapping(value = "/role", method = RequestMethod.GET)
+    public ResponseEntity<?> createAuthenticationToken(Principal p, RoleDTO roleDTO){
+
+        Person person = personService.findByEmail(p.getName());
+
+        Collection<?> auth = person.getAuthorities();
+
+        if(auth.size() != 1){
+            return ResponseEntity.status(500).build();
+        }
+
+        roleDTO.role = ((Authority)auth.iterator().next()).getName();
+
+        return ResponseEntity.ok(roleDTO);
     }
 
 }
