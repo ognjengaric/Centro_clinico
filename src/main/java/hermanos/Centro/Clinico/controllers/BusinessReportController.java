@@ -33,7 +33,7 @@ public class BusinessReportController {
     DoctorServiceInterface doctorService;
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET,path = "/")
+    @RequestMapping(method = RequestMethod.GET,path = "")
     public List<DocRatingDTO> businessReport(Principal p){
         long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         Clinic clinic = clinicService.findById(id);
