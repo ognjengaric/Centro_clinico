@@ -2,6 +2,7 @@ package hermanos.Centro.Clinico.controllers;
 
 
 import hermanos.Centro.Clinico.model.*;
+import hermanos.Centro.Clinico.service.PatientService;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,13 +10,11 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.websocket.server.PathParam;
 import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
@@ -47,7 +46,7 @@ public class ClinicalCenterAdministratorController {
 
         //Patient p = (Patient)patientRequestService.findBySocialSecurityNumber(socialSecurityNumber);
 
-        patientService.save(patient);
+        personService.save(patient);
         patientRequestService.remove(patient.getSocialSecurityNumber());
         try {
             sendAcceptEmail(patient.getEmail(), patient.getName(), patient.getSurname());
@@ -117,6 +116,15 @@ public class ClinicalCenterAdministratorController {
         return ResponseEntity.ok().build();
     }
 
+    @RequestMapping(method = RequestMethod.GET, path = "/activate/{mail:.+}")
+    public ResponseEntity activateAcc(@PathVariable("mail") String mail){
+        Patient patient = (Patient)personService.findByEmail(mail);
+        patient.setActivated(true);
+        patientService.save(patient);
+
+        return ResponseEntity.ok().build();
+    }
+
     void sendAcceptEmail(String sendTo, String firstName, String lastName) throws MessagingException, IOException {
 
         MimeMessage msg = javaMailSender.createMimeMessage();
@@ -126,7 +134,7 @@ public class ClinicalCenterAdministratorController {
         helper.setSubject("DrHelp account registration");
         String text = "Dear sir/madam, " + '\n';
         text += "your account request has been reviewed and accepted by our administrator staff. \n Please follow the link below to activate your account.";
-        text += "http://localhost:3000/activate=" + sendTo + "\n\n\n" + "Forever helping, drHelp.";
+        text += "http://localhost:8080/clinicalCenterAdministrator/activate/" + sendTo + "\n\n\n" + "Forever helping, drHelp.";
         helper.setText(text);
 
         javaMailSender.send(msg);
