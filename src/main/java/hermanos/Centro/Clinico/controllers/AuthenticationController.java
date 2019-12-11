@@ -6,6 +6,7 @@ import hermanos.Centro.Clinico.model.Person;
 import hermanos.Centro.Clinico.model.PersonTokenState;
 import hermanos.Centro.Clinico.security.TokenUtils;
 import hermanos.Centro.Clinico.security.auth.JwtAuthenticationRequest;
+import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.CustomUserDetailsService;
 import hermanos.Centro.Clinico.service.PatientService;
 import hermanos.Centro.Clinico.service.interfaces.PatientRequestServiceInterface;
@@ -44,6 +45,13 @@ public class AuthenticationController {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    private AuthorityService authorityService;
+
+    static class RoleDTO{
+        public String role;
+    }
 
 
     /** Function that creates patient registration request which will be later approved or declined
