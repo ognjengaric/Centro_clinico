@@ -59,8 +59,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // za neautorizovane zahteve posalji 401 gresku
                 .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
 
-                // svim korisnicima dopusti da pristupe putanjama /auth/**
-                .authorizeRequests().antMatchers("/").permitAll()
+                // svim korisnicima dopusti da pristupe putanjama /auth/login i /auth/register
+                .authorizeRequests().antMatchers("/auth/login", "/auth/register").permitAll()
 
                 // svaki zahtev mora biti autorizovan
                 .anyRequest().authenticated().and()
