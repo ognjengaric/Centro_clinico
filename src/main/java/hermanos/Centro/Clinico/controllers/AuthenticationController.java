@@ -103,7 +103,7 @@ public class AuthenticationController {
     }
 
     @RequestMapping(value = "/role", method = RequestMethod.GET)
-    public ResponseEntity<?> createAuthenticationToken(Principal p, RoleDTO roleDTO){
+    public ResponseEntity<?> getRole(Principal p, RoleDTO roleDTO){
 
         Person person = personService.findByEmail(p.getName());
 
