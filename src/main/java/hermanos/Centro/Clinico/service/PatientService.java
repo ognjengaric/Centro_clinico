@@ -21,7 +21,6 @@ public class PatientService implements PatientServiceInterface {
     }
 
     public Patient save(Patient patient){
-        patient.setPassword(passwordEncoder.encode(patient.getPassword()));
         return patientRepository.save(patient);
     }
 
