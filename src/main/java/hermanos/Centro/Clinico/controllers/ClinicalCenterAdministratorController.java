@@ -1,21 +1,23 @@
 package hermanos.Centro.Clinico.controllers;
 
 
-import hermanos.Centro.Clinico.model.Clinic;
-import hermanos.Centro.Clinico.model.ClinicalCenterAdministrator;
-import hermanos.Centro.Clinico.model.PatientRequest;
-import hermanos.Centro.Clinico.model.Person;
-import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.ClinicalCenterAdministratorServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.PatientRequestServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.PersonServiceInterface;
+import hermanos.Centro.Clinico.model.*;
+import hermanos.Centro.Clinico.service.AuthorityService;
+import hermanos.Centro.Clinico.service.PatientService;
+import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import javax.websocket.server.PathParam;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -31,9 +33,35 @@ public class ClinicalCenterAdministratorController {
     PatientRequestServiceInterface patientRequestService;
     @Autowired
     ClinicalCenterAdministratorServiceInterface clinicalCenterAdministratorService;
+    @Autowired
+    DiagnosisServiceInterface diagnosisService;
+    @Autowired
+    MedicineServiceInterface medicineService;
+    @Autowired
+    PatientServiceInterface patientService;
+    @Autowired
+    JavaMailSender javaMailSender;
+    @Autowired
+    AuthorityService authorityService;
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/accept")
-    public ResponseEntity requestAccepted(@RequestBody Person person){
+    public ResponseEntity requestAccepted(@RequestBody Patient patient){
+
+        //Patient p = (Patient)patientRequestService.findBySocialSecurityNumber(socialSecurityNumber);
+
+        List<Authority> authorities = authorityService.findByName("PATIENT");
+        patient.setAuthorities(authorities);
+
+        personService.save(patient);
+        patientRequestService.remove(patient.getSocialSecurityNumber());
+        try {
+            sendAcceptEmail(patient.getEmail(), patient.getName(), patient.getSurname());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Successfully sent email.");
 
         personService.save(person);
         //Polsati generisan mail
