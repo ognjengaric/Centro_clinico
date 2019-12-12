@@ -57,11 +57,6 @@ public class AuthenticationController {
     }
 
 
-    static class RoleDTO{
-        public String role;
-    }
-
-
     /** Function that creates patient registration request which will be later approved or declined
      * @param patientRequest
      * @return
