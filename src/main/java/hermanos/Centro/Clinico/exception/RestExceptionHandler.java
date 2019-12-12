@@ -22,7 +22,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BadCredentialsException.class)
     protected ResponseEntity<Object> handleBadCredentials(BadCredentialsException ex){
-        ApiError apiError = new ApiError(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage());
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
         return  new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+    @ExceptionHandler(AccountNotActivatedException.class)
+    protected ResponseEntity<Object> handleAccountLocked(
+            AccountNotActivatedException ex) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
+        return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 }

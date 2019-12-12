@@ -2,6 +2,7 @@ package hermanos.Centro.Clinico.controllers;
 
 
 import hermanos.Centro.Clinico.model.*;
+import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.PatientService;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -40,11 +42,17 @@ public class ClinicalCenterAdministratorController {
     @Autowired
     JavaMailSender javaMailSender;
 
+    @Autowired
+    AuthorityService authorityService;
+
     @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/accept")
     public ResponseEntity requestAccepted(@RequestBody Patient patient){
 
         //Patient p = (Patient)patientRequestService.findBySocialSecurityNumber(socialSecurityNumber);
+
+        List<Authority> authorities = authorityService.findByName("PATIENT");
+        patient.setAuthorities(authorities);
 
         personService.save(patient);
         patientRequestService.remove(patient.getSocialSecurityNumber());

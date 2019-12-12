@@ -61,7 +61,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().authenticationEntryPoint(restAuthenticationEntryPoint).and()
 
                 // svim korisnicima dopusti da pristupe putanjama /auth/login, /auth/register, /activate
-                .authorizeRequests().antMatchers("/auth/login", "/auth/register", "/activate/**").permitAll()
+                .authorizeRequests().antMatchers("/auth/login", "/auth/register", "/clinicalCenterAdministrator/activate/**").permitAll()
 
                 // svaki zahtev mora biti autorizovan
                 .anyRequest().authenticated().and()

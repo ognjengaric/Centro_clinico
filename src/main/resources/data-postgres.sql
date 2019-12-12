@@ -7,9 +7,10 @@ INSERT INTO address (address_id, city, country, number, postcode, street) values
 INSERT INTO clinic (clinic_id, description, name, address) values (0, 'Klinika broj 1', 'Klinika1', 0);
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
-address, last_password_reset_date) values ('PATIENT', -2, 'ognjengari@gmail.com', 'Ognjen',
+address, last_password_reset_date, activated) values ('PATIENT', -2, 'ognjengarih@gmail.com', 'Ognjen',
 '$2y$12$0CKdvcFlnIVz81ywVD9n/eVIl5hDLP7CdiTkT8eo9d6axuKxZW14q', '0621409979', 'Garic', '2108379121', -1,
-'2019-12-01 09:00:01');
+'2019-12-01 09:00:01', true);
+
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
 address, last_password_reset_date, doctor_clinic, avgrating) values ('DOCTOR', -1, 'a@gmail.com', 'a',
