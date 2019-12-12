@@ -1,5 +1,6 @@
 package hermanos.Centro.Clinico.controllers;
 
+import hermanos.Centro.Clinico.exception.AccountNotActivatedException;
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
 import hermanos.Centro.Clinico.model.PatientRequest;
 import hermanos.Centro.Clinico.model.Person;
@@ -46,6 +47,11 @@ public class AuthenticationController {
     private CustomUserDetailsService userDetailsService;
 
 
+    static class RoleDTO{
+        public String role;
+    }
+
+
     /** Function that creates patient registration request which will be later approved or declined
      * @param patientRequest
      * @return
@@ -85,6 +91,14 @@ public class AuthenticationController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         Person person = (Person)userDetailsService.loadUserByUsername(authenticationRequest.getEmail());
+
+        try {
+            Patient p = (Patient) person;
+            if(!p.isActivated())
+                throw new AccountNotActivatedException("Account not activated. Please check your email.");
+        } catch (ClassCastException e){
+
+        }
 
         String jwt = tokenUtils.generateToken(person.getEmail());
         int expiresIn = tokenUtils.getExpiredIn();
