@@ -41,9 +41,11 @@ public class ClinicalCenterAdministratorController {
     PatientServiceInterface patientService;
     @Autowired
     JavaMailSender javaMailSender;
+
     @Autowired
     AuthorityService authorityService;
 
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/accept")
     public ResponseEntity requestAccepted(@RequestBody Patient patient){
 
@@ -63,37 +65,38 @@ public class ClinicalCenterAdministratorController {
         }
         System.out.println("Successfully sent email.");
 
-        personService.save(person);
         //Polsati generisan mail
 
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/decline")
-    public ResponseEntity requestDeclined(@RequestBody Person person){
+    public ResponseEntity requestDeclined(@RequestBody Patient patient){
 
         //Polsati generisan mail
-
+        patientRequestService.remove(patient.getSocialSecurityNumber());
+        sendDeclineEmail(patient.getEmail(), patient.getName(), patient.getSurname());
+        System.out.println("Declination mail successfully sent.");
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/registerClinic")
-    public ResponseEntity requestAccepted(@RequestBody Clinic clinic){
+    public ResponseEntity registerClinic(@RequestBody Clinic clinic){
 
 
         clinicService.save(clinic);
 
         return ResponseEntity.ok().build();
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getPendingRequests")
-    public List<PatientRequest> getAllPendingRequests(){
+    public ResponseEntity<?> getAllPendingRequests(){
 
-        //patientRequestService.findAll();
+        List<PatientRequest> pr = patientRequestService.findAll();
 
-        return patientRequestService.findAll();
+        return ResponseEntity.ok(pr);
     }
-
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/registerClinicCentAdmin")
     public ResponseEntity registerClinicCentAdmin(@RequestBody ClinicalCenterAdministrator clinicalCenterAdministrator){
 
@@ -101,5 +104,81 @@ public class ClinicalCenterAdministratorController {
         clinicalCenterAdministratorService.save(clinicalCenterAdministrator);
 
         return ResponseEntity.ok().build();
+    }
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/addDiagnosis")
+    public ResponseEntity addDiagnosis(@RequestBody Diagnosis diagnosis){
+
+
+        diagnosisService.save(diagnosis);
+
+        return ResponseEntity.ok().build();
+    }
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/addMedicine")
+    public ResponseEntity addMedicine(@RequestBody Medicine medicine){
+
+
+        medicineService.save(medicine);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/activate/{mail:.+}")
+    public ResponseEntity activateAcc(@PathVariable("mail") String mail){
+        Patient patient = (Patient)personService.findByEmail(mail);
+        patient.setActivated(true);
+        patientService.save(patient);
+
+        return ResponseEntity.ok().build();
+    }
+
+    void sendAcceptEmail(String sendTo, String firstName, String lastName) throws MessagingException, IOException {
+
+        MimeMessage msg = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+        helper.setTo(sendTo);
+
+        helper.setSubject("DrHelp account registration");
+        String text = "Dear sir/madam, " + '\n';
+        text += "your account request has been reviewed and accepted by our administrator staff. \n Please follow the link below to activate your account.";
+        text += "http://localhost:8080/clinicalCenterAdministrator/activate/" + sendTo + "\n\n\n" + "Forever helping, drHelp.";
+        helper.setText(text);
+
+        javaMailSender.send(msg);
+
+    }
+
+
+//    void sendDeclineEmail(String sendTo, String description, String firstName, String lastName) {
+//
+//        SimpleMailMessage msg = new SimpleMailMessage();
+//        msg.setTo(sendTo);
+//
+//        msg.setSubject("DrHelp account registration");
+//        String text = "Dear sir/madam, " + '\n';
+//        text += "your account request has been reviewed. Unfortunately, it has been declined, with an administrator message attached:";
+//        text += "\n\n\n" + description;
+//        text += "\n\n\n" + "Forever helping, drHelp.";
+//        msg.setText(text);
+//
+//        javaMailSender.send(msg);
+//
+//    }
+
+    void sendDeclineEmail(String sendTo, String firstName, String lastName) {
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(sendTo);
+
+        msg.setSubject("DrHelp account registration");
+        String text = "Dear sir/madam, " + '\n';
+        text += "your account request has been reviewed. Unfortunately, it has been declined, with an administrator message attached:";
+        text += "\n\n\n";
+        text += "\n\n\n" + "Forever helping, drHelp.";
+        msg.setText(text);
+
+        javaMailSender.send(msg);
+
     }
 }

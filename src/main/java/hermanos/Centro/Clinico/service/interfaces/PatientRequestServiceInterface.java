@@ -11,4 +11,5 @@ public interface PatientRequestServiceInterface {
     public PatientRequest findBySocialSecurityNumber(String socialSecurityNumber);
     public PatientRequest save(PatientRequest patientRequest);
     public List<PatientRequest> findAll();
+    public void remove(String socialSecurityNumber);
 }

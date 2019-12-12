@@ -2,42 +2,53 @@ package hermanos.Centro.Clinico.controllers;
 
 
 import hermanos.Centro.Clinico.model.Clinic;
-import hermanos.Centro.Clinico.model.ClinicAdministrator;
-import hermanos.Centro.Clinico.model.Person;
-import hermanos.Centro.Clinico.service.interfaces.ClinicAdministratorServiceInterface;
+import hermanos.Centro.Clinico.model.Doctor;
+import hermanos.Centro.Clinico.service.ClinicAdministratorService;
 import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
-import hermanos.Centro.Clinico.service.interfaces.PersonServiceInterface;
+import hermanos.Centro.Clinico.service.interfaces.DoctorServiceInterface;
+import hermanos.Centro.Clinico.dto.DocRatingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.*;
 
+import javax.print.Doc;
+import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
-@RequestMapping(value = "")
+@RequestMapping(value = "/viewBusinessReport")
 public class BusinessReportController {
-    @Autowired
-    ClinicAdministratorServiceInterface clinicAdminService;
-
     @Autowired
     ClinicServiceInterface clinicService;
 
-    @RequestMapping(method = RequestMethod.GET,path = "/viewBusinessReport")
-    public ArrayList<?> businessReport(@RequestBody Person person){
+    @Autowired
+    ClinicAdministratorService clinicAdminService;
 
-        ClinicAdministrator admin = clinicAdminService.findByiD(person.getId());
+    @Autowired
+    DoctorServiceInterface doctorService;
 
-        Clinic clinic = clinicService.findById(admin.getClinic().getId());
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET,path = "")
+    public List<DocRatingDTO> businessReport(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        Clinic clinic = clinicService.findById(id);
+        List<Doctor> drlist = new ArrayList<>();
+        drlist = clinic.getDoctors();
+        List<DocRatingDTO> docratlist = new ArrayList<>();
+        DocRatingDTO docrat = new DocRatingDTO();
+        for (Doctor dr : drlist){
+            docrat.setId(dr.getId());
+            docrat.setName(dr.getName());
+            docrat.setSurname(dr.getSurname());
+            docrat.setAvgrating(dr.getAvgrating());
+            docratlist.add(docrat);
+        }
 
-        ArrayList<String> data = new ArrayList<>();
-
-        // data = clinic.getBusinessReport();
-
-        return data;
-
+        return docratlist;
     }
 }

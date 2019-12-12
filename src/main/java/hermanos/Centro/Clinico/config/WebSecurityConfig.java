@@ -35,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private RestAuthenticationEntryPoint restAuthenticationEntryPoint;
 
+
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {

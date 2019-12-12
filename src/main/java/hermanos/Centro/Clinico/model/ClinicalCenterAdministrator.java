@@ -7,22 +7,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@DiscriminatorValue(value = "CLINIC_CENTER_ADMIN")
 public class ClinicalCenterAdministrator extends Person{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "clinical_center_administrator_id", nullable = false, unique = true)
-    private long id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "clinical_center_administrator_id", nullable = false, unique = true)
+//    private long id;
 
     public ClinicalCenterAdministrator() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 
 }
