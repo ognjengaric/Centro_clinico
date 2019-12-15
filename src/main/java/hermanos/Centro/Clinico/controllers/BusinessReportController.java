@@ -40,8 +40,9 @@ public class BusinessReportController {
         List<Doctor> drlist = new ArrayList<>();
         drlist = clinic.getDoctors();
         List<DocRatingDTO> docratlist = new ArrayList<>();
-        DocRatingDTO docrat = new DocRatingDTO();
+
         for (Doctor dr : drlist){
+            DocRatingDTO docrat = new DocRatingDTO();
             docrat.setId(dr.getId());
             docrat.setName(dr.getName());
             docrat.setSurname(dr.getSurname());
