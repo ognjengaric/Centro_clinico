@@ -96,10 +96,22 @@ public class ClinicalCenterAdministratorController {
 
         return ResponseEntity.ok(pr);
     }
+
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getDiagnosis")
+    public ResponseEntity<?> getAllDiagnosis(){
+
+        List<Diagnosis> pr = diagnosisService.findAll();
+
+        return ResponseEntity.ok(pr);
+    }
+
     @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/registerClinicCentAdmin")
     public ResponseEntity registerClinicCentAdmin(@RequestBody ClinicalCenterAdministrator clinicalCenterAdministrator){
 
+        List<Authority> authorities = authorityService.findByName("CLINIC_CENTER_ADMIN");
+        clinicalCenterAdministrator.setAuthorities(authorities);
 
         clinicalCenterAdministratorService.save(clinicalCenterAdministrator);
 
