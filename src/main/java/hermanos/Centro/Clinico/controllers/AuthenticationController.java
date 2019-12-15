@@ -1,6 +1,7 @@
 package hermanos.Centro.Clinico.controllers;
 
 import hermanos.Centro.Clinico.exception.AccountNotActivatedException;
+import hermanos.Centro.Clinico.exception.AccountPendingException;
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
 import hermanos.Centro.Clinico.model.*;
 import hermanos.Centro.Clinico.security.TokenUtils;
@@ -88,6 +89,11 @@ public class AuthenticationController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtAuthenticationRequest authenticationRequest){
+
+        if(patientRequestService.findByEmail(authenticationRequest.getEmail()) != null){
+            throw new AccountPendingException("Your account has not yet been reviewed. If your account is not reviewed in" +
+                    " the next 24h, please contact our support team.");
+        }
 
         final Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(authenticationRequest.getEmail(),

@@ -6,6 +6,8 @@ import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.PatientService;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,6 +19,8 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.websocket.server.PathParam;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -125,12 +129,16 @@ public class ClinicalCenterAdministratorController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/activate/{mail:.+}")
-    public ResponseEntity activateAcc(@PathVariable("mail") String mail){
+    public ResponseEntity activateAcc(@PathVariable("mail") String mail) throws URISyntaxException {
         Patient patient = (Patient)personService.findByEmail(mail);
         patient.setActivated(true);
         patientService.save(patient);
 
-        return ResponseEntity.ok().build();
+        URI loginURI = new URI("http://localhost:3000/activated");
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setLocation(loginURI);
+
+        return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
     }
 
     void sendAcceptEmail(String sendTo, String firstName, String lastName) throws MessagingException, IOException {
@@ -139,10 +147,10 @@ public class ClinicalCenterAdministratorController {
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         helper.setTo(sendTo);
 
-        helper.setSubject("DrHelp account registration");
+        helper.setSubject("Centro Clinico account registration");
         String text = "Dear sir/madam, " + '\n';
         text += "your account request has been reviewed and accepted by our administrator staff. \n Please follow the link below to activate your account.";
-        text += "http://localhost:8080/clinicalCenterAdministrator/activate/" + sendTo + "\n\n\n" + "Forever helping, drHelp.";
+        text += "http://localhost:8080/clinicalCenterAdministrator/activate/" + sendTo + "\n\n\n" + "Sincerely, Centro Clinico support team.";
         helper.setText(text);
 
         javaMailSender.send(msg);
@@ -171,11 +179,11 @@ public class ClinicalCenterAdministratorController {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(sendTo);
 
-        msg.setSubject("DrHelp account registration");
+        msg.setSubject("Centro Clinico account registration");
         String text = "Dear sir/madam, " + '\n';
         text += "your account request has been reviewed. Unfortunately, it has been declined, with an administrator message attached:";
         text += "\n\n\n";
-        text += "\n\n\n" + "Forever helping, drHelp.";
+        text += "\n\n\n" + "Sincerely, Centro Clinico support team.";
         msg.setText(text);
 
         javaMailSender.send(msg);
