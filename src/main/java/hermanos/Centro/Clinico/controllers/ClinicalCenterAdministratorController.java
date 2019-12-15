@@ -1,6 +1,7 @@
 package hermanos.Centro.Clinico.controllers;
 
 
+import hermanos.Centro.Clinico.exception.ResourceConflictException;
 import hermanos.Centro.Clinico.model.*;
 import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.PatientService;
@@ -110,6 +111,13 @@ public class ClinicalCenterAdministratorController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/registerClinicCentAdmin")
     public ResponseEntity registerClinicCentAdmin(@RequestBody ClinicalCenterAdministrator clinicalCenterAdministrator){
 
+
+        if(personService.findByEmail(clinicalCenterAdministrator.getEmail()) != null){
+
+            throw new ResourceConflictException("This email is already in use.");
+        }
+
+
         List<Authority> authorities = authorityService.findByName("CLINIC_CENTER_ADMIN");
         clinicalCenterAdministrator.setAuthorities(authorities);
 
@@ -121,6 +129,11 @@ public class ClinicalCenterAdministratorController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/addDiagnosis")
     public ResponseEntity addDiagnosis(@RequestBody Diagnosis diagnosis){
 
+        for( Diagnosis d : diagnosisService.findAll()){
+            if(d.getCode().equals(diagnosis.getCode())){
+                throw new ResourceConflictException("Diagnosis with this code already exists.");
+            }
+        }
 
         diagnosisService.save(diagnosis);
 
@@ -130,6 +143,11 @@ public class ClinicalCenterAdministratorController {
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/addMedicine")
     public ResponseEntity addMedicine(@RequestBody Medicine medicine){
 
+        for( Medicine m : medicineService.findAll()){
+            if(m.getCode().equals(medicine.getCode())){
+                throw new ResourceConflictException("Medicine with this code already exists.");
+            }
+        }
 
         medicineService.save(medicine);
 
