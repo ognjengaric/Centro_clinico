@@ -4,6 +4,7 @@ import hermanos.Centro.Clinico.model.ClinicalCenterAdministrator;
 import hermanos.Centro.Clinico.repository.ClinicalCenterAdministratorRepository;
 import hermanos.Centro.Clinico.service.interfaces.ClinicalCenterAdministratorServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +15,9 @@ public class ClinicalCenterAdministratorService implements ClinicalCenterAdminis
     @Autowired
     private ClinicalCenterAdministratorRepository clinicalCenterAdministratorRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public ClinicalCenterAdministrator findByiD(long id){
         return  clinicalCenterAdministratorRepository.findById(id);
@@ -21,6 +25,7 @@ public class ClinicalCenterAdministratorService implements ClinicalCenterAdminis
 
     @Override
     public ClinicalCenterAdministrator save(ClinicalCenterAdministrator clinicalCenterAdministrator){
+        clinicalCenterAdministrator.setPassword(passwordEncoder.encode(clinicalCenterAdministrator.getPassword()));
         return clinicalCenterAdministratorRepository.save(clinicalCenterAdministrator);
     }
     public List<ClinicalCenterAdministrator> findAll() {
