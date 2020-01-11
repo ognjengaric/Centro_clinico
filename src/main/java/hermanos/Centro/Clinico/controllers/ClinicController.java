@@ -47,6 +47,19 @@ public class ClinicController {
 
     }
 
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.GET,path = "/all")
+    public List<ClinicTableDTO> clinicInfo(){
+        List<ClinicTableDTO> retVal = new ArrayList<>();
+        List<Clinic> clinics  = clinicService.findAll();
+
+        for(Clinic clinic : clinics){
+            retVal.add(new ClinicTableDTO(clinic));
+        }
+
+        return retVal;
+    }
+
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/addCheckupDate")
     public ResponseEntity newCheckupDate(Principal p, @RequestBody CheckupDate cd){
