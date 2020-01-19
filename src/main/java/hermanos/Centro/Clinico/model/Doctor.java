@@ -2,6 +2,8 @@ package hermanos.Centro.Clinico.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue(value = "DOCTOR")
@@ -10,6 +12,9 @@ public class Doctor extends Person implements Serializable {
     @ManyToOne
     @JoinColumn(name = "doctor_clinic", referencedColumnName = "clinic_id", nullable = true)
     private Clinic doctor_clinic;
+
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Checkup> checkups = new ArrayList<>();
 
     @Column(nullable = true)
     private String avgrating;

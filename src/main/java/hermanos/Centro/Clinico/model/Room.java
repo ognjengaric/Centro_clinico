@@ -1,6 +1,8 @@
 package hermanos.Centro.Clinico.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue(value = "ROOM")
@@ -14,6 +16,9 @@ public class Room {
     @ManyToOne
     @JoinColumn(name = "rooms_clinic", referencedColumnName = "clinic_id", nullable = true)
     private Clinic rooms_clinic;
+
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Checkup> checkups = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String name;
