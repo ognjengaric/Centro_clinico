@@ -243,7 +243,7 @@ public class ClinicController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    /*@PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, path = "/searchRooms/{str}")
     public @ResponseBody List<RoomDTO> searchRooms(Principal p,@PathVariable("str") String str){
         long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
@@ -258,11 +258,26 @@ public class ClinicController {
             }
         }
         return rdtolist;
+    }*/
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/searchRooms")
+    public @ResponseBody List<RoomDTO> searchRooms(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        List<Room> rlist = clinicService.findById(id).getRooms();
+        List<RoomDTO> rdtolist = new ArrayList<>();
+        for(Room r : rlist) {
+            RoomDTO rdto = new RoomDTO();
+            rdto.setId(r.getId());
+            rdto.setName(r.getName());
+            rdtolist.add(rdto);
+        }
+        return rdtolist;
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, path = "/searchDoctors/{str}")
-    public @ResponseBody List<DocRatingDTO> searchDoctors(Principal p,@PathVariable("str") String str){
+    @RequestMapping(method = RequestMethod.GET, path = "/searchDoctors")
+    public @ResponseBody List<DocRatingDTO> searchDoctors(Principal p){
         List<Doctor> drlist= clinicAdminService.findByEmail(p.getName()).getClinic().getDoctors();
         List<DocRatingDTO> drdtolist = new ArrayList<>();
         for(Doctor dr : drlist){
@@ -271,41 +286,35 @@ public class ClinicController {
             drdto.setName(dr.getName());
             drdto.setSurname(dr.getSurname());
             drdto.setAvgrating(dr.getAvgrating());
-            if(dr.getName().contains(str) || dr.getSurname().contains(str)) {
-                drdtolist.add(drdto);
-            }
+            drdtolist.add(drdto);
         }
         return drdtolist;
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, path = "/searchCheckupTypes/{str}")
-    public @ResponseBody List<CheckupTypeDTO> searchCheckupTypes(Principal p,@PathVariable("str") String str){
+    @RequestMapping(method = RequestMethod.GET, path = "/searchCheckupTypes")
+    public @ResponseBody List<CheckupTypeDTO> searchCheckupTypes(Principal p){
         List<CheckupType> ctlist = clinicAdminService.findByEmail(p.getName()).getClinic().getCheckupTypes();
         List<CheckupTypeDTO> ctdtolist = new ArrayList<>();
         for(CheckupType ct : ctlist){
             CheckupTypeDTO ctdto = new CheckupTypeDTO();
             ctdto.setId(ct.getId());
             ctdto.setName(ct.getName());
-            if(ct.getName().contains(str)) {
-                ctdtolist.add(ctdto);
-            }
+            ctdtolist.add(ctdto);
         }
         return ctdtolist;
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, path = "/searchCheckupDates/{str}")
-    public @ResponseBody List<CheckupDateDTO> searchCheckupDates(Principal p,@PathVariable("str") String str){
+    @RequestMapping(method = RequestMethod.GET, path = "/searchCheckupDates")
+    public @ResponseBody List<CheckupDateDTO> searchCheckupDates(Principal p){
         List<CheckupDate> cdlist = clinicAdminService.findByEmail(p.getName()).getClinic().getCheckupDates();
         List<CheckupDateDTO> cddtolist = new ArrayList<>();
         for(CheckupDate cd : cdlist){
             CheckupDateDTO cddto = new CheckupDateDTO();
             cddto.setId(cd.getId());
             cddto.setDate(cd.getDate());
-            if(cd.getDate().contains(str)) {
-                cddtolist.add(cddto);
-            }
+            cddtolist.add(cddto);
         }
         return cddtolist;
     }
