@@ -23,6 +23,13 @@ public class Room {
     @Column(nullable = false, unique = true)
     private String name;
 
+    public List<Checkup> getCheckups() {
+        return checkups;
+    }
+
+    public void setCheckups(List<Checkup> checkups) {
+        this.checkups = checkups;
+    }
 
     public Room(){
         super();

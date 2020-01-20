@@ -5,6 +5,7 @@ import hermanos.Centro.Clinico.dto.*;
 import hermanos.Centro.Clinico.model.*;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.hibernate.annotations.Check;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,7 +48,7 @@ public class ClinicController {
 
     }
 
-    @PreAuthorize("hasAuthority('PATIENT')")
+    //@PreAuthorize("hasAuthority('PATIENT')")
     @RequestMapping(method = RequestMethod.GET,path = "/all")
     public List<ClinicTableDTO> clinicInfo(){
         List<ClinicTableDTO> retVal = new ArrayList<>();
@@ -159,13 +160,25 @@ public class ClinicController {
         List<Room> rlist = clinicService.findById(id).getRooms();
         List<RoomDTO> rdtolist = new ArrayList<>();
         for(Room r : rlist){
-            RoomDTO rdto = new RoomDTO();
-            rdto.setId(r.getId());
-            rdto.setName(r.getName());
+            RoomDTO rdto = new RoomDTO(r.getId(),r.getName());
             rdtolist.add(rdto);
         }
         return rdtolist;
     }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getRoomSchedule")
+    public @ResponseBody List<CheckupScheduleDTO> getRoomSchedule(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        List<Checkup> checkups= clinicService.findById(id).getRooms().get(0).getCheckups();
+        List<CheckupScheduleDTO> checkupsdto = new ArrayList<CheckupScheduleDTO>();
+        for(Checkup c : checkups){
+            CheckupScheduleDTO csdto = new CheckupScheduleDTO(c.getStartTime(),c.getEndTime());
+            checkupsdto.add(csdto);
+        }
+        return checkupsdto;
+    }
+
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, path = "/getDoctors")
