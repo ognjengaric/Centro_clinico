@@ -1,31 +1,23 @@
 package hermanos.Centro.Clinico.dto;
 
 
+import hermanos.Centro.Clinico.model.StartEndTime;
+
 import java.sql.Date;
 import java.sql.Time;
 
 public class CheckupScheduleDTO {
-    private Time startTime;
-    private Time endTime;
+    private StartEndTime startEnd;
 
-    public CheckupScheduleDTO(Time startTime, Time endTime) {
-        this.startTime = startTime;
-        this.endTime = endTime;
+    public CheckupScheduleDTO(StartEndTime startEnd) {
+        this.startEnd = startEnd;
     }
 
-    public Time getStartTime() {
-        return startTime;
+    public StartEndTime getStartEnd() {
+        return startEnd;
     }
 
-    public void setStartTime(Time startTime) {
-        this.startTime = startTime;
-    }
-
-    public Time getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Time endTime) {
-        this.endTime = endTime;
+    public void setStartEnd(StartEndTime startEnd) {
+        this.startEnd = startEnd;
     }
 }

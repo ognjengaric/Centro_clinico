@@ -1,6 +1,5 @@
 package hermanos.Centro.Clinico.model;
 
-import jdk.vm.ci.meta.Local;
 
 import java.sql.*;
 import java.time.LocalDate;

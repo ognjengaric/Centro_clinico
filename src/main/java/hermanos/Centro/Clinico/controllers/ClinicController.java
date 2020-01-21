@@ -20,6 +20,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
+
 @RestController
 @RequestMapping(value = "/clinic")
 public class ClinicController {
@@ -188,13 +190,13 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, path = "/getRoomSchedule")
-    public @ResponseBody List<CheckupScheduleDTO> getRoomSchedule(Principal p){
+    @RequestMapping(method = RequestMethod.GET, path = "/getRoomSchedule/{roomid}")
+    public @ResponseBody List<CheckupScheduleDTO> getRoomSchedule(Principal p,@PathVariable("roomid") String roomid){
         long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
-        List<Checkup> checkups= clinicService.findById(id).getRooms().get(0).getCheckups();
+        List<Checkup> checkups= clinicService.findById(id).getRooms().get(parseInt(roomid, 10)).getCheckups();
         List<CheckupScheduleDTO> checkupsdto = new ArrayList<CheckupScheduleDTO>();
         for(Checkup c : checkups){
-            CheckupScheduleDTO csdto = new CheckupScheduleDTO(c.getStartTime(),c.getEndTime());
+            CheckupScheduleDTO csdto = new CheckupScheduleDTO(c.getStartEnd());
             checkupsdto.add(csdto);
         }
         return checkupsdto;
