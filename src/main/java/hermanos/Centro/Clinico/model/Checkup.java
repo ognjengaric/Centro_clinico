@@ -1,6 +1,9 @@
 package hermanos.Centro.Clinico.model;
 
+import jdk.vm.ci.meta.Local;
+
 import java.sql.*;
+import java.time.LocalDate;
 
 import javax.persistence.*;
 
@@ -12,12 +15,15 @@ public class Checkup {
     @Column(name = "checkup_id", nullable = false, unique = true)
     private long id;
 
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "start_end_time", referencedColumnName = "time_id", nullable = false)
+    private StartEndTime startEnd;
+
     @Column
-    private Time startTime;
+    private LocalDate date;
+
     @Column
-    private Time endTime;
-    @Column
-    private Date creationDate;
+    private Date creationDate; //promeni u java time 9, datum + vreme
 
     @ManyToOne
     @JoinColumn(name = "checkup_clinic", referencedColumnName = "clinic_id", nullable = true)
@@ -48,20 +54,20 @@ public class Checkup {
         this.id = id;
     }
 
-    public Time getStartTime() {
-        return startTime;
+    public StartEndTime getStartEnd() {
+        return startEnd;
     }
 
-    public void setStartTime(Time startTime) {
-        this.startTime = startTime;
+    public void setStartEnd(StartEndTime startEnd) {
+        this.startEnd = startEnd;
     }
 
-    public Time getEndTime() {
-        return endTime;
+    public LocalDate getDate() {
+        return date;
     }
 
-    public void setEndTime(Time endTime) {
-        this.endTime = endTime;
+    public void setDate(LocalDate date) {
+        this.date = date;
     }
 
     public Date getCreationDate() {
