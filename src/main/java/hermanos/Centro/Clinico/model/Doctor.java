@@ -2,8 +2,10 @@ package hermanos.Centro.Clinico.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Entity
 @DiscriminatorValue(value = "DOCTOR")
@@ -13,11 +15,25 @@ public class Doctor extends Person implements Serializable {
     @JoinColumn(name = "doctor_clinic", referencedColumnName = "clinic_id", nullable = true)
     private Clinic doctor_clinic;
 
-    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Checkup> checkups = new ArrayList<>();
-
     @Column(nullable = true)
     private String avgrating;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "shift", referencedColumnName = "time_id", nullable = true)
+    private StartEndTime shift;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="absences", joinColumns=@JoinColumn(name="person_id"),
+            inverseJoinColumns=@JoinColumn(name="dates_id"))
+    private List<StartEndDate> absences;
+
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="specializations", joinColumns=@JoinColumn(name="person_id"),
+            inverseJoinColumns=@JoinColumn(name="checkuptype_id"))
+    private List<CheckupType> specializations;
+
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Checkup> checkups = new ArrayList<>();
 
     public Doctor(){
         super();
@@ -39,4 +55,43 @@ public class Doctor extends Person implements Serializable {
         this.avgrating = avgrating;
     }
 
+    public Clinic getDoctor_clinic() {
+        return doctor_clinic;
+    }
+
+    public void setDoctor_clinic(Clinic doctor_clinic) {
+        this.doctor_clinic = doctor_clinic;
+    }
+
+    public List<Checkup> getCheckups() {
+        return checkups;
+    }
+
+    public void setCheckups(List<Checkup> checkups) {
+        this.checkups = checkups;
+    }
+
+    public StartEndTime getShift() {
+        return shift;
+    }
+
+    public void setShift(StartEndTime shift) {
+        this.shift = shift;
+    }
+
+    public List<StartEndDate> getAbsences() {
+        return absences;
+    }
+
+    public void setAbsences(List<StartEndDate> absences) {
+        this.absences = absences;
+    }
+
+    public List<CheckupType> getSpecializations() {
+        return specializations;
+    }
+
+    public void setSpecializations(List<CheckupType> specializations) {
+        this.specializations = specializations;
+    }
 }
