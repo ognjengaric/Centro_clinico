@@ -11,6 +11,11 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.sql.Time;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -135,6 +140,22 @@ public class ClinicController {
             cddtolist.add(cddto);
         }
         return cddtolist;
+    }
+
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getAllCheckupTypes", consumes = "application/json")
+    public @ResponseBody List<CheckupTypeDTO> getCheckupTypes(){
+        List<CheckupType> types = checkupTypeService.findAll();
+        List<CheckupTypeDTO> typeDTOS = new ArrayList<>();
+
+        for(CheckupType checkupType : types){
+            CheckupTypeDTO dto = new CheckupTypeDTO();
+            dto.setId(checkupType.getId());
+            dto.setName(checkupType.getName());
+            typeDTOS.add(dto);
+        }
+
+        return typeDTOS;
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
@@ -332,4 +353,75 @@ public class ClinicController {
         return cddtolist;
     }
 
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.POST, path = "/getAvailableClinics")
+    public List<ClinicTableDTO> getAvailableClinicsForCheckup(@RequestBody ScheduleFilterDTO filterDTO){
+        List<Clinic> clinics = clinicService.findAll();
+        List<ClinicTableDTO> availableClinics = new ArrayList<>();
+
+        LocalTime startTime = LocalTime.parse(filterDTO.getCheckupTime());
+        LocalDate date = LocalDate.parse(filterDTO.getCheckupDate());
+
+
+
+        for (Clinic clinic: clinics) {
+            boolean hasAvailableDoctors = false;
+
+            for (Doctor doctor : clinic.getDoctors()){
+                boolean isNotSpecialized = false;
+                boolean isAbsent = false;
+                boolean hasCheckupAlready = false;
+
+                //check if doctor is specialized for type of checkup
+                for(CheckupType checkupType : doctor.getSpecializations()){
+                    if(!checkupType.getName().equalsIgnoreCase(filterDTO.getCheckupType())){
+                        isNotSpecialized = true;
+                        break;
+                    }
+                }
+
+                if(isNotSpecialized)
+                    break;
+
+                //check if given time is in range of doctors working hours
+                if(startTime.compareTo(doctor.getShift().getStartTime()) < 0 ||
+                        startTime.compareTo(doctor.getShift().getEndTime()) > 0)
+                    break;
+
+                //check if doctor is absent on the given date
+                for(StartEndDate absence: doctor.getAbsences()){
+                    if(absence.getStartDate().compareTo(date) <= 0 && absence.getEndDate().compareTo(date) >= 0){
+                        isAbsent = true;
+                        break;
+                    }
+                }
+
+                if(isAbsent)
+                    break;
+
+                //check if doctor does not have checkup at given time and date
+                for(Checkup checkup: doctor.getCheckups()){
+                    if(checkup.getDate().isEqual(date)){
+                        if(startTime.compareTo(checkup.getStartEnd().getStartTime()) >= 0 &&
+                                startTime.compareTo(checkup.getStartEnd().getEndTime()) <= 0){
+                            hasCheckupAlready = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(hasCheckupAlready)
+                    break;
+
+                availableClinics.add(new ClinicTableDTO(clinic));
+                hasAvailableDoctors = true;
+            }
+
+            if(hasAvailableDoctors)
+                break;
+        }
+
+
+        return availableClinics;
+    }
 }
