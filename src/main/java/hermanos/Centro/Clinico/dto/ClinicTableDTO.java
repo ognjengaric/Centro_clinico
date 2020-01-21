@@ -4,6 +4,7 @@ import hermanos.Centro.Clinico.model.Address;
 import hermanos.Centro.Clinico.model.Clinic;
 
 public class ClinicTableDTO {
+    private Long id;
     private String name;
     private String description;
     private String fullAddress;
@@ -22,6 +23,7 @@ public class ClinicTableDTO {
         this.name = clinic.getName();
         this.description = clinic.getDescription();
         this.fullAddress = AddressToString(clinic.getAddress());
+        this.id = clinic.getId();
     }
 
     public String getFullAddress() {
@@ -57,4 +59,11 @@ public class ClinicTableDTO {
         this.description = description;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
