@@ -1,6 +1,8 @@
 package hermanos.Centro.Clinico.dto;
 
 
+import hermanos.Centro.Clinico.model.Clinic;
+
 public class EditClinicDTO {
     private long id;
     private String name;
@@ -13,6 +15,17 @@ public class EditClinicDTO {
 
     public EditClinicDTO() {
         super();
+    }
+
+    public EditClinicDTO(Clinic clinic) {
+        this.id = clinic.getId();
+        this.name = clinic.getName();
+        this.description = clinic.getDescription();
+        this.street = clinic.getAddress().getStreet();
+        this.number = clinic.getAddress().getNumber();
+        this.city = clinic.getAddress().getCity();
+        this.postcode = clinic.getAddress().getPostcode();
+        this.country = clinic.getAddress().getCountry();
     }
 
     public long getId() {

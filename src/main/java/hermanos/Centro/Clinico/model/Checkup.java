@@ -1,8 +1,8 @@
 package hermanos.Centro.Clinico.model;
 
-
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.persistence.*;
 
@@ -36,6 +36,11 @@ public class Checkup {
     @JoinColumn(name = "checkup_room", referencedColumnName = "room_id", nullable = true)
     private Room room;
 
+
+    @ManyToOne
+    @JoinColumn(name = "checkup_type", referencedColumnName = "checkuptype_id", nullable = true)
+    private CheckupType type;
+
     @Column
     private boolean isApproved;
     @Column
@@ -44,6 +49,15 @@ public class Checkup {
     private boolean isEnded;
 
     public Checkup(){}
+
+    public Checkup(LocalDate date, LocalTime startTime, LocalTime endTime, Doctor doctor, CheckupType type, Clinic clinic){
+        this.date = date;
+        this.startEnd.setStartTime(startTime);
+        this.startEnd.setEndTime(endTime);
+        this.setDoctor(doctor);
+        this.setType(type);
+        this.setClinic(clinic);
+    }
 
     public long getId() {
         return id;
@@ -91,6 +105,14 @@ public class Checkup {
 
     public void setDoctor(Doctor doctor) {
         this.doctor = doctor;
+    }
+
+    public CheckupType getType() {
+        return type;
+    }
+
+    public void setType(CheckupType type) {
+        this.type = type;
     }
 
     public Room getRoom() {
