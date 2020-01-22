@@ -1,6 +1,5 @@
 package hermanos.Centro.Clinico.model;
 
-import jdk.vm.ci.meta.Local;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -125,4 +124,5 @@ public class Checkup {
     public void setEnded(boolean ended) {
         isEnded = ended;
     }
+
 }
