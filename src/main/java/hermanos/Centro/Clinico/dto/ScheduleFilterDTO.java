@@ -1,14 +1,10 @@
 package hermanos.Centro.Clinico.dto;
 
-import hermanos.Centro.Clinico.model.CheckupType;
-
-import java.sql.Date;
-import java.sql.Time;
-
 public class ScheduleFilterDTO {
     private String checkupDate;
     private String checkupTime;
     private String checkupType;
+    private String doctorId;
 
     public ScheduleFilterDTO(){}
 
@@ -34,5 +30,13 @@ public class ScheduleFilterDTO {
 
     public void setCheckupType(String checkupType) {
         this.checkupType = checkupType;
+    }
+
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
     }
 }

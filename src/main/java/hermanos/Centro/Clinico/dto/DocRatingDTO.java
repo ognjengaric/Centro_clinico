@@ -1,11 +1,20 @@
 package hermanos.Centro.Clinico.dto;
 
 
+import hermanos.Centro.Clinico.model.Doctor;
+
 public class DocRatingDTO {
     private long id;
     private String name;
     private String surname;
     private String avgrating;
+
+    public DocRatingDTO(Doctor doctor){
+        id = doctor.getId();
+        name = doctor.getName();
+        surname = doctor.getSurname();
+        avgrating = doctor.getAvgrating();
+    }
 
     public DocRatingDTO() {
         super();

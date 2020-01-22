@@ -12,7 +12,10 @@ public class CheckupType {
     private long id;
 
     @Column
-    private Integer duration;
+    private Long duration;
+
+    @Column
+    private int price;
 
     @ManyToOne
     @JoinColumn(name = "checkuptypes_clinic", referencedColumnName = "clinic_id", nullable = true)
@@ -50,11 +53,11 @@ public class CheckupType {
         this.id = id;
     }
 
-    public Integer getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(Integer duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 
@@ -64,5 +67,13 @@ public class CheckupType {
 
     public void setCheckuptypes_clinic(Clinic checkuptypes_clinic) {
         this.checkuptypes_clinic = checkuptypes_clinic;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
 }

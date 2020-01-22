@@ -4,7 +4,9 @@ import hermanos.Centro.Clinico.model.Checkup;
 import hermanos.Centro.Clinico.repository.CheckupRepository;
 import hermanos.Centro.Clinico.service.interfaces.CheckupServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CheckupService implements CheckupServiceInterface {
     @Autowired
     CheckupRepository checkupRepository;

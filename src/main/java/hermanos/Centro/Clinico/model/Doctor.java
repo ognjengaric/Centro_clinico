@@ -27,10 +27,8 @@ public class Doctor extends Person implements Serializable {
             inverseJoinColumns=@JoinColumn(name="dates_id"))
     private List<StartEndDate> absences;
 
-    @ManyToMany(cascade=CascadeType.ALL)
-    @JoinTable(name="specializations", joinColumns=@JoinColumn(name="person_id"),
-            inverseJoinColumns=@JoinColumn(name="checkuptype_id"))
-    private List<CheckupType> specializations;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private CheckupType specialization;
 
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Checkup> checkups = new ArrayList<>();
@@ -87,11 +85,11 @@ public class Doctor extends Person implements Serializable {
         this.absences = absences;
     }
 
-    public List<CheckupType> getSpecializations() {
-        return specializations;
+    public CheckupType getSpecialization() {
+        return specialization;
     }
 
-    public void setSpecializations(List<CheckupType> specializations) {
-        this.specializations = specializations;
+    public void setSpecialization(CheckupType specialization) {
+        this.specialization = specialization;
     }
 }
