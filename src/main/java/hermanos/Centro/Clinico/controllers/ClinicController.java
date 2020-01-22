@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Console;
 import java.security.Principal;
 import java.sql.Time;
 import java.text.DateFormat;
@@ -192,12 +193,15 @@ public class ClinicController {
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, path = "/getRoomSchedule/{roomid}")
     public @ResponseBody List<CheckupScheduleDTO> getRoomSchedule(Principal p,@PathVariable("roomid") String roomid){
-        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
-        List<Checkup> checkups= clinicService.findById(id).getRooms().get(parseInt(roomid, 10)).getCheckups();
+        List<Checkup> checkups = roomService.findById(parseInt(roomid,10)).getCheckups();
         List<CheckupScheduleDTO> checkupsdto = new ArrayList<CheckupScheduleDTO>();
+
+        int i=0;
+
         for(Checkup c : checkups){
-            CheckupScheduleDTO csdto = new CheckupScheduleDTO(c.getStartEnd());
+            CheckupScheduleDTO csdto = new CheckupScheduleDTO(c.getStartEnd(), c.getDate(), i, "");
             checkupsdto.add(csdto);
+            i++;
         }
         return checkupsdto;
     }

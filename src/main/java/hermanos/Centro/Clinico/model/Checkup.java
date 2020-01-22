@@ -124,4 +124,5 @@ public class Checkup {
     public void setEnded(boolean ended) {
         isEnded = ended;
     }
+
 }
