@@ -1,8 +1,5 @@
 package hermanos.Centro.Clinico.model;
 
-import hermanos.Centro.Clinico.dto.ScheduleFilterDTO;
-import jdk.vm.ci.meta.Local;
-
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -149,4 +146,5 @@ public class Checkup {
     public void setEnded(boolean ended) {
         isEnded = ended;
     }
+
 }
