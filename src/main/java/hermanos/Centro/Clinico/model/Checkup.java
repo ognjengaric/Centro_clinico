@@ -52,8 +52,7 @@ public class Checkup {
 
     public Checkup(LocalDate date, LocalTime startTime, LocalTime endTime, Doctor doctor, CheckupType type, Clinic clinic){
         this.date = date;
-        this.startEnd.setStartTime(startTime);
-        this.startEnd.setEndTime(endTime);
+        this.startEnd = new StartEndTime(startTime, endTime);
         this.setDoctor(doctor);
         this.setType(type);
         this.setClinic(clinic);
