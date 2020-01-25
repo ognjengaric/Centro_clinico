@@ -20,4 +20,16 @@ public class CheckupService implements CheckupServiceInterface {
     public Checkup save(Checkup checkup) {
         return checkupRepository.save(checkup);
     }
+
+    @Override
+    public boolean isValid(Checkup checkup){
+        for(Checkup c : checkupRepository.findAll()){
+            if(c.getDate().isEqual(checkup.getDate()) &&
+                    c.getStartEnd().getStartTime().compareTo(checkup.getStartEnd().getStartTime()) >= 0 &&
+                        c.getStartEnd().getEndTime().compareTo(checkup.getStartEnd().getEndTime()) <= 0){
+                return false;
+            }
+        }
+        return true;
+    }
 }
