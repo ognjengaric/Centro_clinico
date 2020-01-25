@@ -1,23 +1,55 @@
 package hermanos.Centro.Clinico.model;
 
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import javax.persistence.*;
 
 @Entity
-@DiscriminatorValue(value = "CHECKUP_DATE")
 public class CheckupDate {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "checkupdate_id", nullable = false, unique = true)
+    @Column(name = "checkup_id", nullable = false, unique = true)
     private long id;
+
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "start_end_time", referencedColumnName = "time_id", nullable = false)
+    private StartEndTime startEnd;
+
+    @Column
+    private LocalDate date;
 
 
     @ManyToOne
-    @JoinColumn(name = "checkupdates_clinic", referencedColumnName = "clinic_id", nullable = true)
-    private Clinic checkupdates_clinic;
+    @JoinColumn(name = "checkup_clinic", referencedColumnName = "clinic_id", nullable = true)
+    private Clinic clinic;
 
-    @Column(nullable = false, unique = true)
-    private String date;
+    @ManyToOne
+    @JoinColumn(name = "checkup_doctor", referencedColumnName = "person_id", nullable = true)
+    private Doctor doctor;
+
+    @ManyToOne
+    @JoinColumn(name = "checkup_room", referencedColumnName = "room_id", nullable = true)
+    private Room room;
+
+
+    @ManyToOne
+    @JoinColumn(name = "checkup_type", referencedColumnName = "checkuptype_id", nullable = true)
+    private CheckupType type;
+
+
+    public CheckupDate(){}
+
+    public CheckupDate(LocalDate date, LocalTime startTime, LocalTime endTime, Doctor doctor, CheckupType type, Clinic clinic, Room room){
+        this.date = date;
+        this.startEnd = new StartEndTime(startTime, endTime);
+        this.setDoctor(doctor);
+        this.setType(type);
+        this.setClinic(clinic);
+        this.setRoom(room);
+    }
 
     public long getId() {
         return id;
@@ -27,24 +59,52 @@ public class CheckupDate {
         this.id = id;
     }
 
-    public CheckupDate(){
-        super();
+    public StartEndTime getStartEnd() {
+        return startEnd;
     }
 
-    public Clinic getClinic() {
-        return checkupdates_clinic;
+    public void setStartEnd(StartEndTime startEnd) {
+        this.startEnd = startEnd;
     }
 
-    public void setClinic(Clinic clinic) {
-        this.checkupdates_clinic = clinic;
-    }
-
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
+    }
+
+    public Clinic getClinic() {
+        return clinic;
+    }
+
+    public void setClinic(Clinic clinic) {
+        this.clinic = clinic;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public CheckupType getType() {
+        return type;
+    }
+
+    public void setType(CheckupType type) {
+        this.type = type;
+    }
+
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setRoom(Room room) {
+        this.room = room;
     }
 
 }

@@ -73,16 +73,6 @@ public class ClinicController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
-    @RequestMapping(method = RequestMethod.POST, path = "/addCheckupDate")
-    public ResponseEntity newCheckupDate(Principal p, @RequestBody CheckupDate cd){
-        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
-        cd.setClinic(clinicService.findById(id));
-        checkupDateService.save(cd);
-
-        return ResponseEntity.ok().build();
-    }
-
-    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/addCheckupType")
     public ResponseEntity newCheckupType(Principal p, @RequestBody CheckupType ct){
         long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
@@ -141,9 +131,8 @@ public class ClinicController {
         List<CheckupDate> cdlist = clinicService.findById(id).getCheckupDates();
         List<CheckupDateDTO> cddtolist = new ArrayList<>();
         for(CheckupDate cd : cdlist){
-            CheckupDateDTO cddto = new CheckupDateDTO();
-            cddto.setId(cd.getId());
-            cddto.setDate(cd.getDate());
+            CheckupDateDTO cddto = new CheckupDateDTO(cd.getId(),cd.getDate(),cd.getStartEnd().getStartTime(),cd.getStartEnd().getEndTime(),cd.getDoctor().getId().toString(), cd.getDoctor().getName());
+
             cddtolist.add(cddto);
         }
         return cddtolist;
@@ -384,9 +373,7 @@ public class ClinicController {
         List<CheckupDate> cdlist = clinicAdminService.findByEmail(p.getName()).getClinic().getCheckupDates();
         List<CheckupDateDTO> cddtolist = new ArrayList<>();
         for(CheckupDate cd : cdlist){
-            CheckupDateDTO cddto = new CheckupDateDTO();
-            cddto.setId(cd.getId());
-            cddto.setDate(cd.getDate());
+            CheckupDateDTO cddto = new CheckupDateDTO(cd.getId(),cd.getDate(),cd.getStartEnd().getStartTime(),cd.getStartEnd().getEndTime(),cd.getDoctor().getName()+" "+cd.getDoctor().getSurname(), cd.getDoctor().getName());
             cddtolist.add(cddto);
         }
         return cddtolist;
@@ -459,7 +446,7 @@ public class ClinicController {
     @PreAuthorize("hasAuthority('PATIENT')")
     @RequestMapping(method = RequestMethod.POST, path = "/schedule")
     public ResponseEntity scheduleCheckup(@RequestBody ScheduleFilterDTO filterDTO){
-        
+
         CheckupType type = checkupTypeService.findByName(filterDTO.getCheckupType());
         Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId()));
         Clinic clinic = clinicService.findById(doctor.getClinic().getId());
@@ -474,6 +461,29 @@ public class ClinicController {
             return ResponseEntity.badRequest().build();
 
         checkupService.save(checkup);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/predefine")
+    public ResponseEntity predefineCheckup(@RequestBody ScheduleFilterDTO filterDTO){
+
+        CheckupType type = checkupTypeService.findByName(filterDTO.getCheckupType());
+        Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId()));
+        Clinic clinic = clinicService.findById(doctor.getClinic().getId());
+        Room room = roomService.findById(Long.parseLong(filterDTO.getRoomId()));
+
+        LocalDate date = LocalDate.parse(filterDTO.getCheckupDate());
+        LocalTime startTime = LocalTime.parse(filterDTO.getCheckupTime());
+        LocalTime endTime = startTime.plusMinutes(type.getDuration());
+
+        CheckupDate checkup = new CheckupDate(date, startTime, endTime, doctor, type, clinic, room);
+
+        if(!checkupDateService.isValid(checkup))
+            return ResponseEntity.badRequest().build();
+
+        checkupDateService.save(checkup);
 
         return ResponseEntity.ok().build();
     }

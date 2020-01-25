@@ -5,8 +5,17 @@ public class ScheduleFilterDTO {
     private String checkupTime;
     private String checkupType;
     private String doctorId;
+    private String roomId;
 
     public ScheduleFilterDTO(){}
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
+    }
 
     public String getCheckupDate() {
         return checkupDate;
