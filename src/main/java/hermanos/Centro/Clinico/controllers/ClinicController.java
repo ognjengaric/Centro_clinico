@@ -470,6 +470,9 @@ public class ClinicController {
 
         Checkup checkup = new Checkup(date, startTime, endTime, doctor, type, clinic);
 
+        if(!checkupService.isValid(checkup))
+            return ResponseEntity.badRequest().build();
+
         checkupService.save(checkup);
 
         return ResponseEntity.ok().build();
