@@ -477,4 +477,16 @@ public class ClinicController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.GET, path = "/doctorWorkingSchedule/{id}")
+    public ResponseEntity<DoctorWorkingScheduleDTO> scheduleCheckup(@PathVariable String id){
+
+        long doctorId = Long.parseLong(id);
+        Doctor doctor = doctorService.findById(doctorId);
+
+        DoctorWorkingScheduleDTO dto = new DoctorWorkingScheduleDTO(doctor);
+
+        return ResponseEntity.ok(dto);
+    }
 }

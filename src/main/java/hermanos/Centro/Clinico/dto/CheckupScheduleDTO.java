@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 
+import hermanos.Centro.Clinico.model.Checkup;
 import hermanos.Centro.Clinico.model.StartEndTime;
 
 import java.sql.Date;
@@ -24,6 +25,14 @@ public class CheckupScheduleDTO {
         this.id = i;
         this.title = name;
     }
+
+    public CheckupScheduleDTO(Checkup checkup){
+        start = LocalDateTime.of(checkup.getDate(), checkup.getStartEnd().getStartTime());
+        end = LocalDateTime.of(checkup.getDate(), checkup.getStartEnd().getEndTime());
+        allDay = false;
+        title = checkup.getType().getName();
+    }
+
 
     public LocalDateTime getStart() {
         return start;

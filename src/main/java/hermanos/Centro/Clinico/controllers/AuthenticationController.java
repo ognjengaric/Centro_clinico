@@ -63,7 +63,7 @@ public class AuthenticationController {
      * @return
      */
 
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path     = "/register")
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/register")
     public ResponseEntity<?> createRegisterRequest(@RequestBody PatientRequest patientRequest){
 
         if(personService.findByEmail(patientRequest.getEmail()) != null ||
