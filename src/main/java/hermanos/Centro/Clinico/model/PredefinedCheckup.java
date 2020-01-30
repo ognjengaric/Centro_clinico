@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import javax.persistence.*;
 
 @Entity
-public class CheckupDate {
+public class PredefinedCheckup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,9 +40,9 @@ public class CheckupDate {
     private CheckupType type;
 
 
-    public CheckupDate(){}
+    public PredefinedCheckup(){}
 
-    public CheckupDate(LocalDate date, LocalTime startTime, LocalTime endTime, Doctor doctor, CheckupType type, Clinic clinic, Room room){
+    public PredefinedCheckup(LocalDate date, LocalTime startTime, LocalTime endTime, Doctor doctor, CheckupType type, Clinic clinic, Room room){
         this.date = date;
         this.startEnd = new StartEndTime(startTime, endTime);
         this.setDoctor(doctor);

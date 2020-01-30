@@ -21,7 +21,7 @@ public class Room {
     private List<Checkup> checkups = new ArrayList<>();
 
     @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<CheckupDate> checkupdates = new ArrayList<>();
+    private List<PredefinedCheckup> checkupdates = new ArrayList<>();
 
     @Column(nullable = false, unique = true)
     private String name;

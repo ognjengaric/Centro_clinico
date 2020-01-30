@@ -2,10 +2,8 @@ package hermanos.Centro.Clinico.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Entity
 @DiscriminatorValue(value = "DOCTOR")
@@ -34,7 +32,7 @@ public class Doctor extends Person implements Serializable {
     private List<Checkup> checkups = new ArrayList<>();
 
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<CheckupDate> checkupdates = new ArrayList<>();
+    private List<PredefinedCheckup> checkupdates = new ArrayList<>();
 
     public Doctor(){
         super();

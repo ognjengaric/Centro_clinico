@@ -33,6 +33,13 @@ public class CheckupScheduleDTO {
         title = checkup.getType().getName();
     }
 
+    public CheckupScheduleDTO(LocalDate date, StartEndTime shift){
+        this.start = LocalDateTime.of(date, shift.getStartTime());
+        this.end = LocalDateTime.of(date, shift.getEndTime());
+        allDay = false;
+        title = "Absent";
+    }
+
 
     public LocalDateTime getStart() {
         return start;
