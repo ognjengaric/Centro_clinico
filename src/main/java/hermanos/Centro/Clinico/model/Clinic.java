@@ -31,7 +31,7 @@ public class Clinic {
     private List<Room> rooms = new ArrayList<>();
 
     @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<CheckupDate> checkupDates = new ArrayList<>();
+    private List<PredefinedCheckup> predefinedCheckups = new ArrayList<>();
 
     @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Checkup> checkups = new ArrayList<>();
@@ -111,11 +111,11 @@ public class Clinic {
         this.rooms = rooms;
     }
 
-    public List<CheckupDate> getCheckupDates() {
-        return checkupDates;
+    public List<PredefinedCheckup> getPredefinedCheckups() {
+        return predefinedCheckups;
     }
 
-    public void setCheckupDates(List<CheckupDate> checkupDates) {
-        this.checkupDates = checkupDates;
+    public void setPredefinedCheckups(List<PredefinedCheckup> predefinedCheckups) {
+        this.predefinedCheckups = predefinedCheckups;
     }
 }

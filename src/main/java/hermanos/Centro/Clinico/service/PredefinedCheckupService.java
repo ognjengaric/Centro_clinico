@@ -2,39 +2,38 @@ package hermanos.Centro.Clinico.service;
 
 
 import hermanos.Centro.Clinico.model.Checkup;
-import hermanos.Centro.Clinico.model.CheckupDate;
-import hermanos.Centro.Clinico.repository.CheckupDateRepository;
+import hermanos.Centro.Clinico.model.PredefinedCheckup;
+import hermanos.Centro.Clinico.repository.PredefinedCheckupRepository;
 import hermanos.Centro.Clinico.repository.CheckupRepository;
-import hermanos.Centro.Clinico.service.interfaces.CheckupDateServiceInterface;
+import hermanos.Centro.Clinico.service.interfaces.PredefinedCheckupServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class CheckupDateService implements CheckupDateServiceInterface {
+public class PredefinedCheckupService implements PredefinedCheckupServiceInterface {
 
     @Autowired
-    CheckupDateRepository checkupDateRepository;
+    PredefinedCheckupRepository predefinedCheckupRepository;
     @Autowired
     CheckupRepository checkupRepository;
 
     @Override
-    public CheckupDate findById(long id){
-        return  checkupDateRepository.findById(id);
+    public PredefinedCheckup findById(long id){
+        return  predefinedCheckupRepository.findById(id);
     }
 
     @Override
-    public CheckupDate save(CheckupDate checkupDate){
-        return checkupDateRepository.save(checkupDate);
+    public PredefinedCheckup save(PredefinedCheckup predefinedCheckup){
+        return predefinedCheckupRepository.save(predefinedCheckup);
     }
 
     @Override
-    public void deleteById(long id){checkupDateRepository.deleteById(id);}
+    public void deleteById(long id){
+        predefinedCheckupRepository.deleteById(id);}
 
     @Override
-    public boolean isValid(CheckupDate checkup){
-        for(CheckupDate c : checkupDateRepository.findAll()){
+    public boolean isValid(PredefinedCheckup checkup){
+        for(PredefinedCheckup c : predefinedCheckupRepository.findAll()){
             if(c.getDate().isEqual(checkup.getDate()) &&
                     c.getStartEnd().getStartTime().compareTo(checkup.getStartEnd().getStartTime()) >= 0 &&
                     c.getStartEnd().getEndTime().compareTo(checkup.getStartEnd().getEndTime()) <= 0 &&
