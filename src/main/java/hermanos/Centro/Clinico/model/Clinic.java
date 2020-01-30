@@ -30,7 +30,7 @@ public class Clinic {
     @OneToMany(mappedBy = "rooms_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Room> rooms = new ArrayList<>();
 
-    @OneToMany(mappedBy = "checkupdates_clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CheckupDate> checkupDates = new ArrayList<>();
 
     @OneToMany(mappedBy = "clinic", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

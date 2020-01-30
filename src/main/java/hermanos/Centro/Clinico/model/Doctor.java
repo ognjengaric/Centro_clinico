@@ -33,6 +33,9 @@ public class Doctor extends Person implements Serializable {
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Checkup> checkups = new ArrayList<>();
 
+    @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CheckupDate> checkupdates = new ArrayList<>();
+
     public Doctor(){
         super();
     }

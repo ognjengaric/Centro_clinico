@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 
 public interface CheckupDateRepository extends JpaRepository<CheckupDate, Long> {
 
-        CheckupDate findByDate(String date);
+        CheckupDate findById(long id);
 
         @Modifying
         void deleteById(long id);
