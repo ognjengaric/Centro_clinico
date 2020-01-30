@@ -18,7 +18,7 @@ public class Doctor extends Person implements Serializable {
     @Column(nullable = true)
     private String avgrating;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "shift", referencedColumnName = "time_id", nullable = true)
     private StartEndTime shift;
 
