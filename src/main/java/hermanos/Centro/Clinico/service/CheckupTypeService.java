@@ -21,6 +21,11 @@ public class CheckupTypeService implements CheckupTypeServiceInterface {
     }
 
     @Override
+    public CheckupType findById(long id){
+        return checkupTypeRepository.findById(id);
+    }
+
+    @Override
     public CheckupType save(CheckupType checkupType){
         return checkupTypeRepository.save(checkupType);
     }
@@ -28,9 +33,11 @@ public class CheckupTypeService implements CheckupTypeServiceInterface {
     @Override
     public void deleteById(long id) {checkupTypeRepository.deleteById(id);}
 
+    @Override
     public List<CheckupType> findAll() {
-        List<CheckupType> result = checkupTypeRepository.findAll();
+        List<CheckupType> result = checkupTypeRepository.findAllByOrderByNameAsc();
         return result;
     }
+
 }
 

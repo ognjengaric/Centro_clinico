@@ -1,12 +1,12 @@
 package hermanos.Centro.Clinico.repository;
 
-import hermanos.Centro.Clinico.model.CheckupDate;
+import hermanos.Centro.Clinico.model.PredefinedCheckup;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 
-public interface CheckupDateRepository extends JpaRepository<CheckupDate, Long> {
+public interface PredefinedCheckupRepository extends JpaRepository<PredefinedCheckup, Long> {
 
-        CheckupDate findByDate(String date);
+        PredefinedCheckup findById(long id);
 
         @Modifying
         void deleteById(long id);

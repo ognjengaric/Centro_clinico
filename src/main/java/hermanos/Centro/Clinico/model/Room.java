@@ -1,6 +1,8 @@
 package hermanos.Centro.Clinico.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue(value = "ROOM")
@@ -15,9 +17,22 @@ public class Room {
     @JoinColumn(name = "rooms_clinic", referencedColumnName = "clinic_id", nullable = true)
     private Clinic rooms_clinic;
 
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Checkup> checkups = new ArrayList<>();
+
+    @OneToMany(mappedBy = "room", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<PredefinedCheckup> checkupdates = new ArrayList<>();
+
     @Column(nullable = false, unique = true)
     private String name;
 
+    public List<Checkup> getCheckups() {
+        return checkups;
+    }
+
+    public void setCheckups(List<Checkup> checkups) {
+        this.checkups = checkups;
+    }
 
     public Room(){
         super();
