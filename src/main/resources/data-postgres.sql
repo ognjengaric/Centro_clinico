@@ -11,6 +11,7 @@ INSERT INTO clinic (clinic_id, description, name, address) values (0, 'Opis klin
 
 INSERT INTO room (room_id, rooms_clinic, name) values (-1,0,'Room-1');
 
+INSERT INTO checkup_type(checkuptype_id, duration, checkuptypes_clinic, name, price) values (-1,15, 0, 'ORL', 0);
 
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
@@ -20,9 +21,9 @@ address, last_password_reset_date, activated) values ('PATIENT', -2, 'patient@gm
 
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
-address, last_password_reset_date, doctor_clinic, avgrating) values ('DOCTOR', -1, 'doctor@gmail.com', 'Prvi',
+address, last_password_reset_date, doctor_clinic, avgrating, specialization_checkuptype_id, shift) values ('DOCTOR', -1, 'doctor@gmail.com', 'Prvi',
 '$2y$12$7dK59rknCeqTXmxU8vszremre2A5F.XScnFOeSuJPtdhRaifoIrlO', '0643325333', 'Doktor', null, 0,
-'2019-12-01 09:00:01', 0, 1.5);
+'2019-12-01 09:00:01', 0, 1.5, -1, -1);
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
 address, last_password_reset_date, admin_clinic) values ('CLINIC_ADMIN', 0, 'clinic_admin@gmail.com', 'Aleksa',

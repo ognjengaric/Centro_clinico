@@ -212,11 +212,7 @@ public class ClinicController {
         List<Doctor> doctors = clinicService.findById(id).getDoctors();
         List<DocNameSurnameDTO> docns = new ArrayList<>();
         for (Doctor dr : doctors) {
-            DocNameSurnameDTO d = new DocNameSurnameDTO();
-            d.setId(dr.getId());
-            d.setName(dr.getName());
-            d.setSurname(dr.getSurname());
-            docns.add(d);
+            docns.add(new DocNameSurnameDTO(dr));
         }
 
         return docns;
@@ -224,7 +220,7 @@ public class ClinicController {
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/addDoctor")
-    public ResponseEntity newDoctor(@RequestBody PatientRequest pr, Principal p) {
+    public ResponseEntity newDoctor(@RequestBody RegisterDoctorDTO pr, Principal p) {
         Address adr = new Address();
         adr.setCity(pr.getCity());
         adr.setCountry(pr.getCountry());
@@ -242,6 +238,8 @@ public class ClinicController {
         doctor.setName(pr.getName());
         doctor.setSurname(pr.getSurname());
         doctor.setPhoneNumber(pr.getPhoneNumber());
+        doctor.setSpecialization(checkupTypeService.findById(pr.getSpecialization()));
+        doctor.setShift(new StartEndTime(pr.getStartTime(),pr.getEndTime()));
 
         doctorService.save(doctor);
 
@@ -474,8 +472,8 @@ public class ClinicController {
     @RequestMapping(method = RequestMethod.POST, path = "/predefine")
     public ResponseEntity predefineCheckup(@RequestBody ScheduleFilterDTO filterDTO) {
 
-        CheckupType type = checkupTypeService.findByName(filterDTO.getCheckupType());
         Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId()));
+        CheckupType type = doctor.getSpecialization();
         Clinic clinic = clinicService.findById(doctor.getClinic().getId());
         Room room = roomService.findById(Long.parseLong(filterDTO.getRoomId()));
 
@@ -592,6 +590,24 @@ public class ClinicController {
         checkupService.deleteById(cp.getId());
 
         return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getDocForCheckup/{checkid}")
+    public @ResponseBody
+    List<DocNameSurnameDTO> getDocForCheckup(Principal p, @PathVariable String checkid){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        Clinic clinic = clinicService.findById(id);
+        CheckupType ct = checkupService.findById(Long.parseLong(checkid)).getType();
+        List<Doctor> docs = clinic.getDoctors();
+        List<DocNameSurnameDTO> doclist = new ArrayList<DocNameSurnameDTO>();
+
+        for(Doctor d : docs){
+            if(d.getSpecialization().getId() == ct.getId()){
+                doclist.add(new DocNameSurnameDTO(d));
+            }
+        }
+        return doclist;
     }
 
 }
