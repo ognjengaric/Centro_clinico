@@ -27,6 +27,15 @@ public class CheckupDateDTO {
         this.room = room;
     }
 
+    public CheckupDateDTO(long id, String date, String startTime, String endTime, String doctor) {
+        this.id = id;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.doctor = doctor;
+        this.room = null;
+    }
+
     public long getId() {
         return id;
     }

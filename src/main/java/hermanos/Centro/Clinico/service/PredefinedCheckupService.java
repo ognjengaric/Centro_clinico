@@ -43,8 +43,10 @@ public class PredefinedCheckupService implements PredefinedCheckupServiceInterfa
         }
         for(Checkup c : checkupRepository.findAll()){
             if(c.getDate().isEqual(checkup.getDate()) &&
-                    c.getStartEnd().getStartTime().compareTo(checkup.getStartEnd().getStartTime()) >= 0 &&
-                    c.getStartEnd().getEndTime().compareTo(checkup.getStartEnd().getEndTime()) <= 0 &&
+                    !(
+                            (c.getStartEnd().getStartTime().isAfter(checkup.getStartEnd().getEndTime())) ||
+                            (c.getStartEnd().getEndTime().isBefore(checkup.getStartEnd().getStartTime()))
+                    ) &&
                     (c.getDoctor().getId()==checkup.getDoctor().getId() || c.getRoom().getId()==checkup.getRoom().getId())){
                 return false;
             }

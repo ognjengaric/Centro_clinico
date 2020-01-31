@@ -118,4 +118,12 @@ public class Clinic {
     public void setPredefinedCheckups(List<PredefinedCheckup> predefinedCheckups) {
         this.predefinedCheckups = predefinedCheckups;
     }
+
+    public List<Checkup> getCheckups() {
+        return checkups;
+    }
+
+    public void setCheckups(List<Checkup> checkups) {
+        this.checkups = checkups;
+    }
 }
