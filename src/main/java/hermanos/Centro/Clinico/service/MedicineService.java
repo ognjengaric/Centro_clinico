@@ -27,4 +27,8 @@ public class MedicineService implements MedicineServiceInterface {
         List<Medicine> result = medicineRepository.findAll();
         return result;
     }
+    @Override
+    public void remove(long id){
+        medicineRepository.deleteById(id);
+    }
 }
