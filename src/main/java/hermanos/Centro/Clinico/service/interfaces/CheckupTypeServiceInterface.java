@@ -7,6 +7,7 @@ import java.util.List;
 public interface CheckupTypeServiceInterface {
 
     CheckupType findByName(String name);
+    CheckupType findById(long id);
     CheckupType save(CheckupType checkupType);
     void deleteById(long id);
     List<CheckupType> findAll();

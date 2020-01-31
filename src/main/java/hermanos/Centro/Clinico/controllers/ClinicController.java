@@ -212,11 +212,7 @@ public class ClinicController {
         List<Doctor> doctors = clinicService.findById(id).getDoctors();
         List<DocNameSurnameDTO> docns = new ArrayList<>();
         for (Doctor dr : doctors) {
-            DocNameSurnameDTO d = new DocNameSurnameDTO();
-            d.setId(dr.getId());
-            d.setName(dr.getName());
-            d.setSurname(dr.getSurname());
-            docns.add(d);
+            docns.add(new DocNameSurnameDTO(dr));
         }
 
         return docns;
@@ -224,7 +220,7 @@ public class ClinicController {
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/addDoctor")
-    public ResponseEntity newDoctor(@RequestBody PatientRequest pr, Principal p) {
+    public ResponseEntity newDoctor(@RequestBody RegisterDoctorDTO pr, Principal p) {
         Address adr = new Address();
         adr.setCity(pr.getCity());
         adr.setCountry(pr.getCountry());
@@ -242,6 +238,8 @@ public class ClinicController {
         doctor.setName(pr.getName());
         doctor.setSurname(pr.getSurname());
         doctor.setPhoneNumber(pr.getPhoneNumber());
+        doctor.setSpecialization(checkupTypeService.findById(pr.getSpecialization()));
+        doctor.setShift(new StartEndTime(pr.getStartTime(),pr.getEndTime()));
 
         doctorService.save(doctor);
 
@@ -474,8 +472,8 @@ public class ClinicController {
     @RequestMapping(method = RequestMethod.POST, path = "/predefine")
     public ResponseEntity predefineCheckup(@RequestBody ScheduleFilterDTO filterDTO) {
 
-        CheckupType type = checkupTypeService.findByName(filterDTO.getCheckupType());
         Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId()));
+        CheckupType type = doctor.getSpecialization();
         Clinic clinic = clinicService.findById(doctor.getClinic().getId());
         Room room = roomService.findById(Long.parseLong(filterDTO.getRoomId()));
 
@@ -504,6 +502,112 @@ public class ClinicController {
         DoctorWorkingScheduleDTO dto = new DoctorWorkingScheduleDTO(doctor);
 
         return ResponseEntity.ok(dto);
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getPendingCheckups")
+    public @ResponseBody
+    List<CheckupPendingDTO> getPendingCheckups(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        Clinic clinic = clinicService.findById(id);
+        List<Checkup> checkups = clinic.getCheckups();
+
+        List<CheckupPendingDTO> pendinglist = new ArrayList<CheckupPendingDTO>();
+        for(Checkup c : checkups){
+            if(!c.isApproved() && !c.isStarted() && !c.isEnded()){
+                pendinglist.add(new CheckupPendingDTO(c.getId(),c.getDate(),c.getStartEnd().getStartTime(),
+                        c.getStartEnd().getEndTime(), c.getDoctor().getId(),
+                        c.getDoctor().getName() + " " + c.getDoctor().getSurname()));
+            }
+        }
+
+        return pendinglist;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getAvailableRooms/{checkid}")
+    public @ResponseBody
+    List<RoomDTO> getAvailableRooms(Principal p, @PathVariable String checkid){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        Clinic clinic = clinicService.findById(id);
+        List<Room> rooms = clinic.getRooms();
+        Checkup checkup = checkupService.findById(Long.parseLong(checkid));
+        LocalDate date = checkup.getDate();
+        LocalTime st = checkup.getStartEnd().getStartTime();
+        LocalTime et = checkup.getStartEnd().getEndTime();
+        Doctor doc = checkup.getDoctor();
+
+        List<RoomDTO> availablelist = new ArrayList<RoomDTO>();
+        for(Room r : rooms){
+            boolean flag = false;
+            for(Checkup cr: r.getCheckups()){
+                if(!cr.isEnded() && cr.isApproved()) {
+                    if (cr.getDate().isEqual(date) &&
+                            !(
+                                    (cr.getStartEnd().getStartTime().isAfter(et)) ||
+                                            (cr.getStartEnd().getEndTime().isBefore(st))
+                            )
+                    ) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if(!flag){
+                availablelist.add(new RoomDTO(r.getId(),r.getName()));
+            }
+        }
+
+        return availablelist;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/approveCheckupRequest")
+    public ResponseEntity approveCheckupRequest(@RequestBody CheckupPendingDTO cp) {
+
+        Checkup c = checkupService.findById(cp.getId());
+//        if(!c.getDoctor().getId().equals(cp.getDoctor_id()))
+//            c.setDoctor(doctorService.findById(cp.getDoctor_id()));
+//
+//        if(!(c.getStartEnd().getStartTime().equals(cp.getStartTime()) && c.getStartEnd().getEndTime().equals(cp.getEndTime())))
+//            c.setStartEnd(new StartEndTime(cp.getStartTime(),cp.getEndTime()));
+//
+//        if(!c.getDate().equals(cp.getDate()))
+//            c.setDate(cp.getDate());
+
+        c.setRoom(roomService.findById(cp.getRoom_id()));
+        c.setApproved(true);
+
+        checkupService.save(c);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/denyCheckupRequest")
+    public ResponseEntity denyCheckupRequest(@RequestBody CheckupPendingDTO cp) {
+
+        checkupService.deleteById(cp.getId());
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getDocForCheckup/{checkid}")
+    public @ResponseBody
+    List<DocNameSurnameDTO> getDocForCheckup(Principal p, @PathVariable String checkid){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        Clinic clinic = clinicService.findById(id);
+        CheckupType ct = checkupService.findById(Long.parseLong(checkid)).getType();
+        List<Doctor> docs = clinic.getDoctors();
+        List<DocNameSurnameDTO> doclist = new ArrayList<DocNameSurnameDTO>();
+
+        for(Doctor d : docs){
+            if(d.getSpecialization().getId() == ct.getId()){
+                doclist.add(new DocNameSurnameDTO(d));
+            }
+        }
+        return doclist;
     }
 
 }
