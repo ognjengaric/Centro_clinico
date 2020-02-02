@@ -9,6 +9,7 @@ import java.util.List;
 public interface CheckupTypeRepository extends JpaRepository<CheckupType, Long> {
 
         CheckupType findByName(String name);
+        CheckupType findById(long id);
 
         List<CheckupType> findAllByOrderByNameAsc();
 
