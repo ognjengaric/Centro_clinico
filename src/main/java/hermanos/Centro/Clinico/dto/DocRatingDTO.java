@@ -9,6 +9,7 @@ public class DocRatingDTO {
     private String surname;
     private String avgrating;
     private String specialization;
+    private String clinic;
 
     public DocRatingDTO(Doctor doctor){
         id = doctor.getId();
@@ -16,6 +17,7 @@ public class DocRatingDTO {
         surname = doctor.getSurname();
         avgrating = doctor.getAvgrating();
         specialization = doctor.getSpecialization().getName();
+        clinic = doctor.getClinic().getName();
     }
 
     public DocRatingDTO() {
@@ -60,5 +62,13 @@ public class DocRatingDTO {
 
     public void setSpecialization(String specialization) {
         this.specialization = specialization;
+    }
+
+    public String getClinic() {
+        return clinic;
+    }
+
+    public void setClinic(String clinic) {
+        this.clinic = clinic;
     }
 }
