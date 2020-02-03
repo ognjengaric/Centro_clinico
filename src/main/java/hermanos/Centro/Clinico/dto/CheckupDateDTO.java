@@ -1,7 +1,6 @@
 package hermanos.Centro.Clinico.dto;
 
 
-import jdk.vm.ci.meta.Local;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

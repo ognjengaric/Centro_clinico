@@ -16,8 +16,9 @@ public class Patient extends Person implements Serializable {
 
     /* TODO: 11/9/2019 medical record */
 
-//    @Column(nullable = true)
-//    private MedicalRecord medicalRecord;
+    @OneToOne
+    @JoinColumn(name = "medical_record", referencedColumnName = "m_record_id")
+    private MedicalRecord medicalRecord;
 
     @Column(nullable = true)
     private boolean activated;
@@ -35,13 +36,13 @@ public class Patient extends Person implements Serializable {
         this.activated = activated;
     }
 
-//    public MedicalRecord getMedicalRecord() {
-//        return medicalRecord;
-//    }
-//
-//    public void setMedicalRecord(MedicalRecord medicalRecord) {
-//        this.medicalRecord = medicalRecord;
-//    }
+    public MedicalRecord getMedicalRecord() {
+        return medicalRecord;
+    }
+
+    public void setMedicalRecord(MedicalRecord medicalRecord) {
+        this.medicalRecord = medicalRecord;
+    }
 
     public String getSocialSecurityNumber() {
         return socialSecurityNumber;

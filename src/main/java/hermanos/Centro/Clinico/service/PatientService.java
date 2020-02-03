@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PatientService implements PatientServiceInterface {
 
@@ -37,5 +39,8 @@ public class PatientService implements PatientServiceInterface {
         patient.getAddress().setCity(p.getCity());
         patient.getAddress().setCountry(p.getCountry());
     }
-
-}
+    public List<Patient> findAll() {
+        List<Patient> result = patientRepository.findAll();
+        return result;
+    }
+    }

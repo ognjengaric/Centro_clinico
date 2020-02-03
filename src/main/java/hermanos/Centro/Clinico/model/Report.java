@@ -8,7 +8,7 @@ public class Report implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "checkup_id", nullable = false, unique = true)
+    @Column(name = "report_id", nullable = false, unique = true)
     private long id;
 
     @ManyToOne

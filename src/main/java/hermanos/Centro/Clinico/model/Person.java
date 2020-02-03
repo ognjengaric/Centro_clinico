@@ -32,7 +32,7 @@ public class Person implements Serializable, UserDetails  {
     @Column(nullable = false)
     private String surname;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
     private Address address;
 
