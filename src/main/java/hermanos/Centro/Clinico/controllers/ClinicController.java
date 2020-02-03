@@ -449,7 +449,9 @@ public class ClinicController {
 
     @PreAuthorize("hasAuthority('PATIENT')")
     @RequestMapping(method = RequestMethod.POST, path = "/schedule")
-    public ResponseEntity scheduleCheckup(@RequestBody ScheduleFilterDTO filterDTO) {
+    public ResponseEntity scheduleCheckup(@RequestBody ScheduleFilterDTO filterDTO, Principal principal) {
+
+        Patient patient = (Patient) personService.findByEmail(principal.getName());
 
         CheckupType type = checkupTypeService.findByName(filterDTO.getCheckupType());
         Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId()));
@@ -459,7 +461,7 @@ public class ClinicController {
         LocalTime startTime = LocalTime.parse(filterDTO.getCheckupTime());
         LocalTime endTime = startTime.plusMinutes(type.getDuration());
 
-        Checkup checkup = new Checkup(date, startTime, endTime, doctor, type, clinic);
+        Checkup checkup = new Checkup(date, startTime, endTime, doctor, type, clinic, patient);
 
         if (!checkupService.isValid(checkup))
             return ResponseEntity.badRequest().build();

@@ -33,4 +33,7 @@ public class ClinicalCenterAdministratorService implements ClinicalCenterAdminis
         return result;
     }
 
+    @Override
+    public ClinicalCenterAdministrator findByEmail(String email) { return clinicalCenterAdministratorRepository.findByEmail(email); }
+
 }
