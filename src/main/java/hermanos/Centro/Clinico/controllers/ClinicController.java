@@ -612,4 +612,20 @@ public class ClinicController {
         return doclist;
     }
 
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getPreviousCheckups")
+    public List<FullCheckupViewDTO> getPreviousCheckups(Principal principal){
+        Patient patient = (Patient) personService.findByEmail(principal.getName());
+        List<FullCheckupViewDTO> checkups = new ArrayList<>();
+
+        for(Checkup checkup : patient.getCheckups()){
+            if(checkup.isEnded()) {
+                checkups.add(new FullCheckupViewDTO(Long.toString(checkup.getId()), checkup.getDate(),
+                        checkup.getStartEnd().getStartTime(), checkup.getType().getName(), checkup.getType().getDuration(),
+                        checkup.getDoctor().getName(), checkup.getRoom().getName()));
+            }
+        }
+
+        return checkups;
+    }
 }
