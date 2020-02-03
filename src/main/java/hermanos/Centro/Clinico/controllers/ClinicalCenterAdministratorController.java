@@ -1,6 +1,7 @@
 package hermanos.Centro.Clinico.controllers;
 
 
+import hermanos.Centro.Clinico.dto.MedicalRecordDTO;
 import hermanos.Centro.Clinico.dto.PatientDTO;
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
 import hermanos.Centro.Clinico.model.*;
@@ -44,9 +45,11 @@ public class ClinicalCenterAdministratorController {
     @Autowired
     PatientServiceInterface patientService;
     @Autowired
+    MedicalRecordServiceInterface medicalRecordService;
+    @Autowired
     JavaMailSender javaMailSender;
     @Autowired
-    ReportServiceInterface checkupService;
+    ReportServiceInterface reportService;
     @Autowired
     PrescriptionServiceInterface prescriptionService;
     @Autowired
@@ -63,8 +66,13 @@ public class ClinicalCenterAdministratorController {
         List<Authority> authorities = authorityService.findByName("PATIENT");
         patient.setAuthorities(authorities);
 
+        MedicalRecord mr = new MedicalRecord();
+        patient.setMedicalRecord(mr);
+        medicalRecordService.save(mr);
         personService.save(patient);
         patientRequestService.remove(patient.getSocialSecurityNumber());
+
+
         try {
             sendAcceptEmail(patient.getEmail(), patient.getName(), patient.getSurname());
         } catch (MessagingException e) {
@@ -159,6 +167,18 @@ public class ClinicalCenterAdministratorController {
 
         return ResponseEntity.ok(ret);
     }
+
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getMedicalRecord/{id}")
+    public ResponseEntity<?> getMedicalRecord(@PathVariable("id") String id){
+        id += ".com";
+        Patient p = (Patient) personService.findByEmail(id);
+        MedicalRecord md = p.getMedicalRecord();
+
+        MedicalRecordDTO mdDTO = new MedicalRecordDTO(md);
+
+        return ResponseEntity.ok(mdDTO);
+    }
 /*
     @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/doCheckup")
@@ -192,9 +212,24 @@ public class ClinicalCenterAdministratorController {
         return ResponseEntity.ok().build();
     }*/
 
+//    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+//    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/doCheckup")
+//    public ResponseEntity doCheckup(@RequestBody Report report){
+//
+//        if(hasPrescription){
+//            List<Prescription> p_list = prescriptionService.findAll();
+//            Prescription prescription = p_list.get(p_list.size() - 1);
+//            report.setPrescription(prescription);
+//        }
+//        hasPrescription = false;
+//        reportService.save(report);
+//
+//        return ResponseEntity.ok().build();
+//    }
+
     @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/doCheckup")
-    public ResponseEntity doCheckup(@RequestBody Report report){
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/doCheckup/{id}")
+    public ResponseEntity doCheckup(@RequestBody Report report, @PathVariable("id") String id){
 
         if(hasPrescription){
             List<Prescription> p_list = prescriptionService.findAll();
@@ -202,7 +237,11 @@ public class ClinicalCenterAdministratorController {
             report.setPrescription(prescription);
         }
         hasPrescription = false;
-        checkupService.save(report);
+        id += ".com";
+        Patient pat = (Patient) personService.findByEmail(id);
+        pat.getMedicalRecord().setReport(report);
+        personService.save(pat);
+        reportService.save(report);
 
         return ResponseEntity.ok().build();
     }
