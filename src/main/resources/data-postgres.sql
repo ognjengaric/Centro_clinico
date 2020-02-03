@@ -22,14 +22,14 @@ address, last_password_reset_date, activated) values ('PATIENT', -2, 'patient@gm
 
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
-address, last_password_reset_date, doctor_clinic, avgrating, specialization_checkuptype_id, shift) values ('DOCTOR', -1, 'doctor@gmail.com', 'Prvi',
+address, last_password_reset_date, doctor_clinic, avgrating, specialization_checkuptype_id, shift, must_change_pass) values ('DOCTOR', -1, 'doctor@gmail.com', 'Prvi',
 '$2y$12$7dK59rknCeqTXmxU8vszremre2A5F.XScnFOeSuJPtdhRaifoIrlO', '0643325333', 'Doktor', null, 0,
-'2019-12-01 09:00:01', 0, 1.5, -1, -1);
+'2019-12-01 09:00:01', 0, 1.5, -1, -1, true);
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
-address, last_password_reset_date, admin_clinic) values ('CLINIC_ADMIN', 0, 'clinic_admin@gmail.com', 'Aleksa',
+address, last_password_reset_date, admin_clinic, must_change_pass) values ('CLINIC_ADMIN', 0, 'clinic_admin@gmail.com', 'Aleksa',
 '$2y$12$7dK59rknCeqTXmxU8vszremre2A5F.XScnFOeSuJPtdhRaifoIrlO', '0643325333', 'Lukac', null, 0,
-'2019-12-01 09:00:01', 0);
+'2019-12-01 09:00:01', 0, true);
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
 address, last_password_reset_date) values ('CLINIC_CENTER_ADMIN', -3, 'admin@gmail.com', 'a',
