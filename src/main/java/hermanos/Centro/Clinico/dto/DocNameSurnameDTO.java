@@ -2,12 +2,14 @@ package hermanos.Centro.Clinico.dto;
 
 
 import hermanos.Centro.Clinico.model.Doctor;
+import hermanos.Centro.Clinico.model.StartEndTime;
 
 public class DocNameSurnameDTO {
     private long id;
     private String name;
     private String surname;
     private String spec;
+    private StartEndTime shift;
 
     public DocNameSurnameDTO() {
         super();
@@ -18,6 +20,7 @@ public class DocNameSurnameDTO {
         this.name = d.getName();
         this.surname = d.getSurname();
         this.spec = d.getSpecialization().getName();
+        this.shift = d.getShift();
     }
 
     public long getId() {
@@ -50,5 +53,13 @@ public class DocNameSurnameDTO {
 
     public void setSpec(String spec) {
         this.spec = spec;
+    }
+
+    public StartEndTime getShift() {
+        return shift;
+    }
+
+    public void setShift(StartEndTime shift) {
+        this.shift = shift;
     }
 }
