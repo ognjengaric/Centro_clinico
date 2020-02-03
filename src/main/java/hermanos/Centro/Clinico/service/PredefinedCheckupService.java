@@ -2,12 +2,18 @@ package hermanos.Centro.Clinico.service;
 
 
 import hermanos.Centro.Clinico.model.Checkup;
+import hermanos.Centro.Clinico.model.Clinic;
 import hermanos.Centro.Clinico.model.PredefinedCheckup;
 import hermanos.Centro.Clinico.repository.PredefinedCheckupRepository;
 import hermanos.Centro.Clinico.repository.CheckupRepository;
 import hermanos.Centro.Clinico.service.interfaces.PredefinedCheckupServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PredefinedCheckupService implements PredefinedCheckupServiceInterface {
@@ -53,6 +59,5 @@ public class PredefinedCheckupService implements PredefinedCheckupServiceInterfa
         }
         return true;
     }
-
 }
 
