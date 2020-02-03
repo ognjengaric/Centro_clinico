@@ -3,10 +3,12 @@ package hermanos.Centro.Clinico.controllers;
 
 import hermanos.Centro.Clinico.dto.*;
 import hermanos.Centro.Clinico.model.*;
+import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -21,6 +23,12 @@ import static java.lang.Integer.parseInt;
 @RestController
 @RequestMapping(value = "/clinic")
 public class ClinicController {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    AuthorityService authorityService;
+
     @Autowired
     ClinicAdministratorServiceInterface clinicAdminService;
 
@@ -235,12 +243,17 @@ public class ClinicController {
         doctor.setEmail(pr.getEmail());
         doctor.setAvgrating("0");
         doctor.setClinic((clinicAdminService.findByEmail(p.getName()).getClinic()));
-        doctor.setPassword(pr.getPassword());
+        doctor.setPassword(passwordEncoder.encode(pr.getPassword()));
         doctor.setName(pr.getName());
         doctor.setSurname(pr.getSurname());
         doctor.setPhoneNumber(pr.getPhoneNumber());
         doctor.setSpecialization(checkupTypeService.findById(pr.getSpecialization()));
         doctor.setShift(new StartEndTime(pr.getStartTime(),pr.getEndTime()));
+        doctor.setMustChangePass(true);
+
+        List<Authority> authorities = authorityService.findByName("DOCTOR");
+        doctor.setAuthorities(authorities);
+
 
         doctorService.save(doctor);
 

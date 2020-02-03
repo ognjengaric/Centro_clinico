@@ -21,6 +21,9 @@ public class DoctorService implements DoctorServiceInterface {
     }
 
     @Override
+    public Doctor findByEmail(String email) { return doctorRepository.findByEmail(email);}
+
+    @Override
     public Doctor save(Doctor doctor){
         return doctorRepository.save(doctor);
     }
