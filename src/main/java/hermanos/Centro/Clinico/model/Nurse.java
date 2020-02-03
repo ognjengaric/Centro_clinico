@@ -3,6 +3,7 @@ package hermanos.Centro.Clinico.model;
 import javax.persistence.*;
 import java.util.List;
 
+@Entity
 public class Nurse extends Person {
 
     @ManyToOne

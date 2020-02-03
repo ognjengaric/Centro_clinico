@@ -1,13 +1,20 @@
 package hermanos.Centro.Clinico.model;
 
-import javax.persistence.Column;
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class MedicalRecord {
 
-    //@
-    //private List<Report> reportHistory = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "m_record_id", nullable = false, unique = true)
+    private long id;
+
+    @OneToMany(cascade= CascadeType.ALL)
+    @JoinTable(name="m_record_report_mapping",joinColumns=@JoinColumn(name="m_record_id"),inverseJoinColumns=@JoinColumn(name="report_id"))
+    private List<Report> reportHistory = new ArrayList<>();
 
     @Column
     private String height;
@@ -28,13 +35,17 @@ public class MedicalRecord {
     public MedicalRecord() {
     }
 
-    //public List<Report> getReportHistory() {
-     //   return reportHistory;
-    //}
+    public List<Report> getReportHistory() {
+        return reportHistory;
+    }
 
-    //public void setReportHistory(List<Report> reportHistory) {
-      //  this.reportHistory = reportHistory;
-    //}
+    public void setReportHistory(List<Report> reportHistory) {
+        this.reportHistory = reportHistory;
+    }
+
+    public void setReport(Report report) {
+        this.reportHistory.add(report);
+    }
 
     public String getHeight() {
         return height;

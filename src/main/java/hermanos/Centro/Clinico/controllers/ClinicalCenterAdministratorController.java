@@ -1,6 +1,7 @@
 package hermanos.Centro.Clinico.controllers;
 
 
+import hermanos.Centro.Clinico.dto.PatientDTO;
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
 import hermanos.Centro.Clinico.model.*;
 import hermanos.Centro.Clinico.service.AuthorityService;
@@ -114,6 +115,24 @@ public class ClinicalCenterAdministratorController {
         List<Diagnosis> pr = diagnosisService.findAll();
 
         return ResponseEntity.ok(pr);
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getPatients")
+    public ResponseEntity<?> getAllPatients(){
+
+        List<Person> patientList =  personService.findAll();
+        List<PatientDTO> patientDTOList = new ArrayList<>();
+        List<Authority> authorities = authorityService.findByName("PATIENT");
+        for(Person p : patientList) {
+            List<Authority> authoritiesP = (List<Authority>) p.getAuthorities();
+            if(authoritiesP.get(0).equals(authorities.get(0))) {
+                PatientDTO patientDTO = new PatientDTO((Patient) p);
+                patientDTOList.add(patientDTO);
+            }
+        }
+        return ResponseEntity.ok(patientDTOList);
+
     }
 
     @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
