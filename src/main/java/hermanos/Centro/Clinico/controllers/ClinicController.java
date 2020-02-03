@@ -46,7 +46,7 @@ public class ClinicController {
     PersonServiceInterface personService;
 
     @Autowired
-    PredefinedCheckupServiceInterface checkupDateService;
+    PredefinedCheckupServiceInterface predefinedCheckupService;
 
     @Autowired
     CheckupTypeServiceInterface checkupTypeService;
@@ -89,7 +89,7 @@ public class ClinicController {
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/removeCheckupDate")
     public ResponseEntity removeCheckupDate(@RequestBody PredefinedCheckup cd) {
-        checkupDateService.deleteById(cd.getId());
+        predefinedCheckupService.deleteById(cd.getId());
 
         return ResponseEntity.ok().build();
     }
@@ -467,15 +467,7 @@ public class ClinicController {
 
         Patient patient = (Patient) personService.findByEmail(principal.getName());
 
-        CheckupType type = checkupTypeService.findByName(filterDTO.getCheckupType());
-        Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId()));
-        Clinic clinic = clinicService.findById(doctor.getClinic().getId());
-
-        LocalDate date = LocalDate.parse(filterDTO.getCheckupDate());
-        LocalTime startTime = LocalTime.parse(filterDTO.getCheckupTime());
-        LocalTime endTime = startTime.plusMinutes(type.getDuration());
-
-        Checkup checkup = new Checkup(date, startTime, endTime, doctor, type, clinic, patient);
+       Checkup checkup = checkupService.makeNewCheckup(filterDTO, patient, false);
 
         if (!checkupService.isValid(checkup))
             return ResponseEntity.badRequest().build();
@@ -500,10 +492,10 @@ public class ClinicController {
 
         PredefinedCheckup checkup = new PredefinedCheckup(date, startTime, endTime, doctor, type, clinic, room);
 
-        if (!checkupDateService.isValid(checkup))
+        if (!predefinedCheckupService.isValid(checkup))
             return ResponseEntity.badRequest().build();
 
-        checkupDateService.save(checkup);
+        predefinedCheckupService.save(checkup);
 
         return ResponseEntity.ok().build();
     }
@@ -663,6 +655,39 @@ public class ClinicController {
         return checkups;
     }
 
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getPredefinedCheckups/{id}")
+    public List<FullCheckupViewDTO> getPredefinedCheckupsForClinic(@PathVariable String id){
+        Clinic clinic = clinicService.findById(Long.parseLong(id));
+
+        clinicService.deleteExpiredPredefinedCheckups(clinic);
+
+        List<FullCheckupViewDTO> predefinedCheckups = new ArrayList<>();
+
+        for(PredefinedCheckup checkup : clinic.getPredefinedCheckups()){
+            predefinedCheckups.add(new FullCheckupViewDTO(checkup));
+        }
+
+        return predefinedCheckups;
+    }
+
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.POST, path = "/schedulePredefined")
+    public ResponseEntity schedulePredefinedCheckup(@RequestBody ScheduleFilterDTO filterDTO, Principal principal) {
+
+        Patient patient = (Patient) personService.findByEmail(principal.getName());
+
+        Checkup checkup = checkupService.makeNewCheckup(filterDTO, patient, true);
+
+        if (!checkupService.isValid(checkup))
+            return ResponseEntity.badRequest().build();
+
+        checkupService.save(checkup);
+
+        return ResponseEntity.ok().build();
+    }
+
+
     @PreAuthorize("hasAuthority('DOCTOR')")
     @RequestMapping(method = RequestMethod.GET, path = "/getAllPatients")
     public List<PatientDTO> getAllPatients(Principal p){
@@ -719,4 +744,5 @@ public class ClinicController {
 
         return brep;
     }
+
 }

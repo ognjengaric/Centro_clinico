@@ -1,6 +1,7 @@
 package hermanos.Centro.Clinico.dto;
 
 import hermanos.Centro.Clinico.model.Checkup;
+import hermanos.Centro.Clinico.model.PredefinedCheckup;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,6 +16,8 @@ public class FullCheckupViewDTO {
     private String doctorName;
     private String roomName;
     private String clinicName;
+    private String doctorId;
+    private String roomId;
 
     public FullCheckupViewDTO() {
     }
@@ -28,6 +31,21 @@ public class FullCheckupViewDTO {
         this.doctorName = checkup.getDoctor().getName();
         this.roomName = checkup.getRoom().getName();
         this.clinicName = checkup.getClinic().getName();
+        this.doctorId = Long.toString(checkup.getDoctor().getId());
+        this.roomId = Long.toString(checkup.getRoom().getId());
+    }
+
+    public FullCheckupViewDTO(PredefinedCheckup checkup){
+        this.id = Long.toString(checkup.getId());
+        this.checkupDate = checkup.getDate().toString();
+        this.checkupTimeStart = checkup.getStartEnd().getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+        this.checkupTimeEnd = checkup.getStartEnd().getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+        this.checkupType = checkup.getType().getName();
+        this.doctorName = checkup.getDoctor().getName();
+        this.roomName = checkup.getRoom().getName();
+        this.clinicName = checkup.getClinic().getName();
+        this.doctorId = Long.toString(checkup.getDoctor().getId());
+        this.roomId = Long.toString(checkup.getRoom().getId());
     }
 
     public String getId() {
@@ -92,5 +110,21 @@ public class FullCheckupViewDTO {
 
     public void setClinicName(String clinicName) {
         this.clinicName = clinicName;
+    }
+
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
+    }
+
+    public String getRoomId() {
+        return roomId;
+    }
+
+    public void setRoomId(String roomId) {
+        this.roomId = roomId;
     }
 }
