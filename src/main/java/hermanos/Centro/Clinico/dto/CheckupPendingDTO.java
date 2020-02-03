@@ -2,7 +2,9 @@ package hermanos.Centro.Clinico.dto;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import static java.time.temporal.ChronoUnit.MINUTES;
 
 public class CheckupPendingDTO {
     private long id;
@@ -12,6 +14,7 @@ public class CheckupPendingDTO {
     private long doctor_id;
     private String doctor_name;
     private long room_id;
+    private long duration;
 
     public CheckupPendingDTO() {}
 
@@ -22,6 +25,7 @@ public class CheckupPendingDTO {
         this.endTime = endTime;
         this.doctor_id = doctor_id;
         this.doctor_name = doctor_name;
+        this.duration = startTime.until(endTime, MINUTES);
     }
 
     public CheckupPendingDTO(long id, LocalDate date, LocalTime startTime, LocalTime endTime, long doctor_id, String doctor_name, long room_id) {
@@ -49,6 +53,8 @@ public class CheckupPendingDTO {
     public void setDate(LocalDate date) {
         this.date = date;
     }
+//
+//    public void setDate(LocalDateTime datetime) { this.date = datetime.toLocalDate();}
 
     public LocalTime getStartTime() {
         return startTime;
@@ -57,6 +63,10 @@ public class CheckupPendingDTO {
     public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
+//
+//    public void setStartTime(LocalDateTime startDatetime) {
+//        this.startTime = startDatetime.toLocalTime();
+//    }
 
     public LocalTime getEndTime() {
         return endTime;
@@ -88,5 +98,13 @@ public class CheckupPendingDTO {
 
     public void setRoom_id(long room_id) {
         this.room_id = room_id;
+    }
+
+    public long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(long duration) {
+        this.duration = duration;
     }
 }

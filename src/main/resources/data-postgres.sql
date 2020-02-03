@@ -1,5 +1,6 @@
 INSERT INTO start_end_time (time_id, start_time, end_time) values (-1, '07:00:00', '15:00:00');
 INSERT INTO start_end_time (time_id, start_time, end_time) values (-2, '09:00:00', '10:00:00');
+INSERT INTO start_end_time (time_id, start_time, end_time) values (-3, '09:00:00', '10:00:00');
 
 INSERT INTO address (address_id, city, country, number, postcode, street) values (-1, 'Novi Sad', 'Serbia', '27',
 '21000', 'Jovana Ducica');
@@ -36,7 +37,8 @@ address, last_password_reset_date) values ('CLINIC_CENTER_ADMIN', -3, 'admin@gma
 '2019-12-01 09:00:01');
 
 
-INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date) values (-1,-1,-1,0,-1, false, false, false, '2020-01-25');
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type) values (-1,-2,null,0,-1, false, false, false, '2020-01-25',-1);
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type) values (-2,-3,null,0,-1, false, false, false, '2020-01-25',-1);
 
 INSERT INTO authority (id, name) values (1, 'PATIENT');
 INSERT INTO authority (id, name) values (2, 'DOCTOR');

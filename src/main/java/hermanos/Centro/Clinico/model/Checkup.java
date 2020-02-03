@@ -36,8 +36,11 @@ public class Checkup {
     @JoinColumn(name = "checkup_room", referencedColumnName = "room_id", nullable = true)
     private Room room;
 
-
     @ManyToOne
+    @JoinColumn(name = "patient_ssn", referencedColumnName = "socialSecurityNumber", nullable = true)
+    private Patient patient;
+
+    @ManyToOne()
     @JoinColumn(name = "checkup_type", referencedColumnName = "checkuptype_id", nullable = true)
     private CheckupType type;
 
@@ -50,12 +53,13 @@ public class Checkup {
 
     public Checkup(){}
 
-    public Checkup(LocalDate date, LocalTime startTime, LocalTime endTime, Doctor doctor, CheckupType type, Clinic clinic){
+    public Checkup(LocalDate date, LocalTime startTime, LocalTime endTime, Doctor doctor, CheckupType type, Clinic clinic, Patient patient){
         this.date = date;
         this.startEnd = new StartEndTime(startTime, endTime);
         this.setDoctor(doctor);
         this.setType(type);
         this.setClinic(clinic);
+        this.setPatient(patient);
     }
 
     public long getId() {
@@ -146,4 +150,11 @@ public class Checkup {
         isEnded = ended;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 }

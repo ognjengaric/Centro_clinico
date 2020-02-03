@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@DiscriminatorValue(value = "NURSE")
 public class Nurse extends Person {
 
     @ManyToOne
