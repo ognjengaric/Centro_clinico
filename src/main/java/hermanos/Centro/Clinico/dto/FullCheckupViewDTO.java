@@ -14,6 +14,7 @@ public class FullCheckupViewDTO {
     private String checkupType;
     private String doctorName;
     private String roomName;
+    private String clinicName;
 
     public FullCheckupViewDTO() {
     }
@@ -26,6 +27,7 @@ public class FullCheckupViewDTO {
         this.checkupType = checkup.getType().getName();
         this.doctorName = checkup.getDoctor().getName();
         this.roomName = checkup.getRoom().getName();
+        this.clinicName = checkup.getClinic().getName();
     }
 
     public String getId() {
@@ -82,5 +84,13 @@ public class FullCheckupViewDTO {
 
     public void setRoomName(String roomName) {
         this.roomName = roomName;
+    }
+
+    public String getClinicName() {
+        return clinicName;
+    }
+
+    public void setClinicName(String clinicName) {
+        this.clinicName = clinicName;
     }
 }
