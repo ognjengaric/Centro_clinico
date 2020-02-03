@@ -620,9 +620,7 @@ public class ClinicController {
 
         for(Checkup checkup : patient.getCheckups()){
             if(checkup.isEnded()) {
-                checkups.add(new FullCheckupViewDTO(Long.toString(checkup.getId()), checkup.getDate(),
-                        checkup.getStartEnd().getStartTime(), checkup.getType().getName(), checkup.getType().getDuration(),
-                        checkup.getDoctor().getName(), checkup.getRoom().getName()));
+                checkups.add(new FullCheckupViewDTO(checkup));
             }
         }
 

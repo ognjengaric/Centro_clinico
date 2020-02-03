@@ -1,5 +1,7 @@
 package hermanos.Centro.Clinico.dto;
 
+import hermanos.Centro.Clinico.model.Checkup;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -7,23 +9,23 @@ import java.time.format.DateTimeFormatter;
 public class FullCheckupViewDTO {
     private String id;
     private String checkupDate;
-    private String checkupTime;
+    private String checkupTimeStart;
+    private String checkupTimeEnd;
     private String checkupType;
-    private Long duration;
     private String doctorName;
     private String roomName;
 
     public FullCheckupViewDTO() {
     }
 
-    public FullCheckupViewDTO(String id, LocalDate checkupDate, LocalTime checkupTime, String checkupType, Long duration, String doctorName, String roomName) {
-        this.id = id;
-        this.checkupDate = checkupDate.toString();
-        this.checkupTime = checkupTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-        this.checkupType = checkupType;
-        this.duration = duration;
-        this.doctorName = doctorName;
-        this.roomName = roomName;
+    public FullCheckupViewDTO(Checkup checkup) {
+        this.id = Long.toString(checkup.getId());
+        this.checkupDate = checkup.getDate().toString();
+        this.checkupTimeStart = checkup.getStartEnd().getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+        this.checkupTimeEnd = checkup.getStartEnd().getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+        this.checkupType = checkup.getType().getName();
+        this.doctorName = checkup.getDoctor().getName();
+        this.roomName = checkup.getRoom().getName();
     }
 
     public String getId() {
@@ -42,12 +44,20 @@ public class FullCheckupViewDTO {
         this.checkupDate = checkupDate;
     }
 
-    public String getCheckupTime() {
-        return checkupTime;
+    public String getCheckupTimeStart() {
+        return checkupTimeStart;
     }
 
-    public void setCheckupTime(String checkupTime) {
-        this.checkupTime = checkupTime;
+    public void setCheckupTimeStart(String checkupTimeStart) {
+        this.checkupTimeStart = checkupTimeStart;
+    }
+
+    public String getCheckupTimeEnd() {
+        return checkupTimeEnd;
+    }
+
+    public void setCheckupTimeEnd(String checkupTimeEnd) {
+        this.checkupTimeEnd = checkupTimeEnd;
     }
 
     public String getCheckupType() {
@@ -56,14 +66,6 @@ public class FullCheckupViewDTO {
 
     public void setCheckupType(String checkupType) {
         this.checkupType = checkupType;
-    }
-
-    public Long getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Long duration) {
-        this.duration = duration;
     }
 
     public String getDoctorName() {
