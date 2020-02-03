@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
@@ -660,5 +661,62 @@ public class ClinicController {
         }
 
         return checkups;
+    }
+
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getAllPatients")
+    public List<PatientDTO> getAllPatients(Principal p){
+        Clinic clinic = doctorService.findByEmail(p.getName()).getClinic();
+        List<PatientDTO> patients = new ArrayList<PatientDTO>();
+        for(Checkup c : clinic.getCheckups()){
+            boolean isUnique = true;
+            PatientDTO pat = new PatientDTO(c.getPatient());
+            for(PatientDTO pp : patients){
+                if(pp.getEmail().equals(pat.getEmail())){
+                    isUnique=false;
+                    break;
+                }
+            }
+            if(isUnique)
+                patients.add(pat);
+        }
+
+        return patients;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/viewBusinessReport")
+    public @ResponseBody BusinessReportDTO getBusinessReport(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        BusinessReportDTO br = new BusinessReportDTO(clinicService.findById(id));
+        return br;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/viewBusinessReport/{start}/{end}")
+    public @ResponseBody BusinessReportDTO getBusinessReportSE(Principal p, @PathVariable String start, @PathVariable String end){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        HashMap<String,String> hes = new HashMap<String,String>();
+        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(start, formatterDate);
+        LocalDate endDate = LocalDate.parse(end, formatterDate);
+
+        for(Checkup c: clinicService.findById(id).getCheckups()){
+            if(c.isEnded() && c.getDate().isAfter(startDate) && c.getDate().isBefore(endDate)){
+                String val = "";
+                if(hes.containsKey(c.getDate().format(formatterDate))) {
+                    val = hes.get(c.getDate().format(formatterDate));
+                    val = Integer.toString((Integer.parseInt(val)) + 1);
+                    hes.put(c.getDate().format(formatterDate), val);
+                }else{
+                    val = "1";
+                    hes.put(c.getDate().format(formatterDate), val);
+                }
+            }
+        }
+        BusinessReportDTO brep = new BusinessReportDTO();
+        brep.setChart(hes);
+
+        return brep;
     }
 }
