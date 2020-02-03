@@ -32,7 +32,7 @@ public class Person implements Serializable, UserDetails  {
     @Column(nullable = false)
     private String surname;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
     private Address address;
 
@@ -42,11 +42,15 @@ public class Person implements Serializable, UserDetails  {
     @Column(name = "last_password_reset_date")
     private Timestamp lastPasswordResetDate;
 
+    @Column(nullable = false, name="must_change_pass", columnDefinition = "boolean default false")
+    private boolean mustChangePass;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_authority",
             joinColumns = @JoinColumn(name = "person_id", referencedColumnName = "person_id"),
             inverseJoinColumns = @JoinColumn(name = "authority_id", referencedColumnName = "id"))
     private List<Authority> authorities;
+
 
     public Person(){}
 
@@ -118,6 +122,14 @@ public class Person implements Serializable, UserDetails  {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public boolean isMustChangePass() {
+        return mustChangePass;
+    }
+
+    public void setMustChangePass(boolean mustChangePass) {
+        this.mustChangePass = mustChangePass;
     }
 
     @Override

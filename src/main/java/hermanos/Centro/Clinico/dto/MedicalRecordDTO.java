@@ -1,37 +1,14 @@
-package hermanos.Centro.Clinico.model;
+package hermanos.Centro.Clinico.dto;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import hermanos.Centro.Clinico.model.MedicalRecord;
 
-@Entity
-public class MedicalRecord {
+public class MedicalRecordDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "m_record_id", nullable = false, unique = true)
-    private long id;
-
-    @OneToMany(cascade= CascadeType.ALL)
-    @JoinTable(name="m_record_report_mapping",joinColumns=@JoinColumn(name="m_record_id"),inverseJoinColumns=@JoinColumn(name="report_id"))
-    private List<Report> reportHistory = new ArrayList<>();
-
-    @Column
     private String height;
-
-    @Column
     private String weight;
-
-    @Column
     private String bloodType;
-
-    @Column
     private String allergies;
-
-    @Column
     private String diopter;
-
-    @Column
     private int age;
 
     public int getAge() {
@@ -42,21 +19,18 @@ public class MedicalRecord {
         this.age = age;
     }
 
-    public MedicalRecord() {
+    public MedicalRecordDTO() {
     }
 
-    public List<Report> getReportHistory() {
-        return reportHistory;
-    }
+    public MedicalRecordDTO(MedicalRecord medicalRecord){
 
-    public void setReportHistory(List<Report> reportHistory) {
-        this.reportHistory = reportHistory;
+        this.height = medicalRecord.getHeight();
+        this.weight = medicalRecord.getWeight();
+        this.bloodType = medicalRecord.getBloodType();
+        this.age = medicalRecord.getAge();
+        this.diopter = medicalRecord.getDiopter();
+        this.allergies = medicalRecord.getAllergies();
     }
-
-    public void setReport(Report report) {
-        this.reportHistory.add(report);
-    }
-
     public String getHeight() {
         return height;
     }

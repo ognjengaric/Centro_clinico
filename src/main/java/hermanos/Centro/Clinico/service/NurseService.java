@@ -5,9 +5,11 @@ import hermanos.Centro.Clinico.model.Nurse;
 import hermanos.Centro.Clinico.repository.NurseRepository;
 import hermanos.Centro.Clinico.service.interfaces.NurseServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class NurseService implements NurseServiceInterface {
 
     @Autowired

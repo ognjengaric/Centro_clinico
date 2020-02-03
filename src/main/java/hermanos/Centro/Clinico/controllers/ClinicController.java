@@ -3,10 +3,12 @@ package hermanos.Centro.Clinico.controllers;
 
 import hermanos.Centro.Clinico.dto.*;
 import hermanos.Centro.Clinico.model.*;
+import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
@@ -21,6 +24,12 @@ import static java.lang.Integer.parseInt;
 @RestController
 @RequestMapping(value = "/clinic")
 public class ClinicController {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    AuthorityService authorityService;
+
     @Autowired
     ClinicAdministratorServiceInterface clinicAdminService;
 
@@ -235,12 +244,17 @@ public class ClinicController {
         doctor.setEmail(pr.getEmail());
         doctor.setAvgrating("0");
         doctor.setClinic((clinicAdminService.findByEmail(p.getName()).getClinic()));
-        doctor.setPassword(pr.getPassword());
+        doctor.setPassword(passwordEncoder.encode(pr.getPassword()));
         doctor.setName(pr.getName());
         doctor.setSurname(pr.getSurname());
         doctor.setPhoneNumber(pr.getPhoneNumber());
         doctor.setSpecialization(checkupTypeService.findById(pr.getSpecialization()));
         doctor.setShift(new StartEndTime(pr.getStartTime(),pr.getEndTime()));
+        doctor.setMustChangePass(true);
+
+        List<Authority> authorities = authorityService.findByName("DOCTOR");
+        doctor.setAuthorities(authorities);
+
 
         doctorService.save(doctor);
 
@@ -671,6 +685,64 @@ public class ClinicController {
         checkupService.save(checkup);
 
         return ResponseEntity.ok().build();
+    }
+
+
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getAllPatients")
+    public List<PatientDTO> getAllPatients(Principal p){
+        Clinic clinic = doctorService.findByEmail(p.getName()).getClinic();
+        List<PatientDTO> patients = new ArrayList<PatientDTO>();
+        for(Checkup c : clinic.getCheckups()){
+            boolean isUnique = true;
+            PatientDTO pat = new PatientDTO(c.getPatient());
+            for(PatientDTO pp : patients){
+                if(pp.getEmail().equals(pat.getEmail())){
+                    isUnique=false;
+                    break;
+                }
+            }
+            if(isUnique)
+                patients.add(pat);
+        }
+
+        return patients;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/viewBusinessReport")
+    public @ResponseBody BusinessReportDTO getBusinessReport(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        BusinessReportDTO br = new BusinessReportDTO(clinicService.findById(id));
+        return br;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/viewBusinessReport/{start}/{end}")
+    public @ResponseBody BusinessReportDTO getBusinessReportSE(Principal p, @PathVariable String start, @PathVariable String end){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        HashMap<String,String> hes = new HashMap<String,String>();
+        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(start, formatterDate);
+        LocalDate endDate = LocalDate.parse(end, formatterDate);
+
+        for(Checkup c: clinicService.findById(id).getCheckups()){
+            if(c.isEnded() && c.getDate().isAfter(startDate) && c.getDate().isBefore(endDate)){
+                String val = "";
+                if(hes.containsKey(c.getDate().format(formatterDate))) {
+                    val = hes.get(c.getDate().format(formatterDate));
+                    val = Integer.toString((Integer.parseInt(val)) + 1);
+                    hes.put(c.getDate().format(formatterDate), val);
+                }else{
+                    val = "1";
+                    hes.put(c.getDate().format(formatterDate), val);
+                }
+            }
+        }
+        BusinessReportDTO brep = new BusinessReportDTO();
+        brep.setChart(hes);
+
+        return brep;
     }
 
 }
