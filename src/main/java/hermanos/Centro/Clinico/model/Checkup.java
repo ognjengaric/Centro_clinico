@@ -37,10 +37,10 @@ public class Checkup {
     private Room room;
 
     @ManyToOne
-    @JoinColumn(name = "patient", referencedColumnName = "socialSecurityNumber", nullable = true)
+    @JoinColumn(name = "patient_ssn", referencedColumnName = "socialSecurityNumber", nullable = true)
     private Patient patient;
 
-    @ManyToOne
+    @ManyToOne()
     @JoinColumn(name = "checkup_type", referencedColumnName = "checkuptype_id", nullable = true)
     private CheckupType type;
 
