@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -568,18 +569,33 @@ public class ClinicController {
     public ResponseEntity approveCheckupRequest(@RequestBody CheckupPendingDTO cp) {
 
         Checkup c = checkupService.findById(cp.getId());
-//        if(!c.getDoctor().getId().equals(cp.getDoctor_id()))
-//            c.setDoctor(doctorService.findById(cp.getDoctor_id()));
-//
-//        if(!(c.getStartEnd().getStartTime().equals(cp.getStartTime()) && c.getStartEnd().getEndTime().equals(cp.getEndTime())))
-//            c.setStartEnd(new StartEndTime(cp.getStartTime(),cp.getEndTime()));
-//
-//        if(!c.getDate().equals(cp.getDate()))
-//            c.setDate(cp.getDate());
 
         c.setRoom(roomService.findById(cp.getRoom_id()));
         c.setApproved(true);
 
+        checkupService.save(c);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/updateCheckupRequest/{datestr}")
+    public ResponseEntity updateCheckupRequest(@RequestBody CheckupPendingDTO cp, @PathVariable String datestr) {
+
+        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("d-MMM-yyyy");
+        String[] datesplit = datestr.split(" ");
+        String date1 = datesplit[2]+"-"+datesplit[1]+"-"+datesplit[3];
+        LocalDate cdate= LocalDate.parse(date1,formatterDate);
+
+        DateTimeFormatter formatterTime = DateTimeFormatter.ofPattern("HH:mm:ss");
+        String time1 = datesplit[4];
+        LocalTime cstart = LocalTime.parse(time1, formatterTime);
+        LocalTime cend = cstart.plusMinutes(cp.getDuration());
+        Checkup c = checkupService.findById(cp.getId());
+
+        c.setDoctor(doctorService.findById(cp.getDoctor_id()));
+        c.setStartEnd(new StartEndTime(cstart, cend));
+        c.setDate(cdate);
         checkupService.save(c);
 
         return ResponseEntity.ok().build();
@@ -597,19 +613,25 @@ public class ClinicController {
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, path = "/getDocForCheckup/{checkid}")
     public @ResponseBody
-    List<DocNameSurnameDTO> getDocForCheckup(Principal p, @PathVariable String checkid){
+    List<DoctorWorkingScheduleDTO> getDocForCheckup(Principal p, @PathVariable String checkid){
         long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
         Clinic clinic = clinicService.findById(id);
         CheckupType ct = checkupService.findById(Long.parseLong(checkid)).getType();
+
         List<Doctor> docs = clinic.getDoctors();
-        List<DocNameSurnameDTO> doclist = new ArrayList<DocNameSurnameDTO>();
+        List<DoctorWorkingScheduleDTO> doclist = new ArrayList<DoctorWorkingScheduleDTO>();
 
         for(Doctor d : docs){
             if(d.getSpecialization().getId() == ct.getId()){
-                doclist.add(new DocNameSurnameDTO(d));
+                DoctorWorkingScheduleDTO dws = new DoctorWorkingScheduleDTO(d);
+                dws.setId(d.getId());
+                dws.setIme(d.getName());
+                dws.setPrezime(d.getSurname());
+                doclist.add(dws);
             }
         }
         return doclist;
     }
+
 
 }
