@@ -1,7 +1,9 @@
 package hermanos.Centro.Clinico.controllers;
 
+import hermanos.Centro.Clinico.dto.MedicalRecordDTO;
 import hermanos.Centro.Clinico.dto.PatientDTO;
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
+import hermanos.Centro.Clinico.model.MedicalRecord;
 import hermanos.Centro.Clinico.model.Patient;
 import hermanos.Centro.Clinico.security.TokenUtils;
 import hermanos.Centro.Clinico.service.CustomUserDetailsService;
@@ -83,5 +85,16 @@ public class PatientController {
         request.logout();
 
         return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getMedicalRecord")
+    public MedicalRecordDTO getMedicalRecordPatient(Principal principal){
+        Patient patient = (Patient) userDetailsService.loadUserByUsername(principal.getName());
+        MedicalRecord medicalRecord = patient.getMedicalRecord();
+
+        MedicalRecordDTO medicalRecordDTO = new MedicalRecordDTO(medicalRecord);
+
+        return medicalRecordDTO;
     }
 }
