@@ -21,6 +21,9 @@ public class PredefinedCheckup {
     @Column
     private LocalDate date;
 
+    @ManyToOne
+    @JoinColumn(name = "patient_ssn", referencedColumnName = "socialSecurityNumber", nullable = true)
+    private Patient patient;
 
     @ManyToOne
     @JoinColumn(name = "checkup_clinic", referencedColumnName = "clinic_id", nullable = true)
@@ -107,4 +110,11 @@ public class PredefinedCheckup {
         this.room = room;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
+    }
 }

@@ -8,5 +8,6 @@ public interface ClinicServiceInterface {
 
     Clinic findById(long id);
     Clinic save(Clinic clinic);
+    void deleteExpiredPredefinedCheckups(Clinic clinic);
     List<Clinic> findAll();
 }

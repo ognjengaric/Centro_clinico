@@ -1,5 +1,6 @@
 package hermanos.Centro.Clinico.controllers;
 
+import hermanos.Centro.Clinico.dto.FirstPassChangeDTO;
 import hermanos.Centro.Clinico.exception.AccountNotActivatedException;
 import hermanos.Centro.Clinico.exception.AccountPendingException;
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
@@ -19,18 +20,19 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Null;
 import java.security.Principal;
 import java.util.Collection;
 
 @RestController
 @RequestMapping(value = "/auth")
 public class AuthenticationController {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private TokenUtils tokenUtils;
@@ -110,6 +112,9 @@ public class AuthenticationController {
         } catch (ClassCastException e){
 
         }
+            if (person.isMustChangePass()) {
+                return ResponseEntity.ok(true);
+            }
 
         String jwt = tokenUtils.generateToken(person.getEmail());
         int expiresIn = tokenUtils.getExpiredIn();
@@ -133,4 +138,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(roleDTO);
     }
 
+    @RequestMapping(value="/firstPassChange", method = RequestMethod.POST)
+    public ResponseEntity<?> firstPassChange(@RequestBody FirstPassChangeDTO fp){
+        Person person = personService.findByEmail(fp.getEmail());
+        person.setPassword(passwordEncoder.encode(fp.getPassword()));
+        person.setMustChangePass(false);
+        personService.save(person);
+
+        return ResponseEntity.ok(true);
+    }
 }

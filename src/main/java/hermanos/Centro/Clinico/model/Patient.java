@@ -14,8 +14,6 @@ public class Patient extends Person implements Serializable {
     @OneToMany(mappedBy = "patient", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Checkup> checkups = new ArrayList<>();
 
-    /* TODO: 11/9/2019 medical record */
-
     @OneToOne
     @JoinColumn(name = "medical_record", referencedColumnName = "m_record_id")
     private MedicalRecord medicalRecord;

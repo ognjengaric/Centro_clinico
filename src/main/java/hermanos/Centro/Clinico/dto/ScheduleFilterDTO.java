@@ -6,6 +6,7 @@ public class ScheduleFilterDTO {
     private String checkupType;
     private String doctorId;
     private String roomId;
+    private String predefinedCheckupId;
 
     public ScheduleFilterDTO(){}
 
@@ -47,5 +48,13 @@ public class ScheduleFilterDTO {
 
     public void setDoctorId(String doctorId) {
         this.doctorId = doctorId;
+    }
+
+    public String getPredefinedCheckupId() {
+        return predefinedCheckupId;
+    }
+
+    public void setPredefinedCheckupId(String predefinedCheckupId) {
+        this.predefinedCheckupId = predefinedCheckupId;
     }
 }

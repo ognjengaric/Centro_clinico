@@ -1,15 +1,21 @@
 package hermanos.Centro.Clinico.dto;
 
 import hermanos.Centro.Clinico.model.MedicalRecord;
+import hermanos.Centro.Clinico.model.Report;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MedicalRecordDTO {
 
-    private float height;
-    private float weight;
+    private String height;
+    private String weight;
     private String bloodType;
     private String allergies;
     private String diopter;
     private int age;
+
+    private List<ReportDTO> reports = new ArrayList<>();
 
     public int getAge() {
         return age;
@@ -30,20 +36,25 @@ public class MedicalRecordDTO {
         this.age = medicalRecord.getAge();
         this.diopter = medicalRecord.getDiopter();
         this.allergies = medicalRecord.getAllergies();
+
+        for(Report report: medicalRecord.getReportHistory()){
+            this.reports.add(new ReportDTO(report));
+        }
     }
-    public float getHeight() {
+
+    public String getHeight() {
         return height;
     }
 
-    public void setHeight(float height) {
+    public void setHeight(String height) {
         this.height = height;
     }
 
-    public float getWeight() {
+    public String getWeight() {
         return weight;
     }
 
-    public void setWeight(float weight) {
+    public void setWeight(String weight) {
         this.weight = weight;
     }
 
@@ -69,5 +80,13 @@ public class MedicalRecordDTO {
 
     public void setDiopter(String diopter) {
         this.diopter = diopter;
+    }
+
+    public List<ReportDTO> getReports() {
+        return reports;
+    }
+
+    public void setReports(List<ReportDTO> reports) {
+        this.reports = reports;
     }
 }

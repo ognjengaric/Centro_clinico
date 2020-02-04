@@ -3,10 +3,12 @@ package hermanos.Centro.Clinico.controllers;
 
 import hermanos.Centro.Clinico.dto.*;
 import hermanos.Centro.Clinico.model.*;
+import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static java.lang.Integer.parseInt;
@@ -21,6 +24,12 @@ import static java.lang.Integer.parseInt;
 @RestController
 @RequestMapping(value = "/clinic")
 public class ClinicController {
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    AuthorityService authorityService;
+
     @Autowired
     ClinicAdministratorServiceInterface clinicAdminService;
 
@@ -37,7 +46,7 @@ public class ClinicController {
     PersonServiceInterface personService;
 
     @Autowired
-    PredefinedCheckupServiceInterface checkupDateService;
+    PredefinedCheckupServiceInterface predefinedCheckupService;
 
     @Autowired
     CheckupTypeServiceInterface checkupTypeService;
@@ -80,7 +89,7 @@ public class ClinicController {
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/removeCheckupDate")
     public ResponseEntity removeCheckupDate(@RequestBody PredefinedCheckup cd) {
-        checkupDateService.deleteById(cd.getId());
+        predefinedCheckupService.deleteById(cd.getId());
 
         return ResponseEntity.ok().build();
     }
@@ -235,12 +244,17 @@ public class ClinicController {
         doctor.setEmail(pr.getEmail());
         doctor.setAvgrating("0");
         doctor.setClinic((clinicAdminService.findByEmail(p.getName()).getClinic()));
-        doctor.setPassword(pr.getPassword());
+        doctor.setPassword(passwordEncoder.encode(pr.getPassword()));
         doctor.setName(pr.getName());
         doctor.setSurname(pr.getSurname());
         doctor.setPhoneNumber(pr.getPhoneNumber());
         doctor.setSpecialization(checkupTypeService.findById(pr.getSpecialization()));
         doctor.setShift(new StartEndTime(pr.getStartTime(),pr.getEndTime()));
+        doctor.setMustChangePass(true);
+
+        List<Authority> authorities = authorityService.findByName("DOCTOR");
+        doctor.setAuthorities(authorities);
+
 
         doctorService.save(doctor);
 
@@ -453,15 +467,7 @@ public class ClinicController {
 
         Patient patient = (Patient) personService.findByEmail(principal.getName());
 
-        CheckupType type = checkupTypeService.findByName(filterDTO.getCheckupType());
-        Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId()));
-        Clinic clinic = clinicService.findById(doctor.getClinic().getId());
-
-        LocalDate date = LocalDate.parse(filterDTO.getCheckupDate());
-        LocalTime startTime = LocalTime.parse(filterDTO.getCheckupTime());
-        LocalTime endTime = startTime.plusMinutes(type.getDuration());
-
-        Checkup checkup = new Checkup(date, startTime, endTime, doctor, type, clinic, patient);
+       Checkup checkup = checkupService.makeNewCheckup(filterDTO, patient, false);
 
         if (!checkupService.isValid(checkup))
             return ResponseEntity.badRequest().build();
@@ -486,10 +492,10 @@ public class ClinicController {
 
         PredefinedCheckup checkup = new PredefinedCheckup(date, startTime, endTime, doctor, type, clinic, room);
 
-        if (!checkupDateService.isValid(checkup))
+        if (!predefinedCheckupService.isValid(checkup))
             return ResponseEntity.badRequest().build();
 
-        checkupDateService.save(checkup);
+        predefinedCheckupService.save(checkup);
 
         return ResponseEntity.ok().build();
     }
@@ -648,4 +654,95 @@ public class ClinicController {
 
         return checkups;
     }
+
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getPredefinedCheckups/{id}")
+    public List<FullCheckupViewDTO> getPredefinedCheckupsForClinic(@PathVariable String id){
+        Clinic clinic = clinicService.findById(Long.parseLong(id));
+
+        clinicService.deleteExpiredPredefinedCheckups(clinic);
+
+        List<FullCheckupViewDTO> predefinedCheckups = new ArrayList<>();
+
+        for(PredefinedCheckup checkup : clinic.getPredefinedCheckups()){
+            predefinedCheckups.add(new FullCheckupViewDTO(checkup));
+        }
+
+        return predefinedCheckups;
+    }
+
+    @PreAuthorize("hasAuthority('PATIENT')")
+    @RequestMapping(method = RequestMethod.POST, path = "/schedulePredefined")
+    public ResponseEntity schedulePredefinedCheckup(@RequestBody ScheduleFilterDTO filterDTO, Principal principal) {
+
+        Patient patient = (Patient) personService.findByEmail(principal.getName());
+
+        Checkup checkup = checkupService.makeNewCheckup(filterDTO, patient, true);
+
+        if (!checkupService.isValid(checkup))
+            return ResponseEntity.badRequest().build();
+
+        checkupService.save(checkup);
+
+        return ResponseEntity.ok().build();
+    }
+
+
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getAllPatients")
+    public List<PatientDTO> getAllPatients(Principal p){
+        Clinic clinic = doctorService.findByEmail(p.getName()).getClinic();
+        List<PatientDTO> patients = new ArrayList<PatientDTO>();
+        for(Checkup c : clinic.getCheckups()){
+            boolean isUnique = true;
+            PatientDTO pat = new PatientDTO(c.getPatient());
+            for(PatientDTO pp : patients){
+                if(pp.getEmail().equals(pat.getEmail())){
+                    isUnique=false;
+                    break;
+                }
+            }
+            if(isUnique)
+                patients.add(pat);
+        }
+
+        return patients;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/viewBusinessReport")
+    public @ResponseBody BusinessReportDTO getBusinessReport(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        BusinessReportDTO br = new BusinessReportDTO(clinicService.findById(id));
+        return br;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/viewBusinessReport/{start}/{end}")
+    public @ResponseBody BusinessReportDTO getBusinessReportSE(Principal p, @PathVariable String start, @PathVariable String end){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        HashMap<String,String> hes = new HashMap<String,String>();
+        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(start, formatterDate);
+        LocalDate endDate = LocalDate.parse(end, formatterDate);
+
+        for(Checkup c: clinicService.findById(id).getCheckups()){
+            if(c.isEnded() && c.getDate().isAfter(startDate) && c.getDate().isBefore(endDate)){
+                String val = "";
+                if(hes.containsKey(c.getDate().format(formatterDate))) {
+                    val = hes.get(c.getDate().format(formatterDate));
+                    val = Integer.toString((Integer.parseInt(val)) + 1);
+                    hes.put(c.getDate().format(formatterDate), val);
+                }else{
+                    val = "1";
+                    hes.put(c.getDate().format(formatterDate), val);
+                }
+            }
+        }
+        BusinessReportDTO brep = new BusinessReportDTO();
+        brep.setChart(hes);
+
+        return brep;
+    }
+
 }
