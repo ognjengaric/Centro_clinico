@@ -7,10 +7,15 @@ import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,6 +33,12 @@ public class ClinicController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
+    JavaMailSender javaMailSender;
+
+    @Autowired
+    AbsenceRequestServiceInterface absenceRequestService;
+
+    @Autowired
     AuthorityService authorityService;
 
     @Autowired
@@ -41,6 +52,9 @@ public class ClinicController {
 
     @Autowired
     DoctorServiceInterface doctorService;
+
+    @Autowired
+    NurseServiceInterface nurseService;
 
     @Autowired
     PersonServiceInterface personService;
@@ -248,7 +262,8 @@ public class ClinicController {
         doctor.setName(pr.getName());
         doctor.setSurname(pr.getSurname());
         doctor.setPhoneNumber(pr.getPhoneNumber());
-        doctor.setSpecialization(checkupTypeService.findById(pr.getSpecialization()));
+        CheckupType ct = checkupTypeService.findById(pr.getSpecialization());
+        doctor.setSpecialization(ct);
         doctor.setShift(new StartEndTime(pr.getStartTime(),pr.getEndTime()));
         doctor.setMustChangePass(true);
 
@@ -743,6 +758,98 @@ public class ClinicController {
         brep.setChart(hes);
 
         return brep;
+    }
+
+    @PreAuthorize("hasAuthority('DOCTOR') or hasAuthority('NURSE')")
+    @RequestMapping(method = RequestMethod.POST, path = "/createAbsenceRequest")
+    public ResponseEntity createAbsenceRequest(@RequestBody AbsenceRequestDTO arDTO, Principal p) {
+
+        Person person = personService.findByEmail(p.getName());
+        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate startDate = LocalDate.parse(arDTO.getStartDate(), formatterDate);
+        LocalDate endDate = LocalDate.parse(arDTO.getEndDate(), formatterDate);
+
+        AbsenceRequest ar = new AbsenceRequest();
+        ar.setApproved(false);
+        ar.setPerson(person);
+        ar.setPeriod(new StartEndDate(startDate, endDate));
+        ar.setReviewed(false);
+        ar.setType(arDTO.getType());
+
+        absenceRequestService.save(ar);
+
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.GET, path = "/getPendingAbsenceRequests")
+    public @ResponseBody List<AbsenceRequestDTO> getPendingAbsenceRequests(Principal p){
+        long id = clinicAdminService.findByEmail(p.getName()).getClinic().getId();
+        List<AbsenceRequest> rqs = absenceRequestService.findAll();
+        List<AbsenceRequestDTO> rqsDTO = new ArrayList<AbsenceRequestDTO>();
+        for(AbsenceRequest ar : rqs){
+            if(!ar.isReviewed()){
+                boolean thisClinic = false;
+                String role = "";
+                if(doctorService.findById(ar.getPerson().getId()) != null){
+                    if(doctorService.findById(ar.getPerson().getId()).getClinic().getId() == id) {
+                        thisClinic = true;
+                        role = "DOCTOR";
+                    }
+                } else if(nurseService.findById(ar.getPerson().getId()) != null){
+                    if(nurseService.findById(ar.getPerson().getId()).getClinic().getId() == id) {
+                        thisClinic = true;
+                        role = "NURSE";
+                    }
+                }
+                if(thisClinic){
+                    AbsenceRequestDTO arDTO = new AbsenceRequestDTO(ar, role);
+                    rqsDTO.add(arDTO);
+                }
+            }
+        }
+
+        return rqsDTO;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/approveAbsenceRequest")
+    public ResponseEntity denyAbsenceRequest(@RequestBody AbsenceRequestDTO arDTO, Principal p) {
+        AbsenceRequest ar = absenceRequestService.findById(arDTO.getId());
+        ar.setReviewed(true);
+        ar.setApproved(arDTO.isApproved());
+        ar.setReason(arDTO.getReason());
+        absenceRequestService.save(ar);
+        try {
+            String appdec = "";
+            if(ar.isApproved()) {
+                appdec = "approved";
+            }else{
+                appdec = "declined";
+            }
+            sendAbsenceRequestEmail(ar.getPerson().getEmail(), ar.getPerson().getName(), ar.getPerson().getSurname(), appdec, ar.getReason());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.ok().build();
+    }
+    void sendAbsenceRequestEmail(String sendTo, String firstName, String lastName, String appdec, String reason) throws MessagingException, IOException {
+
+        MimeMessage msg = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(msg, true);
+        helper.setTo(sendTo);
+
+        helper.setSubject("Centro Clinico account registration");
+        String text = "Dear "+ firstName + " " + lastName + ", " + '\n';
+        text += "Your absence request was reviewed and " + appdec + " by our clinic administrator.\n\nReason:\n"+reason+"\n\n\n";
+        text += "Sincerely, Centro Clinico support team.";
+        helper.setText(text);
+
+        javaMailSender.send(msg);
+
     }
 
 }

@@ -2,6 +2,10 @@ INSERT INTO start_end_time (time_id, start_time, end_time) values (-1, '07:00:00
 INSERT INTO start_end_time (time_id, start_time, end_time) values (-2, '09:00:00', '10:00:00');
 INSERT INTO start_end_time (time_id, start_time, end_time) values (-3, '09:00:00', '10:00:00');
 
+
+INSERT INTO start_end_date (dates_id, start_date, end_date) values (-1, '2020-01-25', '2020-01-27');
+INSERT INTO start_end_date (dates_id, start_date, end_date) values (-2, '2020-02-15', '2020-02-25');
+
 INSERT INTO address (address_id, city, country, number, postcode, street) values (-1, 'Novi Sad', 'Serbia', '27',
 '21000', 'Jovana Ducica');
 
@@ -59,3 +63,5 @@ INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, c
 INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-5,-3,-1,0,-1, true, true, true, '2020-01-27',-1, '2108379121');
 INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-6,-3,-1,0,-1, true, true, true, '2020-01-28',-1, '2108379121');
 
+INSERT INTO absence_request(id, approved, reviewed, type, start_end_date, absencerq_person) values (-1, false, false, 'vacation', -1, -1);
+INSERT INTO absence_request(id, approved, reviewed, type, start_end_date, absencerq_person) values (-2, false, false, 'absence', -2, -1);
