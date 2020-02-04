@@ -12,11 +12,11 @@ public class Report implements Serializable {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name="diagnosis", referencedColumnName = "diagnosis_id")
+    @JoinColumn(name="diagnosis_id", referencedColumnName = "diagnosis_id")
     private Diagnosis diagnosis;
 
     @OneToOne
-    @JoinColumn(name = "prescription", referencedColumnName = "prescription_id")
+    @JoinColumn(name = "prescription_id", referencedColumnName = "prescription_id")
     private Prescription prescription;
 
     @Column(nullable = true)
