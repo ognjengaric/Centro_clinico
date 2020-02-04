@@ -170,14 +170,20 @@ public class ClinicalCenterAdministratorController {
 
     @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getMedicalRecord/{id}")
-    public ResponseEntity<?> getMedicalRecord(@PathVariable("id") String id){
+    public MedicalRecordDTO getMedicalRecord(@PathVariable("id") String id){
         id += ".com";
         Patient p = (Patient) personService.findByEmail(id);
+//        if(p == null){
+//            throw new ResourceConflictException("Patient not found.");
+//        }
+
         MedicalRecord md = p.getMedicalRecord();
+
+
 
         MedicalRecordDTO mdDTO = new MedicalRecordDTO(md);
 
-        return ResponseEntity.ok(mdDTO);
+        return mdDTO;
     }
 /*
     @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
