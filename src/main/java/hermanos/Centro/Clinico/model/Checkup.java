@@ -50,6 +50,16 @@ public class Checkup {
     private boolean isStarted;
     @Column
     private boolean isEnded;
+    @Column
+    private boolean isOperation;
+
+    public boolean isOperation() {
+        return isOperation;
+    }
+
+    public void setOperation(boolean operation) {
+        isOperation = operation;
+    }
 
     public Checkup(){}
 

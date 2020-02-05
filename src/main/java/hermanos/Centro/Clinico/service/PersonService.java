@@ -1,5 +1,6 @@
 package hermanos.Centro.Clinico.service;
 
+import hermanos.Centro.Clinico.model.Patient;
 import hermanos.Centro.Clinico.model.Person;
 import hermanos.Centro.Clinico.repository.PersonRepository;
 import hermanos.Centro.Clinico.service.interfaces.PersonServiceInterface;
