@@ -2,6 +2,7 @@ package hermanos.Centro.Clinico.controllers;
 
 
 import hermanos.Centro.Clinico.dto.*;
+import hermanos.Centro.Clinico.exception.ResourceConflictException;
 import hermanos.Centro.Clinico.model.*;
 import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.interfaces.*;
@@ -110,16 +111,39 @@ public class ClinicController {
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/removeCheckupType")
-    public ResponseEntity removeCheckupType(@RequestBody CheckupType ct) {
-        checkupTypeService.deleteById(ct.getId());
+    public ResponseEntity removeCheckupType(@RequestBody CheckupType ct, Principal p) {
+        Clinic clinic = clinicAdminService.findByEmail(p.getName()).getClinic();
+        boolean canDelete = true;
+        for(Doctor dr: clinic.getDoctors()){
+            if(dr.getSpecialization().getId() == ct.getId())
+                canDelete=false;
+        }
+        if(canDelete) {
+            checkupTypeService.deleteById(ct.getId());
+        }else{
+            throw new ResourceConflictException("Checkup type cant be deleted if there are doctors who specialize in it!");
+        }
 
         return ResponseEntity.ok().build();
     }
 
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/removeRoom")
-    public ResponseEntity removeRoom(@RequestBody Room room) {
-        roomService.deleteById(room.getId());
+    public ResponseEntity removeRoom(@RequestBody Room room, Principal p) {
+        Clinic clinic = clinicAdminService.findByEmail(p.getName()).getClinic();
+        boolean canDelete = true;
+        for(Checkup c: clinic.getCheckups()){
+            if(c.isApproved()) {
+                if (c.getRoom().getId() == room.getId()){
+                    canDelete = false;
+                }
+            }
+        }
+        if(canDelete) {
+            roomService.deleteById(room.getId());
+        }else{
+            throw new ResourceConflictException("Room cant be deleted if there are checkups scheduled in it!");
+        }
 
         return ResponseEntity.ok().build();
     }
@@ -127,7 +151,15 @@ public class ClinicController {
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/removeDoctor")
     public ResponseEntity removeDoctor(@RequestBody Doctor dr) {
-        doctorService.deleteById(dr.getId());
+        Doctor d = doctorService.findById(dr.getId());
+        if(d.getCheckups().isEmpty()) {
+            d.setAuthorities(null);
+            d.setSpecialization(null);
+            doctorService.save(d);
+            doctorService.deleteById(dr.getId());
+        }else{
+            throw new ResourceConflictException("Doctor cant be deleted because he has scheduled checkups!");
+        }
 
         return ResponseEntity.ok().build();
     }
