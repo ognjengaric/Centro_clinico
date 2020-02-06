@@ -28,7 +28,7 @@ public class FullCheckupViewDTO {
         this.checkupTimeStart = checkup.getStartEnd().getStartTime().format(DateTimeFormatter.ofPattern("HH:mm"));
         this.checkupTimeEnd = checkup.getStartEnd().getEndTime().format(DateTimeFormatter.ofPattern("HH:mm"));
         this.checkupType = checkup.getType().getName();
-        this.doctorName = checkup.getDoctor().getName();
+        this.doctorName = checkup.getDoctor().getName() + " " + checkup.getDoctor().getSurname();
         this.roomName = checkup.getRoom().getName();
         this.clinicName = checkup.getClinic().getName();
         this.doctorId = Long.toString(checkup.getDoctor().getId());

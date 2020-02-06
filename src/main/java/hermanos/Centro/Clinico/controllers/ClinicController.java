@@ -288,7 +288,6 @@ public class ClinicController {
         Doctor doctor = new Doctor();
         doctor.setAddress(adr);
         doctor.setEmail(pr.getEmail());
-        doctor.setAvgrating("0");
         doctor.setClinic((clinicAdminService.findByEmail(p.getName()).getClinic()));
         doctor.setPassword(passwordEncoder.encode(pr.getPassword()));
         doctor.setName(pr.getName());
@@ -570,7 +569,7 @@ public class ClinicController {
 
         List<CheckupPendingDTO> pendinglist = new ArrayList<CheckupPendingDTO>();
         for(Checkup c : checkups){
-            if(!c.isApproved() && !c.isStarted() && !c.isEnded()){
+            if(!c.isApproved() && !c.isStarted() && !c.isEnded() && !c.isPendingPatient()){
                 pendinglist.add(new CheckupPendingDTO(c.getId(),c.getDate(),c.getStartEnd().getStartTime(),
                         c.getStartEnd().getEndTime(), c.getDoctor().getId(),
                         c.getDoctor().getName() + " " + c.getDoctor().getSurname()));
@@ -624,7 +623,22 @@ public class ClinicController {
         Checkup c = checkupService.findById(cp.getId());
 
         c.setRoom(roomService.findById(cp.getRoom_id()));
-        c.setApproved(true);
+
+        if(c.isUpdated()){
+            try {
+                clinicService.mailAppointmentUpdated(c);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            c.setPendingPatient(true);
+        } else {
+            try {
+                clinicService.mailAppointment(c, true);
+            } catch (MessagingException e) {
+                e.printStackTrace();
+            }
+            c.setApproved(true);
+        }
 
         checkupService.save(c);
 
@@ -649,6 +663,7 @@ public class ClinicController {
         c.setDoctor(doctorService.findById(cp.getDoctor_id()));
         c.setStartEnd(new StartEndTime(cstart, cend));
         c.setDate(cdate);
+        c.setUpdated(true);
         checkupService.save(c);
 
         return ResponseEntity.ok().build();
@@ -657,6 +672,12 @@ public class ClinicController {
     @PreAuthorize("hasAuthority('CLINIC_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, path = "/denyCheckupRequest")
     public ResponseEntity denyCheckupRequest(@RequestBody CheckupPendingDTO cp) {
+
+        try {
+            clinicService.mailAppointment(checkupService.findById(cp.getId()), false);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
 
         checkupService.deleteById(cp.getId());
 

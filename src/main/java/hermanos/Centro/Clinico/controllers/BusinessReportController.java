@@ -46,7 +46,7 @@ public class BusinessReportController {
             docrat.setId(dr.getId());
             docrat.setName(dr.getName());
             docrat.setSurname(dr.getSurname());
-            docrat.setAvgrating(dr.getAvgrating());
+            docrat.setAvgrating(Float.toString(dr.calculateAverageRating()));
             docratlist.add(docrat);
         }
 
