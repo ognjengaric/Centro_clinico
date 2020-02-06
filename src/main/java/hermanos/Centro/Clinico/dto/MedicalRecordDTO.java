@@ -30,8 +30,8 @@ public class MedicalRecordDTO {
 
     public MedicalRecordDTO(MedicalRecord medicalRecord){
 
-        this.height = medicalRecord.getHeight();
-        this.weight = medicalRecord.getWeight();
+        this.height = Float.toString(medicalRecord.getHeight());
+        this.weight = Float.toString(medicalRecord.getWeight());
         this.bloodType = medicalRecord.getBloodType();
         this.age = medicalRecord.getAge();
         this.diopter = medicalRecord.getDiopter();

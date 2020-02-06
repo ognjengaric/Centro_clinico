@@ -17,10 +17,10 @@ public class MedicalRecord {
     private List<Report> reportHistory = new ArrayList<>();
 
     @Column
-    private String height;
+    private float height;
 
     @Column
-    private String weight;
+    private float weight;
 
     @Column
     private String bloodType;
@@ -57,19 +57,19 @@ public class MedicalRecord {
         this.reportHistory.add(report);
     }
 
-    public String getHeight() {
+    public float getHeight() {
         return height;
     }
 
-    public void setHeight(String height) {
+    public void setHeight(float height) {
         this.height = height;
     }
 
-    public String getWeight() {
+    public float getWeight() {
         return weight;
     }
 
-    public void setWeight(String weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 
