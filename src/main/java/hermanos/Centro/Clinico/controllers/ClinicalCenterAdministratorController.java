@@ -169,48 +169,26 @@ public class ClinicalCenterAdministratorController {
     }
 
     @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
-    @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getMedicalRecord/{id}")
-    public ResponseEntity<?> getMedicalRecord(@PathVariable("id") String id){
-        id += ".com";
-        Patient p = (Patient) personService.findByEmail(id);
+    @RequestMapping(method = RequestMethod.GET, path = "/getMedical/{id}")
+    public MedicalRecordDTO getMedicalRecordDoctor(@PathVariable String id){
+
+        Patient p = patientService.findBySocialSecurityNumber(id);
+
         MedicalRecord md = p.getMedicalRecord();
-
         MedicalRecordDTO mdDTO = new MedicalRecordDTO(md);
-
-        return ResponseEntity.ok(mdDTO);
+        return mdDTO;
     }
-/*
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
-    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/doCheckup")
-    public ResponseEntity doCheckup(@RequestBody Checkup checkup){
+//    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+//    @RequestMapping(method = RequestMethod.GET, path = "/getMedical")
+//    public MedicalRecordDTO getMedicalRecordDoctor(){
+//
+//        List<Person> p_list = personService.findAll();
+//        Patient p = (Patient) p_list.get(p_list.size()-1);
+//        MedicalRecord md = p.getMedicalRecord();
+//        MedicalRecordDTO mdDTO = new MedicalRecordDTO(md);
+//        return mdDTO;
+//    }
 
-        try {
-            Collection<Medicine> list = checkup.getPrescription().getMedicine_list();
-            Prescription p = checkup.getPrescription();
-
-            for (Medicine m : list) {
-                Medicine med = medicineService.findById(m.getId());
-                med.setPrescription(p);
-                //checkup.getPrescription().getMedicine(m).setPrescription(p);
-                medicineService.save(med);
-                prescriptionService.save(checkup.getPrescription());
-                checkup.setPrescription(checkup.getPrescription());
-            }
-        }
-        catch(NullPointerException e){
-
-        }
-        //Diagnosis diag = diagnosisService.findById(checkup.getDiagnosis().getId());
-        //diag.setCheckup_diag(checkup);
-        //diagnosisService.save(diag);
-        //Prescription pre = prescriptionService.findById(checkup.getPrescription().getId());
-        //pre.setCheckup_pre(checkup);
-        //prescriptionService.save(pre);
-
-        checkupService.save(checkup);
-
-        return ResponseEntity.ok().build();
-    }*/
 
 //    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
 //    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/doCheckup")
@@ -227,6 +205,27 @@ public class ClinicalCenterAdministratorController {
 //        return ResponseEntity.ok().build();
 //    }
 
+
+    //RADI ZA MAIL
+//    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+//    @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/doCheckup/{id}")
+//    public ResponseEntity doCheckup(@RequestBody Report report, @PathVariable("id") String id){
+//
+//        if(hasPrescription){
+//            List<Prescription> p_list = prescriptionService.findAll();
+//            Prescription prescription = p_list.get(p_list.size() - 1);
+//            report.setPrescription(prescription);
+//        }
+//        hasPrescription = false;
+//        id += ".com";
+//        Patient pat = (Patient) personService.findByEmail(id);
+//        pat.getMedicalRecord().setReport(report);
+//        personService.save(pat);
+//        reportService.save(report);
+//
+//        return ResponseEntity.ok().build();
+//    }
+
     @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/doCheckup/{id}")
     public ResponseEntity doCheckup(@RequestBody Report report, @PathVariable("id") String id){
@@ -237,8 +236,7 @@ public class ClinicalCenterAdministratorController {
             report.setPrescription(prescription);
         }
         hasPrescription = false;
-        id += ".com";
-        Patient pat = (Patient) personService.findByEmail(id);
+        Patient pat = patientService.findBySocialSecurityNumber(id);
         pat.getMedicalRecord().setReport(report);
         personService.save(pat);
         reportService.save(report);
