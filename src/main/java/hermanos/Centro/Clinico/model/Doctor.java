@@ -13,9 +13,6 @@ public class Doctor extends Person implements Serializable {
     @JoinColumn(name = "doctor_clinic", referencedColumnName = "clinic_id", nullable = true)
     private Clinic doctor_clinic;
 
-    @Column(nullable = true)
-    private String avgrating;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "shift", referencedColumnName = "time_id", nullable = true)
     private StartEndTime shift;
@@ -34,8 +31,23 @@ public class Doctor extends Person implements Serializable {
     @OneToMany(mappedBy = "doctor", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<PredefinedCheckup> checkupdates = new ArrayList<>();
 
+    @OneToMany(mappedBy = "doctor")
+    private List<PatientDoctorRating> beingRated;
+
     public Doctor(){
         super();
+    }
+
+    public float calculateAverageRating(){
+        int sum = 0;
+
+        for(PatientDoctorRating patientDoctorRating : beingRated){
+            sum += patientDoctorRating.getRating();
+        }
+        if(beingRated.size() != 0)
+            return sum/beingRated.size();
+        else
+            return 0;
     }
 
     public Clinic getClinic() {
@@ -44,14 +56,6 @@ public class Doctor extends Person implements Serializable {
 
     public void setClinic(Clinic clinic) {
         this.doctor_clinic = clinic;
-    }
-
-    public String getAvgrating() {
-        return avgrating;
-    }
-
-    public void setAvgrating(String avgrating) {
-        this.avgrating = avgrating;
     }
 
     public Clinic getDoctor_clinic() {
@@ -92,5 +96,21 @@ public class Doctor extends Person implements Serializable {
 
     public void setSpecialization(CheckupType specialization) {
         this.specialization = specialization;
+    }
+
+    public List<PredefinedCheckup> getCheckupdates() {
+        return checkupdates;
+    }
+
+    public void setCheckupdates(List<PredefinedCheckup> checkupdates) {
+        this.checkupdates = checkupdates;
+    }
+
+    public List<PatientDoctorRating> getBeingRated() {
+        return beingRated;
+    }
+
+    public void setBeingRated(List<PatientDoctorRating> beingRated) {
+        this.beingRated = beingRated;
     }
 }

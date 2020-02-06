@@ -13,7 +13,7 @@ import java.util.List;
 public class BusinessReportDTO {
 
     private List<DocRatingDTO> doctors = new ArrayList<>();
-    private float rating;
+    private long rating;
     private HashMap<String, String> chart = new HashMap<>();
 
     public BusinessReportDTO(Clinic c) {
@@ -21,7 +21,7 @@ public class BusinessReportDTO {
         int i = 0;
         for(Doctor d: c.getDoctors()){
             this.doctors.add(new DocRatingDTO(d));
-            this.rating += Float.parseFloat(d.getAvgrating());
+            this.rating += d.calculateAverageRating();
             i++;
         }
         this.rating = this.rating/i;
@@ -37,11 +37,11 @@ public class BusinessReportDTO {
         this.doctors = doctors;
     }
 
-    public float getRating() {
+    public long getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public void setRating(long rating) {
         this.rating = rating;
     }
 
