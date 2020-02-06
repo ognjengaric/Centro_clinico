@@ -43,6 +43,12 @@ public class MedicalRecord {
     }
 
     public MedicalRecord() {
+        this.height = 190;
+        this.weight = 80;
+        this.bloodType = "nulta";
+        this.age = 21;
+        this.allergies = "nema";
+        this.diopter = "astegmatizam";
     }
 
     public List<Report> getReportHistory() {

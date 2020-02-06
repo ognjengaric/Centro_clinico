@@ -8,8 +8,8 @@ import java.util.List;
 
 public class MedicalRecordDTO {
 
-    private String height;
-    private String weight;
+    private float height;
+    private float weight;
     private String bloodType;
     private String allergies;
     private String diopter;
@@ -42,19 +42,19 @@ public class MedicalRecordDTO {
         }
     }
 
-    public String getHeight() {
+    public float getHeight() {
         return height;
     }
 
-    public void setHeight(String height) {
+    public void setHeight(float height) {
         this.height = height;
     }
 
-    public String getWeight() {
+    public float getWeight() {
         return weight;
     }
 
-    public void setWeight(String weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 

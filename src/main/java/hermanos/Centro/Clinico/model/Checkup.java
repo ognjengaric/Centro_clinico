@@ -49,11 +49,14 @@ public class Checkup {
     @Column
     private boolean isStarted;
     @Column
-    private boolean isEnded;
+    private boolean isEnded;    
     @Column
     private boolean isPendingPatient;
     @Column
     private boolean isUpdated;
+    @Column
+    private boolean isOperation;
+
 
     public Checkup(){}
 
@@ -176,5 +179,14 @@ public class Checkup {
 
     public void setUpdated(boolean updated) {
         isUpdated = updated;
+    }
+  
+  
+    public boolean isOperation() {
+        return isOperation;
+    }
+
+    public void setOperation(boolean operation) {
+        isOperation = operation;
     }
 }

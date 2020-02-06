@@ -9,6 +9,7 @@ public interface PersonServiceInterface {
 
     public Person findById(long id);
     public Person findByEmail(String email);
+
     public Person save(Person person);
     public List<Person> findAll();
 }
