@@ -573,7 +573,7 @@ public class ClinicController {
             if(!c.isApproved() && !c.isStarted() && !c.isEnded()){
                 pendinglist.add(new CheckupPendingDTO(c.getId(),c.getDate(),c.getStartEnd().getStartTime(),
                         c.getStartEnd().getEndTime(), c.getDoctor().getId(),
-                        c.getDoctor().getName() + " " + c.getDoctor().getSurname()));
+                        c.getDoctor().getName() + " " + c.getDoctor().getSurname(), c.isOperation()));
             }
         }
 
@@ -884,4 +884,29 @@ public class ClinicController {
 
     }
 
+    @PreAuthorize("hasAuthority('DOCTOR')")
+    @RequestMapping(method = RequestMethod.POST, path = "/scheduleAnotherCheckup")
+    public ResponseEntity scheduleAnotherCheckup(@RequestBody CheckupPendingDTO cpDTO) {
+        Checkup temp_c = checkupService.findById(cpDTO.getId());
+        Checkup c = new Checkup();
+
+        if(temp_c.isStarted() && !temp_c.isEnded()) {
+            c.setPatient(temp_c.getPatient());
+            c.setClinic(temp_c.getClinic());
+            c.setStartEnd(new StartEndTime(cpDTO.getStartTime(), cpDTO.getEndTime()));
+            c.setApproved(false);
+            c.setDate(cpDTO.getDate());
+            c.setDoctor(temp_c.getDoctor());
+            c.setEnded(false);
+            c.setStarted(false);
+            c.setOperation(cpDTO.isOperation());
+            c.setType(temp_c.getType());
+            checkupService.save(c);
+        }else{
+            throw new ResourceConflictException("Your checkup has already ended, or hasnt even started!");
+        }
+
+
+        return ResponseEntity.ok().build();
+    }
 }

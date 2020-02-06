@@ -50,7 +50,7 @@ public class Checkup {
     private boolean isStarted;
     @Column
     private boolean isEnded;
-    @Column
+    @Column(columnDefinition = "boolean default false")
     private boolean isOperation;
 
     public boolean isOperation() {
@@ -167,4 +167,5 @@ public class Checkup {
     public void setPatient(Patient patient) {
         this.patient = patient;
     }
+
 }
