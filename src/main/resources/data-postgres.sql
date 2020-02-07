@@ -26,9 +26,9 @@ address, last_password_reset_date, activated) values ('PATIENT', -2, 'patient@gm
 
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
-address, last_password_reset_date, doctor_clinic, avgrating, specialization_checkuptype_id, shift, must_change_pass) values ('DOCTOR', -1, 'doctor@gmail.com', 'Prvi',
+address, last_password_reset_date, doctor_clinic, specialization_checkuptype_id, shift, must_change_pass) values ('DOCTOR', -1, 'doctor@gmail.com', 'Prvi',
 '$2y$12$7dK59rknCeqTXmxU8vszremre2A5F.XScnFOeSuJPtdhRaifoIrlO', '0643325333', 'Doktor', null, 0,
-'2019-12-01 09:00:01', 0, 1.5, -1, -1, true);
+'2019-12-01 09:00:01', 0, -1, -1, true);
 
 INSERT INTO person (discriminator, person_id, email, name, password, phone_number, surname, social_security_number,
 address, last_password_reset_date, admin_clinic, must_change_pass) values ('CLINIC_ADMIN', 0, 'clinic_admin@gmail.com', 'Aleksa',
@@ -41,8 +41,8 @@ address, last_password_reset_date) values ('CLINIC_CENTER_ADMIN', -3, 'admin@gma
 '2019-12-01 09:00:01');
 
 
-INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-1,-2,null,0,-1, false, false, false, '2020-01-25',-1, '2108379121');
-INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-2,-3,null,0,-1, false, false, false, '2020-01-25',-1, '2108379121');
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn, is_pending_patient, is_updated) values (-1,-2,null,0,-1, false, false, false, '2020-01-25',-1, '2108379121', false, false);
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn, is_pending_patient, is_updated) values (-2,-3,null,0,-1, false, false, false, '2020-01-25',-1, '2108379121', false, false);
 
 INSERT INTO authority (id, name) values (1, 'PATIENT');
 INSERT INTO authority (id, name) values (2, 'DOCTOR');
@@ -56,12 +56,14 @@ INSERT INTO user_authority (person_id, authority_id) values  (0, 4);
 INSERT INTO user_authority (person_id, authority_id) values  (-2, 1);
 INSERT INTO user_authority (person_id, authority_id) values  (-1, 2);
 
-INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-3,-3,-1,0,-1, true, false, true, '2020-01-25',-1, '2108379121');
-INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-4,-3,-1,0,-1, true, true, true, '2020-01-26',-1, '2108379121');
-INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-7,-3,-1,0,-1, true, true, true, '2020-01-26',-1, '2108379121');
-INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-8,-3,-1,0,-1, true, true, true, '2020-01-26',-1, '2108379121');
-INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-5,-3,-1,0,-1, true, true, true, '2020-01-27',-1, '2108379121');
-INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn) values (-6,-3,-1,0,-1, true, true, true, '2020-01-28',-1, '2108379121');
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn, is_pending_patient, is_updated) values (-3,-3,-1,0,-1, true, false, true, '2020-01-25',-1, '2108379121', false, false);
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn, is_pending_patient, is_updated) values (-4,-3,-1,0,-1, true, true, true, '2020-01-26',-1, '2108379121', false, false);
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn, is_pending_patient, is_updated) values (-7,-3,-1,0,-1, true, true, true, '2020-01-26',-1, '2108379121', false, false);
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn, is_pending_patient, is_updated) values (-8,-3,-1,0,-1, true, true, true, '2020-01-26',-1, '2108379121', false, false);
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn, is_pending_patient, is_updated) values (-5,-3,-1,0,-1, true, true, true, '2020-01-27',-1, '2108379121', false, false);
+INSERT INTO checkup (checkup_id, start_end_time, checkup_room, checkup_clinic, checkup_doctor, is_approved, is_ended, is_started, date, checkup_type, patient_ssn, is_pending_patient, is_updated) values (-6,-3,-1,0,-1, true, true, true, '2020-01-28',-1, '2108379121', false, false);
 
 INSERT INTO absence_request(id, approved, reviewed, type, start_end_date, absencerq_person) values (-1, false, false, 'vacation', -1, -1);
 INSERT INTO absence_request(id, approved, reviewed, type, start_end_date, absencerq_person) values (-2, false, false, 'absence', -2, -1);
+
+INSERT INTO patient_doctor_rating(patient_id, doctor_id, rating) values (-2,-1,4);
