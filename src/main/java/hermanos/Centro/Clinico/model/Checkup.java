@@ -54,7 +54,7 @@ public class Checkup {
     private boolean isPendingPatient;
     @Column
     private boolean isUpdated;
-    @Column
+    @Column(columnDefinition = "boolean default false")
     private boolean isOperation;
 
 
@@ -164,6 +164,7 @@ public class Checkup {
     public void setPatient(Patient patient) {
         this.patient = patient;
     }
+
 
     public boolean isPendingPatient() {
         return isPendingPatient;
