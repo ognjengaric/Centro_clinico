@@ -1,5 +1,7 @@
 package hermanos.Centro.Clinico.model;
 
+import hermanos.Centro.Clinico.dto.PatientDTO;
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -27,6 +29,14 @@ public class Address implements Serializable {
     private String country;
 
     public Address(){}
+
+    public Address(PatientDTO patientDTO){
+        this.street = patientDTO.getStreet();
+        this.number = patientDTO.getStreetNumber();
+        this.city = patientDTO.getCity();
+        this.postcode = patientDTO.getPostcode();
+        this.country = patientDTO.getCountry();
+    }
 
     public long getId() {
         return id;
