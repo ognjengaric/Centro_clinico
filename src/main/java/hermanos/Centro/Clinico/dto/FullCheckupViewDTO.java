@@ -18,6 +18,7 @@ public class FullCheckupViewDTO {
     private String clinicName;
     private String doctorId;
     private String roomId;
+    private boolean isOperation;
 
     public FullCheckupViewDTO() {
     }
@@ -33,6 +34,7 @@ public class FullCheckupViewDTO {
         this.clinicName = checkup.getClinic().getName();
         this.doctorId = Long.toString(checkup.getDoctor().getId());
         this.roomId = Long.toString(checkup.getRoom().getId());
+        this.isOperation = checkup.isOperation();
     }
 
     public FullCheckupViewDTO(PredefinedCheckup checkup){
@@ -126,5 +128,13 @@ public class FullCheckupViewDTO {
 
     public void setRoomId(String roomId) {
         this.roomId = roomId;
+    }
+
+    public boolean isOperation() {
+        return isOperation;
+    }
+
+    public void setOperation(boolean operation) {
+        isOperation = operation;
     }
 }
