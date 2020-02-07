@@ -15,7 +15,7 @@ public class DocRatingDTO {
         id = doctor.getId();
         name = doctor.getName();
         surname = doctor.getSurname();
-        avgrating = doctor.getAvgrating();
+        avgrating = Float.toString(doctor.calculateAverageRating());
         specialization = doctor.getSpecialization().getName();
         clinic = doctor.getClinic().getName();
     }

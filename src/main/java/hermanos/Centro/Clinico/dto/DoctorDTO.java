@@ -31,7 +31,7 @@ public class DoctorDTO {
         this.city = d.getAddress().getCity();
         this.postcode = d.getAddress().getPostcode();
         this.country = d.getAddress().getCountry();
-        this.avgRating = d.getAvgrating();
+        this.avgRating = Float.toString(d.calculateAverageRating());
     }
 
     public String getEmail() {

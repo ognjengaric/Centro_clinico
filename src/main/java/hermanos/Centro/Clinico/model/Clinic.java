@@ -40,7 +40,23 @@ public class Clinic {
     @JoinColumn(name = "address", referencedColumnName = "address_id", nullable = false)
     private Address address;
 
+    @OneToMany(mappedBy = "clinic")
+    private List<PatientClinicRating> beingRated;
+
     public Clinic() {
+    }
+
+    public float calculateAverageRating(){
+        int sum = 0;
+
+        for(PatientClinicRating patientClinicRating : beingRated){
+            sum += patientClinicRating.getRating();
+        }
+
+        if(beingRated.size() != 0)
+            return sum/beingRated.size();
+        else
+            return 0;
     }
 
     public Long getId() {
@@ -125,5 +141,13 @@ public class Clinic {
 
     public void setCheckups(List<Checkup> checkups) {
         this.checkups = checkups;
+    }
+
+    public List<PatientClinicRating> getBeingRated() {
+        return beingRated;
+    }
+
+    public void setBeingRated(List<PatientClinicRating> beingRated) {
+        this.beingRated = beingRated;
     }
 }
