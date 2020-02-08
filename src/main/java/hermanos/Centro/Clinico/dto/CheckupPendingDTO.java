@@ -15,6 +15,7 @@ public class CheckupPendingDTO {
     private String doctor_name;
     private long room_id;
     private long duration;
+    private boolean isOperation;
 
     public CheckupPendingDTO() {}
 
@@ -36,6 +37,26 @@ public class CheckupPendingDTO {
         this.doctor_id = doctor_id;
         this.doctor_name = doctor_name;
         this.room_id = room_id;
+    }
+
+    public CheckupPendingDTO(long id, LocalDate date, LocalTime startTime, LocalTime endTime, long doctor_id, String doctor_name, boolean isOperation) {
+        this.id = id;
+        this.date = date;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.doctor_id = doctor_id;
+        this.doctor_name = doctor_name;
+        this.room_id = room_id;
+        this.duration = duration;
+        this.isOperation = isOperation;
+    }
+
+    public boolean isOperation() {
+        return isOperation;
+    }
+
+    public void setOperation(boolean operation) {
+        isOperation = operation;
     }
 
     public long getId() {
@@ -107,4 +128,6 @@ public class CheckupPendingDTO {
     public void setDuration(long duration) {
         this.duration = duration;
     }
+
+
 }

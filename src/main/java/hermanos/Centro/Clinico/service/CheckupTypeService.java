@@ -22,8 +22,7 @@ public class CheckupTypeService implements CheckupTypeServiceInterface {
 
     @Override
     public CheckupType findById(long id){
-        //return checkupTypeRepository.findById(id);
-        return null;
+        return checkupTypeRepository.findById(id);
     }
 
     @Override

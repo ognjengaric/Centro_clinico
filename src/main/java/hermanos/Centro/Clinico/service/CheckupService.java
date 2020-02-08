@@ -6,6 +6,8 @@ import hermanos.Centro.Clinico.repository.CheckupRepository;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -60,9 +62,11 @@ public class CheckupService implements CheckupServiceInterface {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Checkup makeNewCheckup(ScheduleFilterDTO filterDTO, Patient patient,  boolean isPredefined){
         CheckupType type = checkupTypeService.findByName(filterDTO.getCheckupType());
-        Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId()));
+        Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId
+                ()));
         Clinic clinic = clinicService.findById(doctor.getClinic().getId());
 
         LocalDate date = LocalDate.parse(filterDTO.getCheckupDate());

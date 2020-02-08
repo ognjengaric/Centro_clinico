@@ -45,7 +45,7 @@ public class Checkup {
     @JoinColumn(name = "patient_ssn", referencedColumnName = "socialSecurityNumber", nullable = true)
     private Patient patient;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "checkup_type", referencedColumnName = "checkuptype_id", nullable = true)
     private CheckupType type;
 
@@ -55,16 +55,13 @@ public class Checkup {
     private boolean isStarted;
     @Column
     private boolean isEnded;
-    //@Column
-    //private boolean isOperation;
+    @Column
+    private boolean isPendingPatient;
+    @Column
+    private boolean isUpdated;
+    @Column(columnDefinition = "boolean default false")
+    private boolean isOperation;
 
-//    public boolean isOperation() {
-//        return isOperation;
-//    }
-//
-//    public void setOperation(boolean operation) {
-//        isOperation = operation;
-//    }
 
     public Checkup(){}
 
@@ -179,5 +176,31 @@ public class Checkup {
 
     public void setPatient(Patient patient) {
         this.patient = patient;
+    }
+
+
+    public boolean isPendingPatient() {
+        return isPendingPatient;
+    }
+
+    public void setPendingPatient(boolean pendingPatient) {
+        isPendingPatient = pendingPatient;
+    }
+
+    public boolean isUpdated() {
+        return isUpdated;
+    }
+
+    public void setUpdated(boolean updated) {
+        isUpdated = updated;
+    }
+
+
+    public boolean isOperation() {
+        return isOperation;
+    }
+
+    public void setOperation(boolean operation) {
+        isOperation = operation;
     }
 }

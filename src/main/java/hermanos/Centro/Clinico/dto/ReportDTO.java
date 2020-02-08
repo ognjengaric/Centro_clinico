@@ -25,7 +25,7 @@ public class ReportDTO {
         this.diagnosisDescription = report.getDiagnosis().getDescription();
 
         this.prescriptionCertified = report.getPrescription().isCertified();
-        this.certifiedByName = report.getPrescription().getByWho().getName();
+        this.certifiedByName = report.getPrescription().getByWho().getName() + " " + report.getPrescription().getByWho().getSurname();
 
         for(Medicine medicine: report.getPrescription().getMedicine_list()){
             this.medicines.add(new MedicineDTO(medicine));
