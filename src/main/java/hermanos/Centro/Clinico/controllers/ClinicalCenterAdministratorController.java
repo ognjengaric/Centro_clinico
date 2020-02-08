@@ -201,7 +201,7 @@ public class ClinicalCenterAdministratorController {
 
         List<CheckupDoctorDTO> list = new ArrayList<>();
         for(Checkup tch : checkupList){
-            if(tch.isApproved()) {
+            if(tch.isApproved() && !tch.isEnded() && !tch.isStarted()) {
                 Checkup ch = checkupService.findById(tch.getId());
                 CheckupDoctorDTO dt0 = new CheckupDoctorDTO(ch.getId(), ch.getDate(), ch.getStartEnd().getStartTime(), ch.getStartEnd().getEndTime(), ch.getDoctor().getId(), ch.getDoctor().getName(), ch.getPatient().getId(), ch.getPatient().getName(), ch.getRoom().getId());
                 list.add(dt0);
@@ -216,6 +216,8 @@ public class ClinicalCenterAdministratorController {
     public CheckupDoctorDTO getCheckupInfo(@PathVariable String id){
 
         Checkup ch = checkupService.findById(Integer.parseInt(id));
+        ch.setStarted(true);
+        checkupService.save(ch);
         CheckupDoctorDTO dt0 = new CheckupDoctorDTO(ch.getId(), ch.getDate(), ch.getStartEnd().getStartTime(), ch.getStartEnd().getEndTime(), ch.getDoctor().getId(), ch.getDoctor().getName(), ch.getPatient().getId(), ch.getPatient().getName(), ch.getRoom().getId());
 
         return dt0;
@@ -300,6 +302,8 @@ public class ClinicalCenterAdministratorController {
         Patient pat = ch.getPatient();
         pat.getMedicalRecord().setReport(report);
         ch.setReport(report);
+        ch.setStarted(false);
+        ch.setEnded(true);
         reportService.save(report);
         checkupService.save(ch);
         personService.save(pat);
