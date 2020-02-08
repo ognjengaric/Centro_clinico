@@ -1,6 +1,7 @@
 package hermanos.Centro.Clinico.controllers;
 
 
+import hermanos.Centro.Clinico.dto.CheckupDoctorDTO;
 import hermanos.Centro.Clinico.dto.MedicalRecordDTO;
 import hermanos.Centro.Clinico.dto.PatientDTO;
 import hermanos.Centro.Clinico.exception.ResourceConflictException;
@@ -54,6 +55,9 @@ public class ClinicalCenterAdministratorController {
     PrescriptionServiceInterface prescriptionService;
     @Autowired
     AuthorityService authorityService;
+    @Autowired
+    CheckupServiceInterface checkupService;
+
 
     static boolean hasPrescription = false;
 
@@ -160,7 +164,7 @@ public class ClinicalCenterAdministratorController {
         List<Prescription> ret = new ArrayList<>();
 
         for(Prescription p : pr){
-            if(p.isCertified() == false){
+            if(!p.isCertified()){
                 ret.add(p);
             }
         }
@@ -172,12 +176,52 @@ public class ClinicalCenterAdministratorController {
     @RequestMapping(method = RequestMethod.GET, path = "/getMedical/{id}")
     public MedicalRecordDTO getMedicalRecordDoctor(@PathVariable String id){
 
-        Patient p = patientService.findBySocialSecurityNumber(id);
+        Checkup ch = checkupService.findById(Integer.parseInt(id));
+        Patient p = ch.getPatient();
 
         MedicalRecord md = p.getMedicalRecord();
         MedicalRecordDTO mdDTO = new MedicalRecordDTO(md);
         return mdDTO;
     }
+
+    @RequestMapping(method = RequestMethod.GET, path = "/getCheckups")
+    public List<CheckupDoctorDTO> getCheckups(){
+
+        List<Checkup> checkupList = checkupService.findAll();
+        List<CheckupDoctorDTO> list = new ArrayList<>();
+        for(Checkup ch : checkupList){
+            CheckupDoctorDTO dt0 = new CheckupDoctorDTO(ch.getId(), ch.getDate(), ch.getStartEnd().getStartTime(), ch.getStartEnd().getEndTime(), ch.getDoctor().getId(), ch.getDoctor().getName(), ch.getPatient().getId(), ch.getPatient().getName(), ch.getRoom().getId());
+            list.add(dt0);
+        }
+
+        return list;
+    }
+    @RequestMapping(method = RequestMethod.GET, path = "/getCheckupInfo/{id}")
+    public CheckupDoctorDTO getCheckupInfo(@PathVariable String id){
+
+        Checkup ch = checkupService.findById(Integer.parseInt(id));
+        CheckupDoctorDTO dt0 = new CheckupDoctorDTO(ch.getId(), ch.getDate(), ch.getStartEnd().getStartTime(), ch.getStartEnd().getEndTime(), ch.getDoctor().getId(), ch.getDoctor().getName(), ch.getPatient().getId(), ch.getPatient().getName(), ch.getRoom().getId());
+
+        return dt0;
+    }
+
+    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @RequestMapping(method = RequestMethod.POST, path = "/setMedical/{id}")
+    public ResponseEntity<?> setMedicalRecordDoctor(@RequestBody MedicalRecord medicalRecord, @PathVariable String id){
+        Checkup ch = checkupService.findById(Integer.parseInt(id));
+        Patient p = ch.getPatient();
+
+        p.getMedicalRecord().setAge(medicalRecord.getAge());
+        p.getMedicalRecord().setAllergies(medicalRecord.getAllergies());
+        p.getMedicalRecord().setBloodType(medicalRecord.getBloodType());
+        p.getMedicalRecord().setDiopter(medicalRecord.getDiopter());
+        p.getMedicalRecord().setWeight(medicalRecord.getWeight());
+        p.getMedicalRecord().setHeight(medicalRecord.getHeight());
+        personService.save(p);
+
+        return ResponseEntity.ok().build();
+    }
+
 //    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
 //    @RequestMapping(method = RequestMethod.GET, path = "/getMedical")
 //    public MedicalRecordDTO getMedicalRecordDoctor(){
@@ -236,10 +280,14 @@ public class ClinicalCenterAdministratorController {
             report.setPrescription(prescription);
         }
         hasPrescription = false;
-        Patient pat = patientService.findBySocialSecurityNumber(id);
+        Checkup ch = checkupService.findById(Integer.parseInt(id));
+        Patient pat = ch.getPatient();
         pat.getMedicalRecord().setReport(report);
-        personService.save(pat);
+        ch.setReport(report);
         reportService.save(report);
+        checkupService.save(ch);
+        personService.save(pat);
+
 
         return ResponseEntity.ok().build();
     }

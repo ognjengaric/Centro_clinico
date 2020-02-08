@@ -36,6 +36,11 @@ public class Checkup {
     @JoinColumn(name = "checkup_room", referencedColumnName = "room_id", nullable = true)
     private Room room;
 
+
+    @OneToOne
+    @JoinColumn(name = "report_id", referencedColumnName = "report_id")
+    private Report report;
+
     @ManyToOne
     @JoinColumn(name = "patient_ssn", referencedColumnName = "socialSecurityNumber", nullable = true)
     private Patient patient;
@@ -50,18 +55,26 @@ public class Checkup {
     private boolean isStarted;
     @Column
     private boolean isEnded;
-    @Column
-    private boolean isOperation;
+    //@Column
+    //private boolean isOperation;
 
-    public boolean isOperation() {
-        return isOperation;
-    }
-
-    public void setOperation(boolean operation) {
-        isOperation = operation;
-    }
+//    public boolean isOperation() {
+//        return isOperation;
+//    }
+//
+//    public void setOperation(boolean operation) {
+//        isOperation = operation;
+//    }
 
     public Checkup(){}
+
+    public Report getReport() {
+        return report;
+    }
+
+    public void setReport(Report report) {
+        this.report = report;
+    }
 
     public Checkup(LocalDate date, LocalTime startTime, LocalTime endTime, Doctor doctor, CheckupType type, Clinic clinic, Patient patient){
         this.date = date;

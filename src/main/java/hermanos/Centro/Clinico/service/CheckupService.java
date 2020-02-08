@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Service
 public class CheckupService implements CheckupServiceInterface {
@@ -77,5 +78,11 @@ public class CheckupService implements CheckupServiceInterface {
         }
 
         return checkup;
+    }
+
+    @Override
+    public List<Checkup> findAll() {
+        List<Checkup> result = checkupRepository.findAll();
+        return result;
     }
 }
