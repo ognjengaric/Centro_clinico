@@ -65,8 +65,7 @@ public class CheckupService implements CheckupServiceInterface {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Checkup makeNewCheckup(ScheduleFilterDTO filterDTO, Patient patient,  boolean isPredefined){
         CheckupType type = checkupTypeService.findByName(filterDTO.getCheckupType());
-        Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId
-                ()));
+        Doctor doctor = doctorService.findById(Long.parseLong(filterDTO.getDoctorId()));
         Clinic clinic = clinicService.findById(doctor.getClinic().getId());
 
         LocalDate date = LocalDate.parse(filterDTO.getCheckupDate());

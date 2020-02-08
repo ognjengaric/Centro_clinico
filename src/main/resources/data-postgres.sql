@@ -44,22 +44,22 @@ INSERT INTO address (address_id, city, country, number, postcode, street) values
                                                                                   '18220', 'Marsala Tita');
 
 --Clinic
-INSERT INTO clinic (clinic_id, description, name, address) values (0, 'Praesent et tempus eros.', 'Medicino de clinico', -1);
-INSERT INTO clinic (clinic_id, description, name, address) values (-1, 'Vestibulum in condimentum felis', 'Healthier Group', -2);
-INSERT INTO clinic (clinic_id, description, name, address) values (-2, 'Nam iaculis, dui in viverra rutrum, purus nulla rhoncus magna, eget iaculis tortor justo in nisi.', 'ContraClinico', -3);
-INSERT INTO clinic (clinic_id, description, name, address) values (-3, 'Fusce non tristique dui.', 'La Havanna', -4);
-INSERT INTO clinic (clinic_id, description, name, address) values (-4, 'Aenean ullamcorper nisi eget eros porttitor, quis sollicitudin nisi convallis', 'Hospital Perfection', -5);
-INSERT INTO clinic (clinic_id, description, name, address) values (-5, 'Integer vel fermentum neque, at elementum leo.', 'El Paella', -6);
-INSERT INTO clinic (clinic_id, description, name, address) values (-6, 'Cras sed augue ipsum.', 'Lifeline', -1);
-INSERT INTO clinic (clinic_id, description, name, address) values (-7, 'Sed eleifend neque nulla, et faucibus leo suscipit eget. ', 'BlueCross United', -2);
-INSERT INTO clinic (clinic_id, description, name, address) values (-8, 'Sed a justo nisl.', 'Soy Medico', -3);
-INSERT INTO clinic (clinic_id, description, name, address) values (-9, 'Mauris laoreet vitae dui eu aliquet.', 'White Support', -4);
-INSERT INTO clinic (clinic_id, description, name, address) values (-10, 'Morbi id placerat purus.', 'Lets Hospitalize', -5);
-INSERT INTO clinic (clinic_id, description, name, address) values (-11, 'Aenean blandit sapien quis luctus sagittis.', 'MedGroup', -6);
-INSERT INTO clinic (clinic_id, description, name, address) values (-12, 'Aenean vulputate rhoncus purus', 'Emerald Dove', -1);
-INSERT INTO clinic (clinic_id, description, name, address) values (-13, 'Praesent eget sodales diam.', 'Crossroad miracle', -2);
-INSERT INTO clinic (clinic_id, description, name, address) values (-14, 'Maecenas faucibus lacus urna, ac euismod ipsum suscipit ac.', 'Grand Clinic', -3);
-INSERT INTO clinic (clinic_id, description, name, address) values (-15, 'In et ante aliquet, blandit eros a, efficitur lectus.', 'Refined emegency services', -4);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (0, 'Praesent et tempus eros.', 'Medicino de clinico', -1, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-1, 'Vestibulum in condimentum felis', 'Healthier Group', -2, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-2, 'Nam iaculis, dui in viverra rutrum, purus nulla rhoncus magna, eget iaculis tortor justo in nisi.', 'ContraClinico', -3, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-3, 'Fusce non tristique dui.', 'La Havanna', -4, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-4, 'Aenean ullamcorper nisi eget eros porttitor, quis sollicitudin nisi convallis', 'Hospital Perfection', -5, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-5, 'Integer vel fermentum neque, at elementum leo.', 'El Paella', -6, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-6, 'Cras sed augue ipsum.', 'Lifeline', -1, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-7, 'Sed eleifend neque nulla, et faucibus leo suscipit eget. ', 'BlueCross United', -2, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-8, 'Sed a justo nisl.', 'Soy Medico', -3, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-9, 'Mauris laoreet vitae dui eu aliquet.', 'White Support', -4, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-10, 'Morbi id placerat purus.', 'Lets Hospitalize', -5, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-11, 'Aenean blandit sapien quis luctus sagittis.', 'MedGroup', -6, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-12, 'Aenean vulputate rhoncus purus', 'Emerald Dove', -1, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-13, 'Praesent eget sodales diam.', 'Crossroad miracle', -2, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-14, 'Maecenas faucibus lacus urna, ac euismod ipsum suscipit ac.', 'Grand Clinic', -3, 0);
+INSERT INTO clinic (clinic_id, description, name, address, version) values (-15, 'In et ante aliquet, blandit eros a, efficitur lectus.', 'Refined emegency services', -4, 0);
 
 
 --Checkup type
@@ -205,9 +205,9 @@ INSERT INTO absences (person_id, dates_id) values (-4, -5);
 INSERT INTO absences (person_id, dates_id) values (-5, -6);
 
 --Predefined checkups
-INSERT INTO predefined_checkup (checkup_id, checkup_type, start_end_time, checkup_room, checkup_clinic, checkup_doctor, date) values (-1,-1,-4,-1,0,-1, '2020-02-25');
-INSERT INTO predefined_checkup (checkup_id, checkup_type, start_end_time, checkup_room, checkup_clinic, checkup_doctor, date) values (-2,-2,-5,-2,0,-1, '2020-02-29');
-INSERT INTO predefined_checkup (checkup_id, checkup_type, start_end_time, checkup_room, checkup_clinic, checkup_doctor, date) values (-3,-3,-6,-3,0,-1, '2020-02-29');
+INSERT INTO predefined_checkup (checkup_id, checkup_type, start_end_time, checkup_room, checkup_clinic, checkup_doctor, date) values (-1,-1,-4,-1,0,-4, '2020-02-25');
+INSERT INTO predefined_checkup (checkup_id, checkup_type, start_end_time, checkup_room, checkup_clinic, checkup_doctor, date) values (-2,-2,-5,-2,0,-4, '2020-02-29');
+INSERT INTO predefined_checkup (checkup_id, checkup_type, start_end_time, checkup_room, checkup_clinic, checkup_doctor, date) values (-3,-3,-6,-3,0,-4, '2020-02-29');
 
 --Prescription
 
