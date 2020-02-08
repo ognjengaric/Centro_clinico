@@ -8,6 +8,7 @@ import hermanos.Centro.Clinico.model.StartEndTime;
 import hermanos.Centro.Clinico.repository.ClinicRepository;
 import hermanos.Centro.Clinico.service.interfaces.ClinicServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -31,6 +32,9 @@ public class ClinicService implements ClinicServiceInterface {
 
     @Autowired
     JavaMailSender javaMailSender;
+
+    @Value("${back-uri}")
+    private String uri;
 
     @Override
     public Clinic findById(long id){
@@ -97,8 +101,8 @@ public class ClinicService implements ClinicServiceInterface {
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
         helper.setTo(checkup.getPatient().getEmail());
-        String accept = "http://localhost:8080/checkup/acceptUpdatedAppointment/" + checkup.getId();
-        String decline = "http://localhost:8080/checkup/declineUpdatedAppointment/" + checkup.getId();
+        String accept =  uri + "/checkup/acceptUpdatedAppointment/" + checkup.getId();
+        String decline = uri + "/checkup/declineUpdatedAppointment/" + checkup.getId();
         helper.setSubject("Appointment updated");
 
         String content = "Dear " + checkup.getPatient().getName() + ", <br/>";
