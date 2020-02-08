@@ -14,7 +14,7 @@ public class PredefinedCheckup {
     @Column(name = "checkup_id", nullable = false, unique = true)
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "start_end_time", referencedColumnName = "time_id", nullable = false)
     private StartEndTime startEnd;
 

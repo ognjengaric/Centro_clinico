@@ -43,6 +43,9 @@ public class Clinic {
     @OneToMany(mappedBy = "clinic")
     private List<PatientClinicRating> beingRated;
 
+    @Version
+    private Long version;
+
     public Clinic() {
     }
 
@@ -149,5 +152,13 @@ public class Clinic {
 
     public void setBeingRated(List<PatientClinicRating> beingRated) {
         this.beingRated = beingRated;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }
