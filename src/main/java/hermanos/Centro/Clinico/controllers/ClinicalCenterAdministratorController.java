@@ -32,6 +32,10 @@ import java.util.List;
 public class ClinicalCenterAdministratorController {
 
     @Autowired
+    DoctorServiceInterface doctorService;
+    @Autowired
+    NurseServiceInterface nurseService;
+    @Autowired
     PersonServiceInterface personService;
     @Autowired
     ClinicServiceInterface clinicService;
@@ -120,7 +124,7 @@ public class ClinicalCenterAdministratorController {
         return ResponseEntity.ok(pr);
     }
     //ovo sve ide doktoru
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @PreAuthorize("hasAuthority('DOCTOR')")
     @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getDiagnosis")
     public ResponseEntity<?> getAllDiagnosis(){
 
@@ -129,7 +133,7 @@ public class ClinicalCenterAdministratorController {
         return ResponseEntity.ok(pr);
     }
 
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @PreAuthorize("hasAuthority('NURSE')")
     @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getPatients")
     public ResponseEntity<?> getAllPatients(){
 
@@ -147,7 +151,7 @@ public class ClinicalCenterAdministratorController {
 
     }
 
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @PreAuthorize("hasAuthority('DOCTOR')")
     @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getMedicines")
     public ResponseEntity<?> getAllMedicines(){
 
@@ -156,7 +160,7 @@ public class ClinicalCenterAdministratorController {
         return ResponseEntity.ok(pr);
     }
 
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @PreAuthorize("hasAuthority('NURSE')")
     @RequestMapping(method = RequestMethod.GET, consumes = "application/json", path = "/getPrescriptions")
     public ResponseEntity<?> getAllPrescriptions(){
 
@@ -172,7 +176,7 @@ public class ClinicalCenterAdministratorController {
         return ResponseEntity.ok(ret);
     }
 
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @PreAuthorize("hasAuthority('DOCTOR')")
     @RequestMapping(method = RequestMethod.GET, path = "/getMedical/{id}")
     public MedicalRecordDTO getMedicalRecordDoctor(@PathVariable String id){
 
@@ -184,18 +188,30 @@ public class ClinicalCenterAdministratorController {
         return mdDTO;
     }
 
+    @PreAuthorize("hasAuthority('DOCTOR') or hasAuthority('NURSE')")
     @RequestMapping(method = RequestMethod.GET, path = "/getCheckups")
-    public List<CheckupDoctorDTO> getCheckups(){
+    public List<CheckupDoctorDTO> getCheckups(Principal p){
+        long id = personService.findByEmail(p.getName()).getId();
+        List<Checkup> checkupList = new ArrayList<Checkup>();
+        if(doctorService.findById(id) != null){
+            checkupList = doctorService.findById(id).getClinic().getCheckups();
+        }else{
+            checkupList = nurseService.findById(id).getClinic().getCheckups();
+        }
 
-        List<Checkup> checkupList = checkupService.findAll();
         List<CheckupDoctorDTO> list = new ArrayList<>();
-        for(Checkup ch : checkupList){
-            CheckupDoctorDTO dt0 = new CheckupDoctorDTO(ch.getId(), ch.getDate(), ch.getStartEnd().getStartTime(), ch.getStartEnd().getEndTime(), ch.getDoctor().getId(), ch.getDoctor().getName(), ch.getPatient().getId(), ch.getPatient().getName(), ch.getRoom().getId());
-            list.add(dt0);
+        for(Checkup tch : checkupList){
+            if(tch.isApproved()) {
+                Checkup ch = checkupService.findById(tch.getId());
+                CheckupDoctorDTO dt0 = new CheckupDoctorDTO(ch.getId(), ch.getDate(), ch.getStartEnd().getStartTime(), ch.getStartEnd().getEndTime(), ch.getDoctor().getId(), ch.getDoctor().getName(), ch.getPatient().getId(), ch.getPatient().getName(), ch.getRoom().getId());
+                list.add(dt0);
+            }
         }
 
         return list;
     }
+
+    @PreAuthorize("hasAuthority('DOCTOR') or hasAuthority('NURSE')")
     @RequestMapping(method = RequestMethod.GET, path = "/getCheckupInfo/{id}")
     public CheckupDoctorDTO getCheckupInfo(@PathVariable String id){
 
@@ -205,7 +221,7 @@ public class ClinicalCenterAdministratorController {
         return dt0;
     }
 
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @PreAuthorize("hasAuthority('DOCTOR')")
     @RequestMapping(method = RequestMethod.POST, path = "/setMedical/{id}")
     public ResponseEntity<?> setMedicalRecordDoctor(@RequestBody MedicalRecord medicalRecord, @PathVariable String id){
         Checkup ch = checkupService.findById(Integer.parseInt(id));
@@ -270,7 +286,7 @@ public class ClinicalCenterAdministratorController {
 //        return ResponseEntity.ok().build();
 //    }
 
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @PreAuthorize("hasAuthority('DOCTOR')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/doCheckup/{id}")
     public ResponseEntity doCheckup(@RequestBody Report report, @PathVariable("id") String id){
 
@@ -292,7 +308,7 @@ public class ClinicalCenterAdministratorController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @PreAuthorize("hasAuthority('NURSE')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/certify")
     public ResponseEntity certifyCheckup(Principal p,  @RequestBody Long id){
 
@@ -306,7 +322,7 @@ public class ClinicalCenterAdministratorController {
         return ResponseEntity.ok().build();
     }
 
-    @PreAuthorize("hasAuthority('CLINIC_CENTER_ADMIN')")
+    @PreAuthorize("hasAuthority('DOCTOR')")
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json", path = "/makePrescription")
     public ResponseEntity makePrescription(@RequestBody Prescription prescription){
 
