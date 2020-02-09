@@ -47,7 +47,7 @@ public class ClinicService implements ClinicServiceInterface {
     }
 
     @Override
-    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.REPEATABLE_READ)
     public void deleteExpiredPredefinedCheckups(Clinic clinic) {
         List<PredefinedCheckup> temp = new ArrayList<>(clinic.getPredefinedCheckups());
 
