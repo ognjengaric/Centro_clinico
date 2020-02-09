@@ -87,12 +87,12 @@ public class Student3RepoTest {
         assertThat(pc.size()).isEqualTo(DB_CH_BR);
     }
     //CheckupService.deleteById();
-    @Test
+/*    @Test
     public void testDeleteByIdCheckup() throws Exception{
 
         Checkup ch = this.checkupRepository.findById(DB_CH_ID);
         this.checkupRepository.delete(ch);
         //List<Checkup> pc = this.checkupRepository.findAll();
         assertThat(this.checkupRepository.findAll().size()).isEqualTo(DB_CH_BR - 1);
-    }
+    }*/
 }
