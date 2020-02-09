@@ -9,6 +9,7 @@ import hermanos.Centro.Clinico.model.*;
 import hermanos.Centro.Clinico.service.AuthorityService;
 import hermanos.Centro.Clinico.service.interfaces.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,8 @@ public class ClinicalCenterAdministratorController {
     @Autowired
     CheckupServiceInterface checkupService;
 
+    @Value("${back-uri}")
+    private String uri;
 
     static boolean hasPrescription = false;
 
@@ -82,7 +85,7 @@ public class ClinicalCenterAdministratorController {
 
 
         try {
-            sendAcceptEmail(patient.getEmail(), patient.getName(), patient.getSurname());
+            sendAcceptEmail(patient.getEmail());
         } catch (MessagingException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -384,19 +387,19 @@ public class ClinicalCenterAdministratorController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/activate/{mail:.+}")
-    public ResponseEntity activateAcc(@PathVariable("mail") String mail) throws URISyntaxException {
+    public ResponseEntity activateAcc(@PathVariable("mail") String mail, @Value("${front_uri}") String uri) throws URISyntaxException {
         Patient patient = (Patient)personService.findByEmail(mail);
         patient.setActivated(true);
         patientService.save(patient);
 
-        URI loginURI = new URI("http://localhost:3000/activated");
+        URI loginURI = new URI(uri + "/activated");
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(loginURI);
 
         return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
     }
 
-    void sendAcceptEmail(String sendTo, String firstName, String lastName) throws MessagingException, IOException {
+    void sendAcceptEmail(String sendTo) throws MessagingException, IOException {
 
         MimeMessage msg = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(msg, true);
@@ -405,7 +408,7 @@ public class ClinicalCenterAdministratorController {
         helper.setSubject("Centro Clinico account registration");
         String text = "Dear sir/madam, " + '\n';
         text += "your account request has been reviewed and accepted by our administrator staff. \n Please follow the link below to activate your account.";
-        text += "http://localhost:8080/clinicalCenterAdministrator/activate/" + sendTo + "\n\n\n" + "Sincerely, Centro Clinico support team.";
+        text += uri + "/clinicalCenterAdministrator/activate/" + sendTo + "\n\n\n" + "Sincerely, Centro Clinico support team.";
         helper.setText(text);
 
         javaMailSender.send(msg);

@@ -3,6 +3,7 @@ package hermanos.Centro.Clinico.controllers;
 import hermanos.Centro.Clinico.model.Checkup;
 import hermanos.Centro.Clinico.service.interfaces.CheckupServiceInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,13 +23,13 @@ public class CheckupController {
     CheckupServiceInterface checkupService;
 
     @RequestMapping(method = RequestMethod.GET, path = "/acceptUpdatedAppointment/{id}")
-    public ResponseEntity acceptUpdatedAppointment(@PathVariable("id") String id) throws URISyntaxException {
+    public ResponseEntity acceptUpdatedAppointment(@PathVariable("id") String id, @Value("${front_uri}") String uri) throws URISyntaxException {
         Checkup checkup = checkupService.findById(Long.parseLong(id));
         checkup.setPendingPatient(false);
         checkup.setApproved(true);
         checkupService.save(checkup);
 
-        URI loginURI = new URI("http://localhost:3000");
+        URI loginURI = new URI(uri);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(loginURI);
 
@@ -36,10 +37,10 @@ public class CheckupController {
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/declineUpdatedAppointment/{id}")
-    public ResponseEntity declineUpdatedAppointment(@PathVariable("id") String id) throws URISyntaxException {
+    public ResponseEntity declineUpdatedAppointment(@PathVariable("id") String id, @Value("${front_uri}") String uri) throws URISyntaxException {
         checkupService.deleteById(Long.parseLong(id));
 
-        URI loginURI = new URI("http://localhost:3000");
+        URI loginURI = new URI(uri);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setLocation(loginURI);
 
