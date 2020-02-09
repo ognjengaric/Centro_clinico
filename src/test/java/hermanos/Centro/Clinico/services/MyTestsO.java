@@ -42,6 +42,7 @@ public class MyTestsO {
     // Following tests are for method PersonService.findByEmail(email)
 
 
+/*
     @Test
     public void testFindByEmailService() {
 
@@ -52,6 +53,7 @@ public class MyTestsO {
         verify(personRepositoryMock, times(1)).findByEmail(DB_EMAIL_PERSON);
         verifyNoMoreInteractions(personRepositoryMock);
     }
+*/
 
 
     @Autowired
